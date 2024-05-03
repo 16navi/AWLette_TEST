@@ -33,3 +33,27 @@ def word():
     return render_template("word.html")
 
 
+@app.route('/fill_in_the_blank')
+def fill_in_the_blank():
+    return render_template("fill_in_the_blank.html")
+
+
+
+@app.route('/form')
+def form():
+    return render_template("form.html")
+
+
+@app.route('/match')
+def match():
+    return render_template("match.html")
+
+
+@app.route('/question_answer')
+def question_answer():
+    return render_template("question_answer.html")
+
+
+@app.route('/quiz')
+def quiz():
+    return render_template("quiz.html")
