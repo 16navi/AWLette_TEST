@@ -6,3 +6,6 @@ class AWL(db.Model):
     sublist = db.Column(db.Integer())
     word = db.Column(db.Text())
     picture = db.Column(db.Text())
+
+    def __repr__(self):
+        return self.name

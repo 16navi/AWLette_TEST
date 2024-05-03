@@ -1,3 +1,17 @@
 {% include 'nav.html' %}
 
-The word page. Yey!
+<ul>
+    {% if word.word_id != 1%}
+    <li><a href = "/sublist/words/{{word.word_id - 1}}">Previous Word</a></li>
+    {% endif %}
+
+    {% if word.word_id + 1 != 61 %}
+    <li><a href = "/sublist/words/{{word.word_id + 1}}">Next Word</a></li>
+    {% endif %}
+</ul>
+
+You picked Word No. {{word.word_id}}
+
+<h1>{{word.word}}</h1>
+
+<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>

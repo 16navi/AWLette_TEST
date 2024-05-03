@@ -23,20 +23,26 @@ def about():
     return render_template("about.html")
 
 
-@app.route('/all_words')
+@app.route('/sublist')
 def all_words():
-    return render_template("all_words.html")
+    return render_template("sublist.html")
 
 
-@app.route('/all_words/word')
-def word():
-    return render_template("word.html")
+@app.route('/sublist/words')
+def sublist():
+    words = models.AWL.query.filter_by(sublist = 1).all()
+    return render_template("words.html", words = words)
+
+
+@app.route('/sublist/words/<int:id>')
+def word(id):
+    word = models.AWL.query.filter_by(word_id = id).one()
+    return render_template("word.html", word = word)
 
 
 @app.route('/fill_in_the_blank')
 def fill_in_the_blank():
     return render_template("fill_in_the_blank.html")
-
 
 
 @app.route('/form')
@@ -57,3 +63,7 @@ def question_answer():
 @app.route('/quiz')
 def quiz():
     return render_template("quiz.html")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
