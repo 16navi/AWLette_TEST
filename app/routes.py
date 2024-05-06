@@ -30,13 +30,13 @@ def all_words():
 
 @app.route('/sublist/words')
 def sublist():
-    words = models.AWL.query.filter_by(sublist = 1).all()
+    words = models.Words.query.filter_by(sublist = 1).all()
     return render_template("words.html", words = words)
 
 
 @app.route('/sublist/words/<int:id>')
 def word(id):
-    word = models.AWL.query.filter_by(word_id = id).one()
+    word = models.Words.query.filter_by(id = id).one()
     return render_template("word.html", word = word)
 
 

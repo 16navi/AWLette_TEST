@@ -1,16 +1,16 @@
 {% include 'nav.html' %}
 
 <ul>
-    {% if word.word_id != 1%}
-    <li><a href = "/sublist/words/{{word.word_id - 1}}">Previous Word</a></li>
+    {% if word.id != 1%}
+    <li><a href = "/sublist/words/{{word.id - 1}}">Previous Word</a></li>
     {% endif %}
 
-    {% if word.word_id + 1 != 61 %}
-    <li><a href = "/sublist/words/{{word.word_id + 1}}">Next Word</a></li>
+    {% if word.id + 1 != 61 %}
+    <li><a href = "/sublist/words/{{word.id + 1}}">Next Word</a></li>
     {% endif %}
 </ul>
 
-You picked Word No. {{word.word_id}}
+You picked Word No. {{word.id}}
 
 <h1>{{word.word}}</h1>
 
