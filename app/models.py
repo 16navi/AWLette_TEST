@@ -9,3 +9,14 @@ class Words(db.Model):
 
     def __repr__(self):
         return self.name
+    
+class Definitions(db.Model):
+    __tablename__ = "Definitions"
+    word_id = db.Column(db.Integer, db.ForeignKey("Words.id"))
+    word = db.relationship("Words", backref = "definitions")
+    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    definition = db.Column(db.Text())
+    type = db.Column(db.Integer())
+
+    def __repr__(self):
+        return self.name

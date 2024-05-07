@@ -14,4 +14,23 @@ You picked Word No. {{word.id}}
 
 <h1>{{word.word}}</h1>
 
+<ul>
+{% for definition in definitions %}
+    <!--For the type of definition: (Noun, Verb, Adjective)-->
+    {% set type = None %}
+
+    {% if definition.type == 1 %}
+        {% set type = "Noun" %}
+
+    {% elif definition.type == 2 %}
+        {% set type = "Verb" %}
+
+    {% elif definition.type == 3 %}
+        {% set type = "Adjective" %}
+
+    {% endif %}
+    <li><p>{{type}} - {{definition.definition}}</p></li>
+{% endfor %}
+</ul>
+
 <img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>
