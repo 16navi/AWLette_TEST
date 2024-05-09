@@ -15,7 +15,7 @@ You picked Word No. {{word.id}}
 <h1>{{word.word}}</h1>
 
 <ul>
-{% for definition in definitions %}
+{% for definition in word.definition %}
     <!--For the type of definition: (Noun, Verb, Adjective)-->
     {% set type = None %}
 
@@ -33,4 +33,4 @@ You picked Word No. {{word.id}}
 {% endfor %}
 </ul>
 
-<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>
+<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>  

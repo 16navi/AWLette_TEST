@@ -37,8 +37,7 @@ def sublist():
 @app.route('/sublist/words/<int:id>')
 def word(id):
     word = models.Words.query.filter_by(id = id).one()
-    definitions = models.Definitions.query.filter_by(word_id = id).all()
-    return render_template("word.html", definitions = definitions, word = word)
+    return render_template("word.html", word = word)
 
 
 @app.route('/fill_in_the_blank')
