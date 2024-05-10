@@ -2,8 +2,14 @@ from app.routes import db
 
 
 WordSynonym = db.Table('WordSynonym',
-                       db.Column('word_id', db.Integer, db.ForeignKey('Word.id')),
-                       db.Column('synonym_id', db.Integer, db.ForeignKey('Synonym.id')))
+                       db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
+                       db.Column('synonym_id', db.Integer, db.ForeignKey('Synonyms.id'))
+                       )
+
+
+WordCollocation = db.Table('WordCollocation',
+                            db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
+                            db.Column('collocation_id', db.Integer, db.ForeignKey('Collocations.id')))
 
 
 class Words(db.Model):
@@ -15,6 +21,13 @@ class Words(db.Model):
     #One-to-Many Relationships
     definition = db.relationship('Definitions', backref = 'definition_word')
     form = db.relationship('Forms', backref = 'form_word')
+    #Many-to-Many Relationships
+    synonym = db.relationship('Synonyms',
+                                secondary = 'WordSynonym',
+                                back_populates = 'synonym_word')
+    collocation = db.relationship('Collocations',
+                                secondary = 'WordCollocation',
+                                back_populates = 'collocation_word')
 
     def __repr__(self):
         return self.word
@@ -44,7 +57,28 @@ class Forms(db.Model):
         return self.form
     
 
-class Synonym(db.Model):
-    __tablename__ = 'Synonym'
+class Synonyms(db.Model):
+    __tablename__ = 'Synonyms'
     id = db.Column(db.Integer, primary_key = True, nullable = False)
     synonym = db.Column(db.Text())
+    #Many-to-Many Relationship
+    synonym_word = db.relationship('Words',
+                            secondary = 'WordSynonym',
+                            back_populates = 'synonym')
+
+
+    def __repr__(self):
+        return self.synonym
+
+
+class Collocations(db.Model):
+    __tablename__= 'Collocations'
+    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    collocation = db.Column(db.Text())
+    #Many-to-Many Relationship
+    collocation_word = db.relationship('Words',
+                            secondary = 'WordCollocation',
+                            back_populates = 'collocation')
+
+    def __repr__(self):
+        return self.collocation

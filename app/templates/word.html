@@ -1,5 +1,6 @@
 {% include 'nav.html' %}
 
+<!--'Next' and 'Previous' feature-->
 <ul>
     {% if word.id != 1%}
     <li><a href = "/sublist/words/{{word.id - 1}}">Previous Word</a></li>
@@ -10,10 +11,12 @@
     {% endif %}
 </ul>
 
+<!--Info about the word.-->
 You picked Word No. {{word.id}}
 
 <h1>{{word.word}}</h1>
 
+<h3>Definition</h3>
 <ul>
 {% for definition in word.definition %}
     <!--For the type of definition: (Noun, Verb, Adjective)-->
@@ -32,12 +35,14 @@ You picked Word No. {{word.id}}
     <li><p>{{type}} - {{definition.definition}}</p></li>
 {% endfor %}
 </ul>
+<!--Links the picture (placeholders for now)-->
+<!--img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/-->  
 
-<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>  
+<h3>Forms</h3>
 
 <ul>
 {% for form in word.form %}
-<!--For the type of definition: (Noun, Verb, Adjective)-->
+<!--For the type of form: (Noun, Verb, Adjective)-->
     {% set type = None %}
 
     {% if form.form_class == 1 %}
@@ -49,7 +54,24 @@ You picked Word No. {{word.id}}
     {% elif form.form_class == 3 %}
         {% set type = "Adjective" %}
 
+<!--Different forms of the word; Sentences using each form-->
 {% endif %}
     <li>{{type}} - {{form}} - {{form.sentence}}</li>
 {% endfor %}
+</ul>
+
+<h3>Synonym</h3>
+<!--Synonyms of the word-->
+<ul>
+{% for synonym in word.synonym %}
+    <li>{{synonym}}</li>
+{% endfor %}
+</ul>
+
+<h3>Collocation</h3>
+<!--Collocations of the word-->
+<ul>
+    {% for collocation in word.collocation %}
+        <li>{{collocation}}</li>
+    {% endfor %}
 </ul>
