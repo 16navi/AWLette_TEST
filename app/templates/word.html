@@ -34,3 +34,22 @@ You picked Word No. {{word.id}}
 </ul>
 
 <img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>  
+
+<ul>
+{% for form in word.form %}
+<!--For the type of definition: (Noun, Verb, Adjective)-->
+    {% set type = None %}
+
+    {% if form.form_class == 1 %}
+        {% set type = "Noun" %}
+
+    {% elif form.form_class == 2 %}
+        {% set type = "Verb" %}
+
+    {% elif form.form_class == 3 %}
+        {% set type = "Adjective" %}
+
+{% endif %}
+    <li>{{type}} - {{form}} - {{form.sentence}}</li>
+{% endfor %}
+</ul>
