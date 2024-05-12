@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, abort
+from flask import render_template, abort, request
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -13,9 +13,24 @@ db.init_app(app)
 import app.models as models
 
 
+def searchWord(lookfor, wordlist):
+    found = None
+    for word in wordlist:
+        if lookfor == str(word):
+            found = word
+    return found.id
+
+
 @app.route('/')
 def homepage():
-    return render_template("home.html")
+    wordlist = models.Words.query.all()
+    search = None
+    if len(request.args) > 0:
+        search = request.args.get('searching')
+        result = searchWord(search, wordlist)
+    else:
+        result = 1
+    return render_template("home.html", result = result)
 
 
 @app.route('/about')

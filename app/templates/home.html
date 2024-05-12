@@ -1,8 +1,18 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<!--Searchbar-->
+
+{{result}}
+
+<form>
+    <a href = "/sublist/words/{{result}}">
+        <input type = "text" name = "searching" placeholder = "search for a word">
+    </a>
+</form>
+
+<!--All the other stuff-->
     <ul>
-        <li><a href = "/sublist/words/1">*Pretend that this is a search bar*</a></li>
         <li><a href = "/sublist">See all the words.</a></li>
         <li><a href = "/fill_in_the_blank">Fill in the blanks.</a></li>
         <li><a href = "/form">Change the form.</a></li>
