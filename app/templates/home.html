@@ -5,19 +5,17 @@
 
 {{result}}
 
-<form>
-    <a href = "/sublist/words/{{result}}">
-        <input type = "text" name = "searching" placeholder = "search for a word">
-    </a>
+<form action = '/sublist/words/{{result}}'>
+        <input type = 'text' name = 'searching' placeholder = 'search for a word'>
 </form>
 
 <!--All the other stuff-->
     <ul>
-        <li><a href = "/sublist">See all the words.</a></li>
-        <li><a href = "/fill_in_the_blank">Fill in the blanks.</a></li>
-        <li><a href = "/form">Change the form.</a></li>
-        <li><a href = "/match">Match the words.</a></li>
-        <li><a href = "/question_answer">Question and Answer.</a></li>
-        <li><a href = "/quiz">Take the quiz.</a></li>
+        <li><a href = '/sublist'>See all the words.</a></li>
+        <li><a href = '/fill_in_the_blank'>Fill in the blanks.</a></li>
+        <li><a href = '/form'>Change the form.</a></li>
+        <li><a href = '/match'>Match the words.</a></li>
+        <li><a href = '/question_answer'>Question and Answer.</a></li>
+        <li><a href = '/quiz'>Take the quiz.</a></li>
     </ul>
 {% endblock %}
