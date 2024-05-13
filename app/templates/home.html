@@ -5,17 +5,15 @@
 
 {{result}}  <!--DEBUG-->
 
-<!--Sets the variable 'url' to '/' for the homepage as default.-->
+<!--For changing the value of variable {{url}} to the actual url-->
 {% set url = '/' %}
-    {% if result == -1 %}  <!--If the variable 'result' is equal -->
-        {% set url = '/' %}
-    {% else %}
-        {% set url = '/sublist/words/' + result %}
+{% if result != '-1' %}
+    {% set url = '/sublist/words/' + result %}
 {% endif %}
 
 {{url}}  <!--DEBUG-->
 
-<form action = {{url}}>
+<form action = '{{url}}'>
         <input type = 'text' name = 'searching' placeholder = 'search for a word'>
 </form>
 

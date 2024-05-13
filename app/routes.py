@@ -19,8 +19,6 @@ def searchWord(lookfor, wordlist):
         if lookfor == str(word):
             found = word.id
             print('Found it!')  # DEBUG
-    if found == -1:
-        print('No word found.')  # DEBUG
     return found
 
 
@@ -28,12 +26,13 @@ def searchWord(lookfor, wordlist):
 def homepage():
     wordlist = models.Words.query.all()
     search = None
-    result = -1
-    if len(request.args) == 0 or search == None:
+    result = '-1'
+    if len(request.args) == None:
         print('No word typed.')  # DEBUG
     if len(request.args) > 0:
         search = request.args.get('searching')
         result = str(searchWord(search, wordlist))
+        print(result)  # DEBUG
     return render_template('home.html', result = result)
 
 
