@@ -3,9 +3,19 @@
 {% block content %}
 <!--Searchbar-->
 
-{{result}}
+{{result}}  <!--DEBUG-->
 
-<form action = '/sublist/words/{{result}}'>
+<!--Sets the variable 'url' to '/' for the homepage as default.-->
+{% set url = '/' %}
+    {% if result == -1 %}  <!--If the variable 'result' is equal -->
+        {% set url = '/' %}
+    {% else %}
+        {% set url = '/sublist/words/' + result %}
+{% endif %}
+
+{{url}}  <!--DEBUG-->
+
+<form action = {{url}}>
         <input type = 'text' name = 'searching' placeholder = 'search for a word'>
 </form>
 

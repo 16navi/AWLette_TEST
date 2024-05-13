@@ -33,7 +33,7 @@ def homepage():
         print('No word typed.')  # DEBUG
     if len(request.args) > 0:
         search = request.args.get('searching')
-        result = searchWord(search, wordlist)
+        result = str(searchWord(search, wordlist))
     return render_template('home.html', result = result)
 
 
