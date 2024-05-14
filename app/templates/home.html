@@ -5,17 +5,18 @@
 
 {{result}}  <!--DEBUG-->
 
-<!--For changing the value of variable {{url}} to the actual url-->
-{% set url = '/' %}
-{% if result != '-1' %}
-    {% set url = '/sublist/words/' + result %}
-{% endif %}
-
-{{url}}  <!--DEBUG-->
 
 <form action = '{{url}}'>
         <input type = 'text' name = 'searching' placeholder = 'search for a word'>
+
+        <!--For changing the value of variable {{url}} to the actual url-->
+        {% set url = '/' %}
+        {% if result != -1 %}
+            {% set url = url_for('word', id = result) %}
+        {% endif %}
 </form>
+
+{{url}}  <!--DEBUG-->
 
 <!--All the other stuff-->
     <ul>

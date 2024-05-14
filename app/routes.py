@@ -16,7 +16,7 @@ import app.models as models
 def searchWord(lookfor, wordlist):
     found = -1
     for word in wordlist:
-        if lookfor == str(word):
+        if str.lower(lookfor) == str(word):
             found = word.id
             print('Found it!')  # DEBUG
     return found
@@ -26,12 +26,12 @@ def searchWord(lookfor, wordlist):
 def homepage():
     wordlist = models.Words.query.all()
     search = None
-    result = '-1'
+    result = -1
     if len(request.args) == None:
         print('No word typed.')  # DEBUG
     if len(request.args) > 0:
         search = request.args.get('searching')
-        result = str(searchWord(search, wordlist))
+        result = searchWord(search, wordlist)
         print(result)  # DEBUG
     return render_template('home.html', result = result)
 
