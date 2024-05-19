@@ -17,7 +17,7 @@ def searchWord(lookfor, wordlist):
     found = -1
     for word in wordlist:
         if str.lower(lookfor) == str(word):
-            found = word.id
+            found = word.word
             print('Found it!')  # DEBUG
     return found
 
@@ -52,10 +52,11 @@ def sublist():
     return render_template('words.html', words = words)
 
 
-@app.route('/sublist/words/<int:id>')
-def word(id):
-    word = models.Words.query.filter_by(id = id).one()
-    return render_template('word.html', word = word)
+@app.route('/sublist/words/searching=<wor>')
+def word(wor):
+    lower_word = str.lower(wor)
+    row = models.Words.query.filter_by(word = lower_word).one()
+    return render_template('word.html', word = row)
 
 
 @app.route('/fill_in_the_blank')
