@@ -3,19 +3,9 @@
 {% block content %}
 <!--Searchbar-->
 
-{{result}}  <!--DEBUG-->
-
- <!--For changing the value of variable {{url}} to the actual url-->
- {% set url = '/' %}
- {% if result != -1 %}
-     {% set url = url_for('word', wor = result) %}
- {% endif %}
-
-<form action = '{{url}}'>
+<form action = '{{url_for('word')}}', method = 'GET'>
         <input type = 'text' name = 'searching' placeholder = 'search for a word'>
 </form>
-
-{{url}}  <!--DEBUG-->
 
 <!--All the other stuff-->
     <ul>

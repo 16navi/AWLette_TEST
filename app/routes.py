@@ -18,7 +18,6 @@ def searchWord(lookfor, wordlist):
     for word in wordlist:
         if str.lower(lookfor) == str(word):
             found = word.word
-            print('Found it!')  # DEBUG
     return found
 
 
@@ -52,10 +51,10 @@ def sublist():
     return render_template('words.html', words = words)
 
 
-@app.route('/sublist/words/searching=<wor>')
-def word(wor):
-    lower_word = str.lower(wor)
-    row = models.Words.query.filter_by(word = lower_word).one()
+@app.route('/sublist/words/lookfor', methods = ['GET']) #  Learn about methods in Flask routes (https://www.geeksforgeeks.org/flask-http-methods-handle-get-post-requests/)
+def word():
+    lower_word = str.lower(request.args.get('searching'))
+    row = models.Words.query.filter_by(word = lower_word).one() #  try .first instead of .one
     return render_template('word.html', word = row)
 
 
