@@ -1,0 +1,84 @@
+{% include 'nav.html' %}
+
+<!--Shows info about the word.-->
+You picked Word No. {{word.id}}
+
+
+<!--Displays the word itself as a heading.-->
+<h1>{{word.word}}</h1>
+
+
+<!--Shows the definition of the word.-->
+<h3>Definition</h3>
+
+<ul>
+{% for definition in word.definition %}
+    <!--Decides which type of definition it is: (Noun, Verb, Adjective)-->
+    {% set type = None %}
+
+    {% if definition.type == 1 %}
+        {% set type = "Noun" %}
+
+    {% elif definition.type == 2 %}
+        {% set type = "Verb" %}
+
+    {% elif definition.type == 3 %}
+        {% set type = "Adjective" %}
+
+    {% endif %}
+
+    <!--Lists the type of definition and the definition itself.-->
+    <li>{{type}} - {{definition.definition}}</li>
+{% endfor %}
+</ul>
+
+
+<!--Links the picture of the word. (placeholders for now)-->
+<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>
+
+
+<!--Shows the different forms of the word and the sentences using each form.-->
+<h3>Forms</h3>
+
+<ul>
+{% for form in word.form %}
+<!--Decides which type of form it is: (Noun, Verb, Adjective)-->
+    {% set type = None %}
+
+    {% if form.form_class == 1 %}
+        {% set type = "Noun" %}
+
+    {% elif form.form_class == 2 %}
+        {% set type = "Verb" %}
+
+    {% elif form.form_class == 3 %}
+        {% set type = "Adjective" %}
+
+{% endif %}
+
+    <!--Lists the type of form, the form itself, and the form used in a sentence.-->
+    <li>{{type}} - {{form}} - {{form.sentence}}</li>
+{% endfor %}
+</ul>
+
+
+<!--Shows the synonyms of the word.-->
+<h3>Synonyms</h3>
+
+<!--Lists the synonyms.-->
+<ul>
+{% for synonym in word.synonym %}
+    <li>{{synonym}}</li>
+{% endfor %}
+</ul>
+
+
+<!--Shows the collocations of the word.-->
+<h3>Collocations</h3>
+
+<!--Lists the collocations.-->
+<ul>
+    {% for collocation in word.collocation %}
+        <li>{{collocation}}</li>
+    {% endfor %}
+</ul>

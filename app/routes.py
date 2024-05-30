@@ -17,7 +17,7 @@ def searchWord(lookfor, wordlist):
     found = -1
     for word in wordlist:
         if str.lower(lookfor) == str(word):
-            found = word.word
+            found = word
     return found
 
 
@@ -31,7 +31,6 @@ def homepage():
     if len(request.args) > 0:
         search = request.args.get('searching')
         result = searchWord(search, wordlist)
-        print(result)  # DEBUG
     return render_template('home.html', result = result)
 
 
@@ -51,11 +50,17 @@ def sublist():
     return render_template('words.html', words = words)
 
 
-@app.route('/sublist/words/lookfor', methods = ['GET']) #  Learn about methods in Flask routes (https://www.geeksforgeeks.org/flask-http-methods-handle-get-post-requests/)
-def word():
+@app.route('/sublist/words/<word>')
+def word_listed(word):
+    listed = models.Words.query.filter_by(word = word).one()
+    return render_template('word_listed.html', word = listed)
+
+
+@app.route('/sublist/words/lookfor', methods = ['GET'])
+def word_lookfor():
     lower_word = str.lower(request.args.get('searching'))
-    row = models.Words.query.filter_by(word = lower_word).one() #  try .first instead of .one
-    return render_template('word.html', word = row)
+    row = models.Words.query.filter_by(word = lower_word).first()
+    return render_template('word_lookfor.html', word = row)
 
 
 @app.route('/fill_in_the_blank')
