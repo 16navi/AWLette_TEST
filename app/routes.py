@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, abort, request
+from flask import render_template, abort, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -59,8 +59,11 @@ def word_listed(word):
 @app.route('/sublist/words/lookfor', methods = ['GET'])
 def word_lookfor():
     lower_word = str.lower(request.args.get('searching'))
-    row = models.Words.query.filter_by(word = lower_word).first()
-    return render_template('word_lookfor.html', word = row)
+    found = models.Words.query.filter_by(word = lower_word).first()
+    if found: 
+        return render_template('word_lookfor.html', word = found)
+    else:
+        return redirect((url_for('homepage')), code = 302)
 
 
 @app.route('/fill_in_the_blank')
