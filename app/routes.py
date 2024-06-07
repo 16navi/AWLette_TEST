@@ -33,6 +33,10 @@ def homepage():
         result = searchWord(search, wordlist)
     return render_template('home.html', result = result)
 
+# Our goal for this branch is to create a 
+# sign-up and log-in feature for students.
+# This will help for progress tracking, which
+# I do not know how to even start doing.
 
 @app.route('/about')
 def about():
