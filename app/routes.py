@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, abort, request, redirect, url_for
+from flask import render_template, abort, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -63,7 +63,8 @@ def word_lookfor():
     if found: 
         return render_template('word_lookfor.html', word = found)
     else:
-        return redirect((url_for('homepage')), code = 302)
+        flash('No such word.')
+        return redirect((url_for('homepage')))
 
 
 @app.route('/fill_in_the_blank')
