@@ -7,10 +7,14 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'AWL.db')
+app.secret_key = '_5#y2L"F4Q8z\n\xec]/'
+WTF_CSRF_ENABLED = True
+WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 db.init_app(app)
 
 
 import app.models as models
+from app.forms import Sign_Up
 
 
 def searchWord(lookfor, wordlist):
@@ -37,6 +41,21 @@ def homepage():
 # sign-up and log-in feature for students.
 # This will help for progress tracking, which
 # I do not know how to even start doing.
+
+@app.route('/signup', methods = ['GET', 'POST'])
+def signup():
+    form = Sign_Up()
+    if request.method == 'GET':
+        return render_template('signup.html', form = form, title = 'Sign Up')
+    else:
+        if form.validate_on_submit():
+            #  Create new database for user credentials
+            username = form.username.data
+            password = form.password.data
+            return 'Username = {{username}} <br> Password = {{password}}'
+        else:
+            return render_template('signup.html', form = form, title = 'Sign Up')
+
 
 @app.route('/about')
 def about():
