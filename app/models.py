@@ -82,3 +82,13 @@ class Collocations(db.Model):
 
     def __repr__(self):
         return self.collocation
+
+
+class Users(db.Model):
+    __tablename__= 'Users'
+    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    username = db.Column(db.Text())
+    password = db.Column(db.Text())
+    __table_args__ = (
+        db.UniqueConstraint('username', 'password'),
+    )

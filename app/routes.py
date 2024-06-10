@@ -3,18 +3,21 @@ from flask import render_template, abort, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-
+#  SQLAlchemy stuff
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'AWL.db')
 app.secret_key = '_5#y2L"F4Q8z\n\xec]/'
-WTF_CSRF_ENABLED = True
-WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 db.init_app(app)
 
 
-import app.models as models
+#  Flask-WTForms stuff
+WTF_CSRF_ENABLED = True
+WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
+
+
 from app.forms import Sign_Up
+import app.models as models
 
 
 def searchWord(lookfor, wordlist):
@@ -23,6 +26,11 @@ def searchWord(lookfor, wordlist):
         if str.lower(lookfor) == str(word):
             found = word
     return found
+
+def uniqueUser(user, user_list):
+    for i in user_list:
+        if user == i:
+            return False
 
 
 @app.route('/')
@@ -49,10 +57,16 @@ def signup():
         return render_template('signup.html', form = form, title = 'Sign Up')
     else:
         if form.validate_on_submit():
-            #  Create new database for user credentials
-            username = form.username.data
-            password = form.password.data
-            return f'Username = {username} <br> Password = {password}'
+            new_user = models.Users()
+            user_list = models.Users.query.all()
+            new_user.username = form.username.data
+            new_user.password = form.password.data
+            db.session.add(new_user)
+            db.session.commit()
+            #  Find a way to keep username and password unique,
+            #  preferably inside forms.py so as to use ValidationError
+            flash(f'Welcome {form.username.data}!')
+            return redirect((url_for('homepage')))
         else:
             return render_template('signup.html', form = form, title = 'Sign Up')
 
