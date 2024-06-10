@@ -52,7 +52,7 @@ def signup():
             #  Create new database for user credentials
             username = form.username.data
             password = form.password.data
-            return 'Username = {{username}} <br> Password = {{password}}'
+            return f'Username = {username} <br> Password = {password}'
         else:
             return render_template('signup.html', form = form, title = 'Sign Up')
 
