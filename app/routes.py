@@ -50,7 +50,7 @@ def homepage():
 # This will help for progress tracking, which
 # I do not know how to even start doing.
 
-@app.route('/signup', methods = ['GET', 'POST'])
+@app.route('/signup', methods = ['GET', 'POST']) #  flask session
 def signup():
     form = Sign_Up()
     if request.method == 'GET':
