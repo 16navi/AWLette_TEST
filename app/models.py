@@ -89,6 +89,9 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key = True, nullable = False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
-    __table_args__ = (
-        db.UniqueConstraint('username', 'password'),
-    )
+    # __table_args__ = (
+    #     db.UniqueConstraint('username', 'password'),
+    # )
+    
+    def __repr__(self):
+        return self.username

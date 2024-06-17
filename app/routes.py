@@ -7,7 +7,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'AWL.db')
-app.secret_key = '_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = '56893655e2db25e3825b5bc259bb9032'
 db.init_app(app)
 
 
@@ -28,9 +28,19 @@ def searchWord(lookfor, wordlist):
     return found
 
 def uniqueUser(user, user_list):
-    for i in user_list:
-        if user == i:
-            return False
+    if user in user_list:
+        print('what??')
+        return False
+
+
+def encrypt(password):
+    encpass = ""
+    for ch in password:
+        asc = ord(ch) + 3
+        ench = chr(asc)
+        encpass += ench
+    return encpass[::-1]
+
 
 
 @app.route('/')
@@ -59,10 +69,14 @@ def signup():
         if form.validate_on_submit():
             new_user = models.Users()
             user_list = models.Users.query.all()
-            new_user.username = form.username.data
-            new_user.password = form.password.data
-            db.session.add(new_user)
-            db.session.commit()
+            if uniqueUser(form.username.data, user_list) != False:
+                new_user.username = form.username.data
+                new_user.password = encrypt(form.password.data)
+                db.session.add(new_user)
+                db.session.commit()
+            else:
+                flash('Bad login. Try again')
+                return render_template('signup.html', form = form, title = 'Sign Up')
             #  Find a way to keep username and password unique,
             #  preferably inside forms.py so as to use ValidationError
             flash(f'Welcome {form.username.data}!')
