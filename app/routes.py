@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, abort, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+#  import flask_login
 import os
 
 #  SQLAlchemy stuff
@@ -16,6 +17,12 @@ WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 
 
+#  Flask Login stuff
+#  login_manager = flask_login.LoginManager()
+
+#  login_manager.init_app(app)
+
+
 from app.forms import Sign_Up
 import app.models as models
 
@@ -27,11 +34,13 @@ def searchWord(lookfor, wordlist):
             found = word
     return found
 
-def uniqueUser(user, user_list):
-    if user in user_list:
-        print('what??')
-        return False
-
+"""
+def uniqueUser(user, user_list): #  Does NOT work
+    for i in user_list:
+        print(i)
+        if user == i:
+            return False
+"""
 
 def encrypt(password):
     encpass = ""
@@ -60,6 +69,7 @@ def homepage():
 # This will help for progress tracking, which
 # I do not know how to even start doing.
 
+"""
 @app.route('/signup', methods = ['GET', 'POST']) #  flask session
 def signup():
     form = Sign_Up()
@@ -69,7 +79,13 @@ def signup():
         if form.validate_on_submit():
             new_user = models.Users()
             user_list = models.Users.query.all()
-            if uniqueUser(form.username.data, user_list) != False:
+            username = form.username.data
+            uniqueCheck = uniqueUser(username, user_list)
+            print(uniqueCheck)
+            if uniqueCheck == False:
+                print('False.')
+            if uniqueCheck != False:
+                print('None.')
                 new_user.username = form.username.data
                 new_user.password = encrypt(form.password.data)
                 db.session.add(new_user)
@@ -83,6 +99,7 @@ def signup():
             return redirect((url_for('homepage')))
         else:
             return render_template('signup.html', form = form, title = 'Sign Up')
+"""
 
 
 @app.route('/about')
