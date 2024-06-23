@@ -69,37 +69,42 @@ def homepage():
 # This will help for progress tracking, which
 # I do not know how to even start doing.
 
-"""
-@app.route('/signup', methods = ['GET', 'POST']) #  flask session
-def signup():
-    form = Sign_Up()
-    if request.method == 'GET':
-        return render_template('signup.html', form = form, title = 'Sign Up')
-    else:
-        if form.validate_on_submit():
-            new_user = models.Users()
-            user_list = models.Users.query.all()
-            username = form.username.data
-            uniqueCheck = uniqueUser(username, user_list)
-            print(uniqueCheck)
-            if uniqueCheck == False:
-                print('False.')
-            if uniqueCheck != False:
-                print('None.')
-                new_user.username = form.username.data
-                new_user.password = encrypt(form.password.data)
-                db.session.add(new_user)
-                db.session.commit()
-            else:
-                flash('Bad login. Try again')
-                return render_template('signup.html', form = form, title = 'Sign Up')
-            #  Find a way to keep username and password unique,
-            #  preferably inside forms.py so as to use ValidationError
-            flash(f'Welcome {form.username.data}!')
-            return redirect((url_for('homepage')))
-        else:
-            return render_template('signup.html', form = form, title = 'Sign Up')
-"""
+
+#  @app.route('/signup', methods = ['GET', 'POST']) #  flask session
+#  def signup():
+#      form = Sign_Up()
+#      if request.method == 'GET':
+#          return render_template('signup.html', form = form, title = 'Sign Up')
+#      else:
+#          if form.validate_on_submit():
+#              new_user = models.Users()
+#              user_list = models.Users.query.all()
+#              username = form.username.data
+#              uniqueCheck = uniqueUser(username, user_list)
+#              print(uniqueCheck)
+#              if uniqueCheck == False:
+#                  print('False.')
+#              if uniqueCheck != False:
+#                  print('None.')
+#                  new_user.username = form.username.data
+#                  new_user.password = encrypt(form.password.data)
+#                  db.session.add(new_user)
+#                  db.session.commit()
+#              else:
+#                  flash('Bad login. Try again')
+#                  return render_template('signup.html', form = form, title = 'Sign Up')
+#              #  Find a way to keep username and password unique,
+#              #  preferably inside forms.py so as to use ValidationError
+#              flash(f'Welcome {form.username.data}!')
+#              return redirect((url_for('homepage')))
+#          else:
+#              return render_template('signup.html', form = form, title = 'Sign Up')
+
+
+#  1. Change the search application into flask-wtf.
+#      a. Change the homepage route to accomodate.
+#      b. Same with word_lookfor.
+#  2. Figure out the register application.
 
 
 @app.route('/about')
