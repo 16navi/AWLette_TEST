@@ -23,7 +23,7 @@ WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 #  login_manager.init_app(app)
 
 
-from app.forms import Sign_Up
+from app.forms import Sign_Up, Search_Bar
 import app.models as models
 
 
@@ -34,13 +34,6 @@ def searchWord(lookfor, wordlist):
             found = word
     return found
 
-"""
-def uniqueUser(user, user_list): #  Does NOT work
-    for i in user_list:
-        print(i)
-        if user == i:
-            return False
-"""
 
 def encrypt(password):
     encpass = ""
@@ -52,17 +45,24 @@ def encrypt(password):
 
 
 
+#  @app.route('/')
+#  def homepage():
+#      wordlist = models.Words.query.all()
+#      search = None
+#      result = -1
+#      if len(request.args) == None:
+#          print('No word typed.')  # DEBUG
+#      if len(request.args) > 0:
+#          search = request.args.get('searching')
+#          result = searchWord(search, wordlist)
+#      return render_template('home.html', result = result)
+
+
 @app.route('/')
 def homepage():
-    wordlist = models.Words.query.all()
-    search = None
-    result = -1
-    if len(request.args) == None:
-        print('No word typed.')  # DEBUG
-    if len(request.args) > 0:
-        search = request.args.get('searching')
-        result = searchWord(search, wordlist)
-    return render_template('home.html', result = result)
+    form = Search_Bar()
+    return render_template('home.html', form = form)
+
 
 # Our goal for this branch is to create a 
 # sign-up and log-in feature for students.
@@ -105,6 +105,36 @@ def homepage():
 #      a. Change the homepage route to accomodate.
 #      b. Same with word_lookfor.
 #  2. Figure out the register application.
+#      a. Find a way to keep users UNIQUE! (SQLAlchemy - unique constraint, Any validators in wtf, etc.)
+
+
+@app.route('/signup', methods = ['GET', 'POST'])
+def signup():
+    form = Sign_Up()
+    uniqueUser = None
+    if request.method == 'GET':
+        return render_template('signup.html', form = form, title = 'Sign Up')
+    else:
+        if form.validate_on_submit():
+            new_user = models.Users()
+            username = form.username.data
+            password = encrypt(form.password.data)
+            user_list = models.Users.query.all()
+            for i in user_list:
+                if i == username:
+                    flash('Bad Login. Try again.')
+                    uniqueUser = False
+                    print(uniqueUser) #  DEBUG
+                    return render_template('signup.html', form = form, title = 'Sign Up')
+            if uniqueUser != False:                                                     #  Doesn't Work
+                new_user.username = username                                            #  Doesn't Work
+                new_user.password = password                                            #  Doesn't Work
+                db.session.add(new_user)                                                #  Doesn't Work
+                db.session.commit()                                                     #  Doesn't Work
+                flash(f'Welcome, { username }! Your password is { password }.')         #  Doesn't Work
+                return redirect((url_for('homepage')))                                  #  Doesn't Work
+        else:
+            return render_template('signup.html', form = form, title = 'Sign Up')         
 
 
 @app.route('/about')

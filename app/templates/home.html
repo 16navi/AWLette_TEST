@@ -13,8 +13,9 @@
   {% endif %}
 {% endwith %}
 
-<form action = '{{url_for('word_lookfor')}}', method = 'GET'>
-        <input type = 'text' name = 'searching' placeholder = 'search for a word'>
+<form action = '{{url_for('word_lookfor')}}', method="GET" enctype="multipart/form-data"> 
+  {{ form.csrf_token }} 
+  <p>{{ form.searching }}</p>
 </form>
 
 <!--All the other stuff-->
