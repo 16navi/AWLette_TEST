@@ -1,7 +1,8 @@
 from app import app
 from flask import render_template, abort, request, redirect, url_for, flash
+from app.functions import encrypt
 from flask_sqlalchemy import SQLAlchemy
-#  import flask_login
+import flask_login
 import os
 
 #  SQLAlchemy stuff
@@ -18,44 +19,13 @@ WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 
 
 #  Flask Login stuff
-#  login_manager = flask_login.LoginManager()
+login_manager = flask_login.LoginManager()
 
-#  login_manager.init_app(app)
+login_manager.init_app(app)
 
 
 from app.forms import Sign_Up, Search_Bar
 import app.models as models
-
-
-def searchWord(lookfor, wordlist):
-    found = -1
-    for word in wordlist:
-        if str.lower(lookfor) == str(word):
-            found = word
-    return found
-
-
-def encrypt(password):
-    encpass = ""
-    for ch in password:
-        asc = ord(ch) + 3
-        ench = chr(asc)
-        encpass += ench
-    return encpass[::-1]
-
-
-
-#  @app.route('/')
-#  def homepage():
-#      wordlist = models.Words.query.all()
-#      search = None
-#      result = -1
-#      if len(request.args) == None:
-#          print('No word typed.')  # DEBUG
-#      if len(request.args) > 0:
-#          search = request.args.get('searching')
-#          result = searchWord(search, wordlist)
-#      return render_template('home.html', result = result)
 
 
 @app.route('/')
@@ -86,6 +56,11 @@ def signup():
                 db.session.commit()
                 flash(f'Welcome, { username }!')
                 return redirect((url_for('homepage')))       
+
+
+@app.route('/user_details')
+def user_details():
+    return render_template('user_details.html')
 
 
 @app.route('/about')
