@@ -14,10 +14,4 @@ def decrypt(password):
         decpass += decch
     return decpass[::-1]
 
-decpassword = "Abcd"
-encpassword = "gfeD"
-
-print(encrypt(decpassword))
-print(decrypt(encpassword))
-
 

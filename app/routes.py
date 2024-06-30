@@ -38,7 +38,13 @@ def loader_user(user_id):
 @app.route('/')
 def homepage():
     form = Search_Bar()
-    return render_template('home.html', form = form)
+    user = models.Users.query.filter_by(id = flask_login.current_user.get_id()).first()
+    return render_template('home.html', form = form, user = user)
+
+
+@app.route('/nav')
+def nav():
+    return render_template('nav.html')
 
 
 @app.route('/signup', methods = ['GET', 'POST'])
@@ -88,9 +94,16 @@ def login():
                 return(redirect(request.url))
 
 
+@app.route('/logout')
+def logout():
+    flask_login.logout_user()
+    return redirect(url_for('homepage'))
+
+
 @app.route('/user_details')
 def user_details():
-    return render_template('user_details.html')
+    user = models.Users.query.filter_by(id = flask_login.current_user.get_id()).first() #  Use context processor
+    return render_template('user_details.html', user = user)
 
 
 @app.route('/about')
