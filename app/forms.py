@@ -12,6 +12,9 @@ class Search_Bar(FlaskForm):
 
 
 class Sign_Up(FlaskForm):
+    username = StringField('username', validators=[InputRequired()])
+    password = PasswordField('password', validators=[InputRequired()])
 
+class Log_In(FlaskForm):
     username = StringField('username', validators=[InputRequired()])
     password = PasswordField('password', validators=[InputRequired()])

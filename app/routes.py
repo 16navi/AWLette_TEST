@@ -1,8 +1,8 @@
 from app import app
 from flask import render_template, abort, request, redirect, url_for, flash
-from app.functions import encrypt
+from app.functions import encrypt, decrypt
 from flask_sqlalchemy import SQLAlchemy
-#  import flask_login
+import flask_login
 import os
 
 #  SQLAlchemy stuff
@@ -19,15 +19,22 @@ WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 
 
 #  Flask Login stuff
-#  login_manager = flask_login.LoginManager()
-#  
-#  login_manager.init_app(app)
+login_manager = flask_login.LoginManager()
+
+login_manager.init_app(app)
 
 
-from app.forms import Sign_Up, Search_Bar
+from app.forms import Sign_Up, Log_In, Search_Bar
 import app.models as models
 
 
+#  Flask Login Methods
+@login_manager.user_loader
+def loader_user(user_id):
+    return models.Users.query.get(user_id)
+
+
+#  App Routes
 @app.route('/')
 def homepage():
     form = Search_Bar()
@@ -56,6 +63,29 @@ def signup():
                 db.session.commit()
                 flash(f'Welcome, { username }!')
                 return redirect((url_for('homepage')))       
+
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    form = Log_In()
+    if request.method == 'GET':
+        return render_template('login.html', form = form, title = 'Log In')
+    else:
+        if form.validate_on_submit():
+            user = models.Users.query.filter_by(
+                username = form.username.data
+            ).first()
+            if user:
+                if decrypt(user.password) == form.password.data:
+                    flask_login.login_user(user)
+                    flash(f'Long time no see, {user}!')
+                    return(redirect(url_for('homepage')))
+                else:
+                    flash('Bad log in. Try again.')
+                    return(redirect(request.url))
+            else:
+                flash('Bad log in. Try again.')
+                return(redirect(request.url))
 
 
 @app.route('/user_details')

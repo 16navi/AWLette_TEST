@@ -1,4 +1,5 @@
 from app.routes import db
+from flask_login import UserMixin
 
 
 WordSynonym = db.Table('WordSynonym',
@@ -84,7 +85,7 @@ class Collocations(db.Model):
         return self.collocation
 
 
-class Users(db.Model):
+class Users(UserMixin, db.Model):
     __tablename__= 'Users'
     id = db.Column(db.Integer, primary_key = True, nullable = False)
     username = db.Column(db.Text())

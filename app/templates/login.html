@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Log In</h1> 
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form method="POST" enctype="multipart/form-data"> 
+    {{ form.csrf_token }} 
+    <p>Username: {{ form.username }}</p>
+    <p>Password: {{ form.password }}</p>
+    <p><input type="submit" value="Submit"></p>
+</form>
+
+<a href = '/signup'>Haven't signed up yet?</a>
+
+{% endblock %}
