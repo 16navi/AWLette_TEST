@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, abort, request, redirect, url_for, flash
 from app.functions import encrypt
 from flask_sqlalchemy import SQLAlchemy
-import flask_login
+#  import flask_login
 import os
 
 #  SQLAlchemy stuff
@@ -19,9 +19,9 @@ WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd' #  Think of a new secret key
 
 
 #  Flask Login stuff
-login_manager = flask_login.LoginManager()
-
-login_manager.init_app(app)
+#  login_manager = flask_login.LoginManager()
+#  
+#  login_manager.init_app(app)
 
 
 from app.forms import Sign_Up, Search_Bar
@@ -87,10 +87,11 @@ def word_listed(word):
 
 @app.route('/sublist/words/lookfor', methods = ['GET'])
 def word_lookfor():
+    form = Search_Bar()
     lower_word = str.lower(request.args.get('searching'))
     found = models.Words.query.filter_by(word = lower_word).first()
     if found: 
-        return render_template('word_lookfor.html', word = found)
+        return render_template('word_lookfor.html', word = found, form = form)
     else:
         flash('No such word.')
         return redirect((url_for('homepage')))
