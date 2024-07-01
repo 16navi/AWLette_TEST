@@ -38,7 +38,7 @@ def loader_user(user_id):
 @app.route('/')
 def homepage():
     form = Search_Bar()
-    user = models.Users.query.filter_by(id = flask_login.current_user.get_id()).first()
+    user = models.Users.query.filter_by(id = flask_login.current_user.get_id()).first() #  Use context processor
     return render_template('home.html', form = form, user = user)
 
 
