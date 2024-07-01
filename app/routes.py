@@ -124,8 +124,11 @@ def sublist():
 
 @app.route('/sublist/words/<word>')
 def word_listed(word):
-    listed = models.Words.query.filter_by(word = word).one()
-    return render_template('word_listed.html', word = listed)
+    form = Search_Bar()
+    listed = models.Words.query.filter_by(word = word).first()
+    next_word = models.Words.query.filter_by(id = listed.id + 1).first()
+    previous_word = models.Words.query.filter_by(id = listed.id - 1).first()
+    return render_template('word_listed.html', form = form, word = listed, next_word = next_word, previous_word = previous_word)
 
 
 @app.route('/sublist/words/lookfor', methods = ['GET'])
@@ -133,8 +136,12 @@ def word_lookfor():
     form = Search_Bar()
     lower_word = str.lower(request.args.get('searching'))
     found = models.Words.query.filter_by(word = lower_word).first()
+    #  For Next Word and Previous Word feature
+    next_word = models.Words.query.filter_by(id = found.id + 1).first()
+    previous_word = models.Words.query.filter_by(id = found.id - 1).first()
+
     if found: 
-        return render_template('word_lookfor.html', word = found, form = form)
+        return render_template('word_lookfor.html', word = found, form = form, next_word = next_word, previous_word = previous_word)
     else:
         flash('No such word.')
         return redirect((url_for('homepage')))

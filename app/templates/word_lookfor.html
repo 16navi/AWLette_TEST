@@ -1,5 +1,7 @@
 {% include 'nav.html' %}
 
+
+<!--Flash messages-->
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -10,13 +12,27 @@
   {% endif %}
 {% endwith %}
 
+
+<!--Search bar-->
 <form action = '{{url_for('word_lookfor')}}', method="GET" enctype="multipart/form-data"> 
   {{ form.csrf_token }} 
   <p>{{ form.searching }}</p>
 </form>
 
+
 <!--Shows info about the word.-->
 You picked Word No. {{word.id}}
+
+
+<!--Next word and Previous Word feature.-->
+{% if previous_word != None %}
+<a href = {{ url_for('word_listed', word = previous_word) }}><button type = 'button'>Previous Word</button></a>
+{% endif %}
+
+{% if next_word != None %}
+<a href = {{ url_for('word_listed', word = next_word) }}><button type = 'button'>Next Word</button></a>
+{% endif %}
+
 
 <!--Displays the word itself as a heading.-->
 <h1>{{word.word}}</h1>

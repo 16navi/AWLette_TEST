@@ -1,7 +1,37 @@
 {% include 'nav.html' %}
 
+
+<!--Flash messages-->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+<!--Search bar-->
+<form action = '{{url_for('word_lookfor')}}', method="GET" enctype="multipart/form-data"> 
+  {{ form.csrf_token }} 
+  <p>{{ form.searching }}</p>
+</form>
+
+
 <!--Shows info about the word.-->
 You picked Word No. {{word.id}}
+
+
+<!--Next word and Previous Word feature.-->
+{% if previous_word != None %}
+<a href = {{ url_for('word_listed', word = previous_word) }}><button type = 'button'>Previous Word</button></a>
+{% endif %}
+
+{% if next_word != None %}
+<a href = {{ url_for('word_listed', word = next_word) }}><button type = 'button'>Next Word</button></a>
+{% endif %}
 
 
 <!--Displays the word itself as a heading.-->
@@ -10,6 +40,7 @@ You picked Word No. {{word.id}}
 
 <!--Shows the definition of the word.-->
 <h3>Definition</h3>
+
 
 <ul>
 {% for definition in word.definition %}
@@ -34,7 +65,7 @@ You picked Word No. {{word.id}}
 
 
 <!--Links the picture of the word. (placeholders for now)-->
-<img src = "{{word.picture}}" width = "200" height = "200" alt = "mga mukha nyo to mwuahaha"/>
+<img src = "{{word.picture}}" width = "450" height = "200" alt = "mga mukha nyo to mwuahaha"/>
 
 
 <!--Shows the different forms of the word and the sentences using each form.-->
