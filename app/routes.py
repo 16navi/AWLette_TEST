@@ -25,7 +25,7 @@ login_manager.init_app(app)
 
 
 from app.forms import Sign_Up, Log_In, Search_Bar
-import app.models as models
+import app.models as models 
 
 
 #  Flask Login Methods
@@ -38,8 +38,7 @@ def loader_user(user_id):
 @app.route('/')
 def homepage():
     form = Search_Bar()
-    user = models.Users.query.filter_by(id = flask_login.current_user.get_id()).first() #  Use context processor
-    return render_template('home.html', form = form, user = user)
+    return render_template('home.html', form = form)
 
 
 @app.route('/nav')

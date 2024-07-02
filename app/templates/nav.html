@@ -5,7 +5,7 @@
         <li><a href = {{ url_for('signup') }}>Sign Up</a></li>
         <li><a href = {{ url_for('login') }}>Log In</a></li>
     {% else %}
-        <li><a href = {{ url_for('user_details') }}>{{ user }}</a></li>
+        <li><a href = {{ url_for('user_details') }}>{{ current_user }}</a></li>
         <li><a href = {{ url_for('logout') }}>Log Out</a></li>
     {% endif %}
 </ul>
