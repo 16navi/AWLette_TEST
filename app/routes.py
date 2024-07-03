@@ -59,7 +59,7 @@ def signup():
             password = encrypt(form.password.data)
             uniqueUser = new_user.query.filter_by(username = username).first() #  query any username in the database with the same name from the form data 'username'.
             if uniqueUser:
-                flash('Already exists. Try again.')
+                flash('This user already exists. Try logging in.')
                 return render_template('signup.html', form = form, title = 'Sign Up')
             else:
                 new_user.username = username
