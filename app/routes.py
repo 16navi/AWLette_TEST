@@ -54,14 +54,19 @@ def signup():
     if request.method == 'GET':  # Render signup template first.
         return render_template('signup.html', form=form, title='Sign Up')
     else:
-        if form.validate_on_submit():  # if form validates on submit, do the following.
+        if form.validate_on_submit():
+            # if form validates on submit, do the following.
             new_user = models.Users()
             username = form.username.data
             password = encrypt(form.password.data)
-            uniqueUser = new_user.query.filter_by(username=username).first()  # query any username in the database with the same name from the form data 'username'.
+            uniqueUser = new_user.query.filter_by(username=username).first()
+            # query any username in the database with the
+            # same name from the form data 'username'.
             if uniqueUser:
                 flash('This user already exists. Try logging in.')
-                return render_template('signup.html', form=form, title='Sign Up')
+                return render_template('signup.html',
+                                       form=form,
+                                       title='Sign Up')
             else:
                 new_user.username = username
                 new_user.password = password
@@ -100,7 +105,8 @@ def logout():
 
 @app.route('/user_details')
 def user_details():
-    user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()  # Use context processor
+    user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
+    # Use context processor
     return render_template('user_details.html', user=user)
 
 
@@ -126,7 +132,11 @@ def word_listed(word):
     listed = models.Words.query.filter_by(word=word).first()
     next_word = models.Words.query.filter_by(id=listed.id + 1).first()
     previous_word = models.Words.query.filter_by(id=listed.id - 1).first()
-    return render_template('word_listed.html', form=form, word=listed, next_word=next_word, previous_word=previous_word)
+    return render_template('word_listed.html',
+                           form=form,
+                           word=listed,
+                           next_word=next_word,
+                           previous_word=previous_word)
 
 
 @app.route('/sublist/words/lookfor', methods=['GET'])
@@ -139,7 +149,11 @@ def word_lookfor():
     previous_word = models.Words.query.filter_by(id=found.id - 1).first()
 
     if found:
-        return render_template('word_lookfor.html', word=found, form=form, next_word=next_word, previous_word=previous_word)
+        return render_template('word_lookfor.html',
+                               word=found,
+                               form=form,
+                               next_word=next_word,
+                               previous_word=previous_word)
     else:
         flash('No such word.')
         return redirect(url_for('homepage'))
