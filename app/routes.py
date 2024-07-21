@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, abort, request, redirect, url_for, flash
 from app.functions import encrypt, decrypt
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
@@ -73,7 +73,7 @@ def signup():
                 db.session.add(new_user)
                 db.session.commit()
                 flash(f'Welcome, { username }!')
-                return redirect((url_for('homepage')))
+                return redirect(url_for('homepage'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
