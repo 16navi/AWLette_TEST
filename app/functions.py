@@ -6,6 +6,7 @@ def encrypt(password):
         encpass += ench
     return encpass[::-1]
 
+
 def decrypt(password):
     decpass = ""
     for ch in password:
@@ -13,5 +14,3 @@ def decrypt(password):
         decch = chr(asc)
         decpass += decch
     return decpass[::-1]
-
-
