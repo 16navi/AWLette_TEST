@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, abort, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash
 from app.functions import encrypt, decrypt
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
@@ -129,12 +129,12 @@ def sublist():
 @app.route('/sublist/words/<word>')
 def word_listed(word):
     form = Search_Bar()
-    listed = models.Words.query.filter_by(word=word).first()
-    next_word = models.Words.query.filter_by(id=listed.id + 1).first()
-    previous_word = models.Words.query.filter_by(id=listed.id - 1).first()
+    word = models.Words.query.filter_by(word=word).first()
+    next_word = models.Words.query.filter_by(id=word.id + 1).first()
+    previous_word = models.Words.query.filter_by(id=word.id - 1).first()
     return render_template('word_listed.html',
                            form=form,
-                           word=listed,
+                           word=word,
                            next_word=next_word,
                            previous_word=previous_word)
 
@@ -143,12 +143,12 @@ def word_listed(word):
 def word_lookfor():
     form = Search_Bar()
     lower_word = str.lower(request.args.get('searching'))
-    found = models.Words.query.filter_by(word=lower_word).first()
-    if found:
-        next_word = models.Words.query.filter_by(id=found.id + 1).first()
-        previous_word = models.Words.query.filter_by(id=found.id - 1).first()
+    word = models.Words.query.filter_by(word=lower_word).first()
+    if word:
+        next_word = models.Words.query.filter_by(id=word.id + 1).first()
+        previous_word = models.Words.query.filter_by(id=word.id - 1).first()
         return render_template('word_lookfor.html',
-                               word=found,
+                               word=word,
                                form=form,
                                next_word=next_word,
                                previous_word=previous_word)
@@ -157,9 +157,18 @@ def word_lookfor():
         return redirect(url_for('homepage'))
 
 
+#  Learn JavaScript to make the quizzes.
+#  1. Fill in the blank.
+#  2. Form.
+#  3. Match.
+#  4. Question-Answer.
+#  5. Quiz
+
+
 @app.route('/fill_in_the_blank')
 def fill_in_the_blank():
-    return render_template('fill_in_the_blank.html')
+    sublist = None
+    return render_template('fill_in_the_blank.html', sublist=sublist)
 
 
 @app.route('/form')

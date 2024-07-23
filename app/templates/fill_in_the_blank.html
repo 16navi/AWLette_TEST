@@ -1,3 +1,9 @@
 {% include 'nav.html' %}
 
-fill in the blanks yo.
+Choose a sublist:
+
+<p><button type = 'button'>Sublist 1</button></p>
+
+{% if sublist %}
+You chose: Sublist {{sublist}}
+{% endif %}
