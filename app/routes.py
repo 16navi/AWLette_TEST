@@ -144,11 +144,9 @@ def word_lookfor():
     form = Search_Bar()
     lower_word = str.lower(request.args.get('searching'))
     found = models.Words.query.filter_by(word=lower_word).first()
-    #  For Next Word and Previous Word feature
-    next_word = models.Words.query.filter_by(id=found.id + 1).first()
-    previous_word = models.Words.query.filter_by(id=found.id - 1).first()
-
     if found:
+        next_word = models.Words.query.filter_by(id=found.id + 1).first()
+        previous_word = models.Words.query.filter_by(id=found.id - 1).first()
         return render_template('word_lookfor.html',
                                word=found,
                                form=form,
