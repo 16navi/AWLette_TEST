@@ -24,8 +24,12 @@ class Words(db.Model):
     definition = db.relationship('Definitions', backref='definition_word')
     form = db.relationship('Forms', backref='form_word')
     # Many-to-Many Relationships
-    synonym = db.relationship('Synonyms', secondary='WordSynonym', back_populates='synonym_word')
-    collocation = db.relationship('Collocations', secondary='WordCollocation', back_populates='collocation_word')
+    synonym = db.relationship('Synonyms',
+                              secondary='WordSynonym',
+                              back_populates='synonym_word')
+    collocation = db.relationship('Collocations',
+                                  secondary='WordCollocation',
+                                  back_populates='collocation_word')
 
     def __repr__(self):
         return self.word
