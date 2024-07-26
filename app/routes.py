@@ -165,9 +165,10 @@ def word_lookfor():
 #  5. Quiz
 
 
-@app.route('/fill_in_the_blank')
+@app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
-    sublist = None
+    sublist = request.args.get('sublist')
+    print(sublist)
     return render_template('fill_in_the_blank.html', sublist=sublist)
 
 
