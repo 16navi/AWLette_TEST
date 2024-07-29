@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import flask_login
 import os
 from app.forms import Sign_Up, Log_In, Search_Bar
+import random
 
 
 #  SQLAlchemy stuff
@@ -157,12 +158,12 @@ def word_lookfor():
         return redirect(url_for('homepage'))
 
 
-#  Learn JavaScript to make the quizzes.
-#  1. Fill in the blank.
-#  2. Form.
-#  3. Match.
-#  4. Question-Answer.
-#  5. Quiz
+# Learn JavaScript to make the quizzes.
+# 1. Fill in the blank.
+# 2. Form.
+# 3. Match.
+# 4. Question-Answer.
+# 5. Quiz
 
 
 @app.route('/fill_in_the_blank', methods=['GET'])
@@ -170,9 +171,23 @@ def fill_in_the_blank():
     sublist = request.args.get('sublist')
     words = None
     if sublist:
-        words = models.Words.query.filter_by(sublist = sublist).all()
-        print('Query done!') #  DEBUG
-    return render_template('fill_in_the_blank.html', sublist=sublist, words=words)
+        words = models.Words.query.filter_by(sublist=sublist).all()
+        forms = []
+        for word in words:
+            add = [str.lower(str(word.form[0])),
+                   str.lower(str(word.form[1])),
+                   str.lower(str(word.form[2]))]
+            forms.extend(add)
+    # random id generator
+    random_form_id = []
+    for i in range(10):
+        n = random.randint(1, 180)
+        random_form_id.append(n)
+    return render_template('fill_in_the_blank.html',
+                           sublist=sublist,
+                           words=words,
+                           forms=forms,
+                           random_form_id=random_form_id)
 
 
 @app.route('/form')
