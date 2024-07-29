@@ -33,26 +33,31 @@ Choose a sublist:
     {% for form in random_forms %}
     <tr>
         <td id='form'>{{ form|lower }}</td>
-        <!-- I used Jinja filters to hash out the sentence --> 
          <td>
+            <!-- I used Jinja to basically replace the 'form' inside the sentence
+            with a text input field -->
             {% set sentence_blanked1 = [] %}
             {% set sentence_blanked2 = [] %}
             {% set next_block = False %}
 
-            <!-- {# {% for s in form.sentence.split() %} #} -->
-
                 {% for word in (form.sentence|lower).split() %}
-                    {{ word  }}
+                    {% if word|lower != form.form|lower and next_block == False %}
+                        {{ sentence_blanked1.append(word) or "" }}
+                        {{ '1' }}
+                    {% elif word|lower == form|lower %}
+                        {% set next_block = True %}
+                        <strong>{{ '0' }}</strong>
+                    {% endif %}
+                    {{ next_block }}
+                    {% if word|lower != form.form|lower and next_block == True %}
+                        {{ sentence_blanked2.append(word) or "" }}
+                        {{ '2' }}
+                    {% endif %}
                 {% endfor %}
-            
-            <!-- {# {% if s != form.form and next_block == False %}
-                    {{ sentence_blanked1.append(s) }}
-                {% elif s == form.form and next_block == False %}
-                    {% set next_block = True %}
-                {% elif next_block == True %}
-                    {{ sentence_blanked2.append(s) }}
-                {% endif %}
-            {% endfor %} #} -->
+
+            {# 
+                {{ sentence_blanked2|join(' ')|capitalize }}
+            #}
          </td>
     </tr>
     {% endfor %}
