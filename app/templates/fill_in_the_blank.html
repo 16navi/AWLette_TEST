@@ -34,7 +34,7 @@ Choose a sublist:
     <tr>
         <td id='form'>{{ form|lower }}</td>
         <!-- I used Jinja filters to hash out the sentence -->
-        <td id='sentence'>{{ form.sentence | replace(form|lower, '_' * form.form|length) }}</td>
+        <td id='sentence'>{{ (form.sentence|lower | replace(form|lower, '_' * form.form|length))|capitalize }}</td>
     </tr>
     {% endfor %}
 </table>

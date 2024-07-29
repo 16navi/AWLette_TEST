@@ -180,7 +180,7 @@ def fill_in_the_blank():
                    word.form[2]]
             all_forms.extend(add)
 
-        # random id generator for ten random forms
+        # generate ten random ids
         random_form_id = []
         for i in range(10):
             n = random.randint(1, 180)
