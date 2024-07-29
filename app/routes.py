@@ -168,8 +168,11 @@ def word_lookfor():
 @app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
     sublist = request.args.get('sublist')
-    print(sublist)
-    return render_template('fill_in_the_blank.html', sublist=sublist)
+    words = None
+    if sublist:
+        words = models.Words.query.filter_by(sublist = sublist).all()
+        print('Query done!') #  DEBUG
+    return render_template('fill_in_the_blank.html', sublist=sublist, words=words)
 
 
 @app.route('/form')

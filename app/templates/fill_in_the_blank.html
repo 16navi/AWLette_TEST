@@ -16,12 +16,28 @@ Choose a sublist:
 
 <p>You picked Sublist No.{{ sublist }}</p>
 
-{% endif %}
+<!-- None of this works -->
+<ul>
+    {% for word in words %}
+        {% for form in word.form %}
 
-<!--<script>
-    let sublistButton = document.getElementById('sublist_button');
-    sublist1Button.addEventListener('click', function() {
-        alert('Hi!');
-        document.getElementById('sublist_button').setAttribute('name', 'sublist')
-    });
-</script>-->
+        <!-- a hidden input field to store the value of the jinja
+         dumps since javascript won't accept jinja dumps -->
+
+        <!-- hidden input field for form -->
+        <input type='hidden' id='form' value='{{ form }}'>
+
+        <!-- hidden input field for form.sentence -->
+        <input type='hidden' id='form.sentence' value='{{ form.sentence }}'>
+
+        <!-- this will then list the sentences following this
+         format: "Form - Lorem ipsum ____ sit amet." with the 
+         underscore being the form in the sentence hashed out. -->
+        <li>{{ form }} - {{ form.sentence }}</li>
+        
+        <!-- i still need a way to hash out the sentence -->
+        {% endfor %}
+    {% endfor %}
+</ul>
+
+{% endif %}
