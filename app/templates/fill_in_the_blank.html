@@ -1,29 +1,42 @@
 {% include 'nav.html' %}
 
+<!-- Styling for table -->
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+
+<!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
 Choose a sublist:
 <form action='{{url_for('fill_in_the_blank')}}' method='GET'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
-        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
     </ul>
 </form>
 
 {% endif %}
 
+<!-- When 'sublist' has value -->
 {% if sublist %}
 
 <p>You picked Sublist No.{{ sublist }}</p>
 
-{% for word in words %}
-    {% for form in word.form %}
-        {% for id in random_form_id %} 
-            {% for sentence in form.sentence if form.id == id %}
-                <p>{{ id }}</p>
-            {% endfor %}
-        {% endfor %}
+<!-- Lists all the randomly chosen forms with its respective sentence -->
+<table>
+    <tr>
+        <th>Words</th>
+        <th>Sentences</th>
+    </tr>
+    {% for form in random_forms %}
+    <tr>
+        <td id='form'>{{ form|lower }}</td>
+        <!-- I used Jinja filters to hash out the sentence -->
+        <td id='sentence'>{{ form.sentence | replace(form|lower, '_' * form.form|length) }}</td>
+    </tr>
     {% endfor %}
-{% endfor %}
+</table>
 
 {% endif %}

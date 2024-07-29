@@ -169,25 +169,30 @@ def word_lookfor():
 @app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
     sublist = request.args.get('sublist')
+    random_forms = []
     words = None
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
-        forms = []
+        all_forms = []
         for word in words:
-            add = [str.lower(str(word.form[0])),
-                   str.lower(str(word.form[1])),
-                   str.lower(str(word.form[2]))]
-            forms.extend(add)
-    # random id generator
-    random_form_id = []
-    for i in range(10):
-        n = random.randint(1, 180)
-        random_form_id.append(n)
+            add = [word.form[0],
+                   word.form[1],
+                   word.form[2]]
+            all_forms.extend(add)
+
+        # random id generator for ten random forms
+        random_form_id = []
+        for i in range(10):
+            n = random.randint(1, 180)
+            random_form_id.append(n)
+
+        # replace the items in the 'forms' list with only the forms
+        # with the randomly chosen id
+        for i in random_form_id:
+            random_forms.append(all_forms[i-1])
     return render_template('fill_in_the_blank.html',
                            sublist=sublist,
-                           words=words,
-                           forms=forms,
-                           random_form_id=random_form_id)
+                           random_forms=random_forms)
 
 
 @app.route('/form')
