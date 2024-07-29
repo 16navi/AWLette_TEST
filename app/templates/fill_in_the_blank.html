@@ -39,6 +39,10 @@ Choose a sublist:
             {% set sentence_blanked1 = [] %}
             {% set sentence_blanked2 = [] %}
             {% set next_block = False %}
+            {% set myDict = ({ 'Go': True }) %}
+            {{ myDict['Go'] }}
+            {% do myDict.update({ 'Go' : False}) %}
+            {{ myDict['Go'] }}
 
                 {% for word in (form.sentence|lower).split() %}
                     {% if word|lower != form.form|lower and next_block == False %}
@@ -48,7 +52,6 @@ Choose a sublist:
                         {% set next_block = True %}
                         <strong>{{ '0' }}</strong>
                     {% endif %}
-                    {{ next_block }}
                     {% if word|lower != form.form|lower and next_block == True %}
                         {{ sentence_blanked2.append(word) or "" }}
                         {{ '2' }}
