@@ -26,12 +26,13 @@
     function rightOrWrong(input, answer) {
         input.addEventListener('keyup', function(event) {
             if (event.key === 'Enter') {
-                if (input.value == answer.innerHTML.toLowerCase()) {
+                if (input.value.toLowerCase() == answer.innerHTML.toLowerCase()) {
                     console.log('You got it!');
-                    input.setAttribute('readonly', 'true')
+                    input.setAttribute('readonly', 'true');
+                    input.setAttribute('data-correct', 'true');
                     input.style.backgroundColor = '#90ee90';
                 }
-                else if (input.value != answer.innerHTML.toLowerCase()) {
+                else if (input.value.toLowerCase() != answer.innerHTML.toLowerCase()) {
                     console.log('Wrong answer!');
                     input.style.backgroundColor = '#ff7f7f';
                 }
@@ -109,15 +110,15 @@ Choose a sublist:
                 {{ sentence_blanked1.pop(-1) or "" }}
 
                 {{ sentence_blanked1|join(' ')|capitalize }} 
-                <input type='text' id='a{{ loop.index }}'></input> 
+                <input type='text' id='a{{ loop.index }}' data-correct='false'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
                 <!-- hidden input field to store the input -->
                  <input type='hidden' id='b{{ random_forms.index(form) }}'></input>
-                
+
                 <!-- Call the function -->
                 <script>
-                    rightOrWrong(document.getElementById('a{{ loop.index }}'), document.getElementById('b{{ random_forms.index(form) }}'))
+                    rightOrWrong(document.getElementById('a{{ loop.index }}'), document.getElementById('b{{ random_forms.index(form) }}'));
                 </script>
                 <!-- Change the sentences where there are suffixes
                  and prefixes to the word because it doesn't work
