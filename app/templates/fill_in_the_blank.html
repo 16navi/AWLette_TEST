@@ -36,31 +36,35 @@ Choose a sublist:
          <td>
             <!-- I used Jinja to basically replace the 'form' inside the sentence
             with a text input field -->
-            {% set sentence_blanked1 = [] %}
-            {% set sentence_blanked2 = [] %}
-            {% set next_block = False %}
-            {% set myDict = ({ 'Go': True }) %}
-            {{ myDict['Go'] }}
-            {% do myDict.update({ 'Go' : False}) %}
-            {{ myDict['Go'] }}
 
+            <!-- Set empty lists for the two sentence blocks -->
+            {% set sentence_blanked1 = [] %}
+            {% set sentence_blanked2 = [] %}          
+
+                <!-- For loop to add each word of the sentence to their respective blocks -->
                 {% for word in (form.sentence|lower).split() %}
-                    {% if word|lower != form.form|lower and next_block == False %}
+
+                    <!-- if word is not the same as form and the last item in sentence_blanked1
+                     is not False, do the following -->
+                    {% if word|lower != form.form|lower and sentence_blanked1[-1] != False %}
                         {{ sentence_blanked1.append(word) or "" }}
-                        {{ '1' }}
+
+                    <!-- Else, if word is the same as form -->
                     {% elif word|lower == form|lower %}
-                        {% set next_block = True %}
-                        <strong>{{ '0' }}</strong>
+                        {{ sentence_blanked1.append(False) or "" }}
                     {% endif %}
-                    {% if word|lower != form.form|lower and next_block == True %}
+
+                    <!-- If word is not the same as form and the last item in sentence_blanked1
+                     is False, do the following -->
+                    {% if word|lower != form.form|lower and sentence_blanked1[-1] == False %}
                         {{ sentence_blanked2.append(word) or "" }}
-                        {{ '2' }}
                     {% endif %}
                 {% endfor %}
 
-            {# 
-                {{ sentence_blanked2|join(' ')|capitalize }}
-            #}
+                <!-- Remove the False item in the list -->
+                {{ sentence_blanked1.pop(-1) or "" }}
+
+                {{ sentence_blanked1|join(' ')|capitalize }} <input type='text'></input> {{ sentence_blanked2|join(' ') }} 
          </td>
     </tr>
     {% endfor %}
