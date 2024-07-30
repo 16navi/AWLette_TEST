@@ -14,7 +14,31 @@
     form {
         margin-block-end: 0em;
     }
+
+    input[type='text'] {
+        text-align: center;
+        background-color: None;
+    }
 </style>
+
+<!-- Scripting -->
+<script>
+    function rightOrWrong(input, answer) {
+        input.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                if (input.value == answer.innerHTML.toLowerCase()) {
+                    console.log('You got it!');
+                    input.setAttribute('readonly', 'true')
+                    input.style.backgroundColor = '#90ee90';
+                }
+                else if (input.value != answer.innerHTML.toLowerCase()) {
+                    console.log('Wrong answer!');
+                    input.style.backgroundColor = '#ff7f7f';
+                }
+            }
+        })
+    };
+</script>
 
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
@@ -41,7 +65,7 @@ Choose a sublist:
     </tr>
     {% for form in random_forms|shuffle %}
     <tr>
-        <td>{{ form|capitalize }}</td>
+        <td id='b{{ random_forms.index(form) }}'>{{ form|capitalize }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -85,9 +109,16 @@ Choose a sublist:
                 {{ sentence_blanked1.pop(-1) or "" }}
 
                 {{ sentence_blanked1|join(' ')|capitalize }} 
-                <input type='text' id='{{ loop.index }}' style='text-align: center'></input> 
+                <input type='text' id='a{{ loop.index }}'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
+                <!-- hidden input field to store the input -->
+                 <input type='hidden' id='b{{ random_forms.index(form) }}'></input>
+                
+                <!-- Call the function -->
+                <script>
+                    rightOrWrong(document.getElementById('a{{ loop.index }}'), document.getElementById('b{{ random_forms.index(form) }}'))
+                </script>
                 <!-- Change the sentences where there are suffixes
                  and prefixes to the word because it doesn't work
                 well with the code -->
@@ -99,42 +130,94 @@ Choose a sublist:
 {% endif %}
 
 <!-- If I can turn this into a function that would be great -->
-<script>
+<!-- <script>
     // for input field 1
-    const answer1 = document.getElementById('1');
-    answer1.addEventListener('keyup', function(event) {
+    // takes the element with id 'a1'
+    const input1 = document.getElementById('a1');
+
+    // takes the element with id 'b0'---which contains 'form' to get the answer
+    // for the first question. the 'sentence' are ordered as it is in 'random_forms'
+    // list, so the order of the 'form' as it is in the list will be the correct order also
+    const answer1 = document.getElementById('b0').innerHTML.toLowerCase();
+
+    // adds an event listener to constant 'input1' that listens
+    // for a 'keyup' (key that is pressed is released, thus being 
+    // a 'keyup'), which does the function with argument event for
+    // event.key, which is specifically for keyboard events only
+    input1.addEventListener('keyup', function(event) {
+
+        // if the key involved in the event strictly equals to 
+        // 'Enter', do the following
         if (event.key === 'Enter') {
-            alert('1 - You pressed the Enter key!');
+            if (input1.value != answer1) {
+                input1.style.backgroundColor = '#ff7f7f';
+            }
+            else if (input1.value == answer1) {
+                input1.setAttribute('readonly', 'true')
+                input1.style.backgroundColor = '#90ee90';
+            }
         }
     });
     
     // for input field 2
-    const answer2 = document.getElementById('2');
-    answer2.addEventListener('keyup', function(event) {
+    const input2 = document.getElementById('a2');
+    const answer2 = document.getElementById('b1');
+    console.log(answer2);
+    input2.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
-            alert('2 - You pressed the Enter key!');
-        }
-    });
-    // for input field 3
-    const answer3 = document.getElementById('3');
-    answer3.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            alert('3 - You pressed the Enter key!');
-        }
-    });
-    // for input field 4
-    const answer4 = document.getElementById('4');
-    answer4.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            alert('4 - You pressed the Enter key!');
-        }
-    });
-    // for input field 5
-    const answer5 = document.getElementById('5');
-    answer5.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            alert('5 - You pressed the Enter key!');
+            if (input2.value != answer2) {
+                input2.style.backgroundColor = '#ff7f7f';
+            }
+            else if (input2.value == answer2) {
+                input2.setAttribute('readonly', 'true')
+                input2.style.backgroundColor = '#90ee90';
+            }
         }
     });
 
-</script>
+    // for input field 3
+    const input3 = document.getElementById('a3');
+    const answer3 = document.getElementById('b2');
+    input3.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            if (input3.value != answer3) {
+                input3.style.backgroundColor = '#ff7f7f';
+            }
+            else if (input3.value == answer3) {
+                input3.setAttribute('readonly', 'true')
+                input3.style.backgroundColor = '#90ee90';
+            }
+        }
+    });
+
+    // for input field 4
+    const input4 = document.getElementById('a4');
+    const answer4 = document.getElementById('b3');
+    input4.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            if (input4.value != answer4) {
+                input4.style.backgroundColor = '#ff7f7f';
+            }
+            else if (input4.value == answer4) {
+                input4.setAttribute('readonly', 'true')
+                input4.style.backgroundColor = '#90ee90';
+            }
+        }
+    });
+
+    // for input field 5
+    const input5 = document.getElementById('a5');
+    const answer5 = document.getElementById('b4');
+    input5.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            if (input5.value != answer5) {
+                input5.style.backgroundColor = '#ff7f7f';
+            }
+            else if (input5.value == answer5) {
+                input5.setAttribute('readonly', 'true')
+                input5.style.backgroundColor = '#90ee90';
+            }
+        }
+    });
+
+</script> -->
