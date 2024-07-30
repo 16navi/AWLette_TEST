@@ -4,6 +4,11 @@
 <style>
     table, th, td {
       border:1px solid black;
+      height: 25px;
+    }
+
+    table {
+        display: inline-table;
     }
 </style>
 
@@ -24,15 +29,26 @@ Choose a sublist:
 
 <p>You picked Sublist No.{{ sublist }}</p>
 
-<!-- Lists all the randomly chosen forms with its respective sentence -->
+<!-- List the forms in a seperate table as choices for 
+ filling in the blanks in the sentence -->
 <table>
     <tr>
-        <th>Words</th>
+        <th>Choices</th>
+    </tr>
+    {% for form in random_forms|shuffle %}
+    <tr>
+        <td>{{ form }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Lists the sentences with input fields in between -->
+<table>
+    <tr>
         <th>Sentences</th>
     </tr>
     {% for form in random_forms %}
-    <tr>
-        <td id='form'>{{ form|lower }}</td>
+    <tr>    
          <td>
             <!-- I used Jinja to basically replace the 'form' inside the sentence
             with a text input field -->

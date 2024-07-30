@@ -214,6 +214,15 @@ def question_answer():
 def quiz():
     return render_template('quiz.html')
 
+# Custom Jinja filters
+
+# Shuffle filter to shuffle elements in a list
+@app.template_filter('shuffle')
+def filter_shuffle(seq):
+    result = list(seq)
+    random.shuffle(result)
+    return result
+
 
 if __name__ == '__main__':
     app.run(debug=True)
