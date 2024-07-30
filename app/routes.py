@@ -182,7 +182,7 @@ def fill_in_the_blank():
 
         # generate ten random ids
         random_form_id = []
-        for i in range(10):
+        for i in range(5):
             n = random.randint(1, 180)
             random_form_id.append(n)
 

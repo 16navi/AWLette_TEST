@@ -4,11 +4,15 @@
 <style>
     table, th, td {
       border:1px solid black;
-      height: 25px;
+      height: 30px;
     }
 
     table {
         display: inline-table;
+    }
+
+    form {
+        margin-block-end: 0em;
     }
 </style>
 
@@ -37,7 +41,7 @@ Choose a sublist:
     </tr>
     {% for form in random_forms|shuffle %}
     <tr>
-        <td>{{ form }}</td>
+        <td>{{ form|capitalize }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -45,7 +49,7 @@ Choose a sublist:
 <!-- Lists the sentences with input fields in between -->
 <table>
     <tr>
-        <th>Sentences</th>
+        <th>Fill in the Blanks</th>
     </tr>
     {% for form in random_forms %}
     <tr>    
@@ -80,10 +84,57 @@ Choose a sublist:
                 <!-- Remove the False item in the list -->
                 {{ sentence_blanked1.pop(-1) or "" }}
 
-                {{ sentence_blanked1|join(' ')|capitalize }} <input type='text'></input> {{ sentence_blanked2|join(' ') }} 
-         </td>
+                {{ sentence_blanked1|join(' ')|capitalize }} 
+                <input type='text' id='{{ loop.index }}' style='text-align: center'></input> 
+                {{ sentence_blanked2|join(' ') }}
+
+                <!-- Change the sentences where there are suffixes
+                 and prefixes to the word because it doesn't work
+                well with the code -->
+            </td>
     </tr>
     {% endfor %}
 </table>
 
 {% endif %}
+
+<!-- If I can turn this into a function that would be great -->
+<script>
+    // for input field 1
+    const answer1 = document.getElementById('1');
+    answer1.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            alert('1 - You pressed the Enter key!');
+        }
+    });
+    
+    // for input field 2
+    const answer2 = document.getElementById('2');
+    answer2.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            alert('2 - You pressed the Enter key!');
+        }
+    });
+    // for input field 3
+    const answer3 = document.getElementById('3');
+    answer3.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            alert('3 - You pressed the Enter key!');
+        }
+    });
+    // for input field 4
+    const answer4 = document.getElementById('4');
+    answer4.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            alert('4 - You pressed the Enter key!');
+        }
+    });
+    // for input field 5
+    const answer5 = document.getElementById('5');
+    answer5.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            alert('5 - You pressed the Enter key!');
+        }
+    });
+
+</script>
