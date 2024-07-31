@@ -1,3 +1,35 @@
 {% include 'nav.html' %}
+<style>
+    .choices {
+        padding-block: 50px;
+        padding-inline: 50px;
+        margin: calc(1em / 2);
+    }
+</style>
 
-match the words yo.
+<!-- While there is no value for 'sublist' -->
+{% if not sublist %}
+
+Choose a sublist:
+<form action='{{url_for('match')}}' method='GET'>
+    <ul>
+        <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+    </ul>
+</form>
+
+{% endif %}
+
+<!-- When 'sublist' has value -->
+{% if sublist %}
+
+<p>You picked Sublist No.{{ sublist }}</p>
+
+{% for i in range(10) %}
+    <!-- temporary solution only -->
+    {% if loop.index == 6 %}
+        <br>
+    {% endif %}
+    <button class='choices' id='a{{ loop.index }}'>hello</button>
+{% endfor %}
+
+{% endif %}

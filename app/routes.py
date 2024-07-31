@@ -196,11 +196,11 @@ def fill_in_the_blank():
 
 
 @app.route('/form', methods=['GET'])
-def form(): 
+def form():
     sublist = request.args.get('sublist')
-    
+
     # 'random_forms_main' is a nested list that will contain
-    # 'random_forms_sublist'. 
+    # 'random_forms_sublist'.
     random_forms_main = []
     random_blank_main = []
 
@@ -252,14 +252,16 @@ def form():
                     random_forms_sublist = []
 
     return render_template('form.html',
-                           sublist=sublist, 
+                           sublist=sublist,
                            random_forms_main=random_forms_main,
                            random_blank_main=random_blank_main)
 
 
-@app.route('/match')
+@app.route('/match', methods=['GET'])
 def match():
-    return render_template('match.html')
+    sublist = request.args.get('sublist')
+    return render_template('match.html',
+                           sublist=sublist)
 
 
 @app.route('/question_answer')
