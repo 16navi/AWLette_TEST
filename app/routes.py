@@ -159,7 +159,7 @@ def word_lookfor():
 
 
 # Learn JavaScript to make the quizzes.
-# 1. Fill in the blank.
+# 1. Fill in the blank. (All good for now.)
 # 2. Form.
 # 3. Match.
 # 4. Question-Answer.
@@ -170,7 +170,6 @@ def word_lookfor():
 def fill_in_the_blank():
     sublist = request.args.get('sublist')
     random_forms = []
-    words = None
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
         all_forms = []
@@ -180,7 +179,7 @@ def fill_in_the_blank():
                    word.form[2]]
             all_forms.extend(add)
 
-        # generate ten random ids
+        # generate five random ids
         random_form_id = []
         for i in range(5):
             n = random.randint(1, 180)
@@ -190,14 +189,72 @@ def fill_in_the_blank():
         # with the randomly chosen id
         for i in random_form_id:
             random_forms.append(all_forms[i-1])
+
     return render_template('fill_in_the_blank.html',
                            sublist=sublist,
                            random_forms=random_forms)
 
 
-@app.route('/form')
-def form():
-    return render_template('form.html')
+@app.route('/form', methods=['GET'])
+def form(): 
+    sublist = request.args.get('sublist')
+    
+    # 'random_forms_main' is a nested list that will contain
+    # 'random_forms_sublist'. 
+    random_forms_main = []
+    random_blank_main = []
+
+    if sublist:
+        words = models.Words.query.filter_by(sublist=sublist).all()
+
+        # generate five random word ids
+        random_word_id = []
+        for i in range(5):
+            n = random.randint(1, 60)
+            random_word_id.append(n)
+
+        # for deciding which 'form' becomes blank
+        random_blank_sublist = []
+        for i in range(5):
+
+            # generate a random integer between 1 and 2 that will
+            # decide how many of the three forms will be left blank
+            n = random.randint(1, 2)
+            blanks = [0] * n
+            random_blank_sublist.extend(blanks)
+            not_blanks = [1] * (3 - n)
+            random_blank_sublist.extend(not_blanks)
+            random_blank_main.append(random_blank_sublist)
+            random_blank_sublist = []
+
+        # This list will be nested inside 'random_forms_main'
+        random_forms_sublist = []
+
+        # For every 'id' in 'random_word_id'...
+        for i in random_word_id:
+
+            # for every 'word' in 'words'...
+            for word in words:
+
+                # check if 'word.id' is equal to 'id'
+                if word.id == i:
+
+                    # add every form of the word into 'random_forms_sublist
+                    add = [word.form[0],
+                           word.form[1],
+                           word.form[2]]
+                    random_forms_sublist.extend(add)
+
+                    # add 'random_forms_sublist' to '..._main'
+                    random_forms_main.append(random_forms_sublist)
+
+                    # remove the items in '..._sublist' and repeat
+                    random_forms_sublist = []
+
+    return render_template('form.html',
+                           sublist=sublist, 
+                           random_forms_main=random_forms_main,
+                           random_blank_main=random_blank_main)
 
 
 @app.route('/match')

@@ -11,10 +11,6 @@
         display: inline-table;
     }
 
-    form {
-        margin-block-end: 0em;
-    }
-
     input[type='text'] {
         text-align: center;
         background-color: None;
@@ -23,17 +19,41 @@
 
 <!-- Scripting -->
 <script>
+    // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
+        
+        // adds an event listener that listens for a 'keyup' event
+        // ('keyup' is when a key pressed is released)
         input.addEventListener('keyup', function(event) {
+
+            // if the key is 'Enter'...
             if (event.key === 'Enter') {
+
+                // ...do the following:
+                // if the lowercase value of 'input' is equal to the 
+                // lowercase inner HTML of 'answer'...
                 if (input.value.toLowerCase() == answer.innerHTML.toLowerCase()) {
+
+                    // logs in console
                     console.log('You got it!');
+
+                    // sets the 'readonly' attribute of 'input' to true
                     input.setAttribute('readonly', 'true');
-                    input.setAttribute('data-correct', 'true');
+
+                    // not sure if I will use this just yet
+                    // input.setAttribute('data-correct', 'true');
+
+                    // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
                 }
+
+                // else, if they are not equal...
                 else if (input.value.toLowerCase() != answer.innerHTML.toLowerCase()) {
+
+                    // ...logs in console
                     console.log('Wrong answer!');
+
+                    // makes bg color of 'input' red
                     input.style.backgroundColor = '#ff7f7f';
                 }
             }
@@ -76,6 +96,8 @@ Choose a sublist:
     <tr>
         <th>Fill in the Blanks</th>
     </tr>
+    <!-- 'form' refers to the words' other forms
+    (as an adjective, verb, noun, etc.) -->
     {% for form in random_forms %}
     <tr>    
          <td>
@@ -86,20 +108,20 @@ Choose a sublist:
             {% set sentence_blanked1 = [] %}
             {% set sentence_blanked2 = [] %}          
 
-                <!-- For loop to add each word of the sentence to their respective blocks -->
+                <!-- For loop to add each 'word' of the sentence to their respective blocks -->
                 {% for word in (form.sentence|lower).split() %}
 
-                    <!-- if word is not the same as form and the last item in sentence_blanked1
+                    <!-- if 'word' is not the same as 'form' and the last item in sentence_blanked1
                      is not False, do the following -->
                     {% if word|lower != form.form|lower and sentence_blanked1[-1] != False %}
                         {{ sentence_blanked1.append(word) or "" }}
 
-                    <!-- Else, if word is the same as form -->
+                    <!-- Else, if 'word' is the same as 'form' -->
                     {% elif word|lower == form|lower %}
                         {{ sentence_blanked1.append(False) or "" }}
                     {% endif %}
 
-                    <!-- If word is not the same as form and the last item in sentence_blanked1
+                    <!-- If 'word' is not the same as 'form' and the last item in sentence_blanked1
                      is False, do the following -->
                     {% if word|lower != form.form|lower and sentence_blanked1[-1] == False %}
                         {{ sentence_blanked2.append(word) or "" }}
@@ -113,112 +135,26 @@ Choose a sublist:
                 <input type='text' id='a{{ loop.index }}' data-correct='false'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
-                <!-- hidden input field to store the input -->
-                 <input type='hidden' id='b{{ random_forms.index(form) }}'></input>
-
                 <!-- Call the function -->
                 <script>
-                    rightOrWrong(document.getElementById('a{{ loop.index }}'), document.getElementById('b{{ random_forms.index(form) }}'));
+                    rightOrWrong(   document.getElementById('a{{ loop.index }}'),
+                                    document.getElementById('b{{ random_forms.index(form) }}'));
                 </script>
                 <!-- Change the sentences where there are suffixes
                  and prefixes to the word because it doesn't work
                 well with the code -->
+
+                <!-- Look for a way to see if 'data-correct' is set 
+                to 'true' for all input fields, then reload the page.
+                (MutationObserver, async and await, etc.) -->
+
+                <!-- Look for a way to not repeat the sentences: this means
+                to not repeat the random.randint() integers passed.
+                (use random.shuffle() to shuffle a list containing integers 1-180,
+                then use list.pop to remove chosen integers, rinse and repeat) -->
             </td>
     </tr>
     {% endfor %}
 </table>
 
 {% endif %}
-
-<!-- If I can turn this into a function that would be great -->
-<!-- <script>
-    // for input field 1
-    // takes the element with id 'a1'
-    const input1 = document.getElementById('a1');
-
-    // takes the element with id 'b0'---which contains 'form' to get the answer
-    // for the first question. the 'sentence' are ordered as it is in 'random_forms'
-    // list, so the order of the 'form' as it is in the list will be the correct order also
-    const answer1 = document.getElementById('b0').innerHTML.toLowerCase();
-
-    // adds an event listener to constant 'input1' that listens
-    // for a 'keyup' (key that is pressed is released, thus being 
-    // a 'keyup'), which does the function with argument event for
-    // event.key, which is specifically for keyboard events only
-    input1.addEventListener('keyup', function(event) {
-
-        // if the key involved in the event strictly equals to 
-        // 'Enter', do the following
-        if (event.key === 'Enter') {
-            if (input1.value != answer1) {
-                input1.style.backgroundColor = '#ff7f7f';
-            }
-            else if (input1.value == answer1) {
-                input1.setAttribute('readonly', 'true')
-                input1.style.backgroundColor = '#90ee90';
-            }
-        }
-    });
-    
-    // for input field 2
-    const input2 = document.getElementById('a2');
-    const answer2 = document.getElementById('b1');
-    console.log(answer2);
-    input2.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            if (input2.value != answer2) {
-                input2.style.backgroundColor = '#ff7f7f';
-            }
-            else if (input2.value == answer2) {
-                input2.setAttribute('readonly', 'true')
-                input2.style.backgroundColor = '#90ee90';
-            }
-        }
-    });
-
-    // for input field 3
-    const input3 = document.getElementById('a3');
-    const answer3 = document.getElementById('b2');
-    input3.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            if (input3.value != answer3) {
-                input3.style.backgroundColor = '#ff7f7f';
-            }
-            else if (input3.value == answer3) {
-                input3.setAttribute('readonly', 'true')
-                input3.style.backgroundColor = '#90ee90';
-            }
-        }
-    });
-
-    // for input field 4
-    const input4 = document.getElementById('a4');
-    const answer4 = document.getElementById('b3');
-    input4.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            if (input4.value != answer4) {
-                input4.style.backgroundColor = '#ff7f7f';
-            }
-            else if (input4.value == answer4) {
-                input4.setAttribute('readonly', 'true')
-                input4.style.backgroundColor = '#90ee90';
-            }
-        }
-    });
-
-    // for input field 5
-    const input5 = document.getElementById('a5');
-    const answer5 = document.getElementById('b4');
-    input5.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            if (input5.value != answer5) {
-                input5.style.backgroundColor = '#ff7f7f';
-            }
-            else if (input5.value == answer5) {
-                input5.setAttribute('readonly', 'true')
-                input5.style.backgroundColor = '#90ee90';
-            }
-        }
-    });
-
-</script> -->
