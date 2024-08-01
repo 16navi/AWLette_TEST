@@ -1,4 +1,6 @@
 {% include 'nav.html' %}
+
+<!-- Styling -->
 <style>
     .choices {
         width: 17.5%;
@@ -7,46 +9,109 @@
     }
 </style>
 
+<!-- Scripting -->
 <script>
+    // hold the count for the amount
+    // of clicked button
     var count = 0;
+
+    // holds the id of the first button clicked
     var id = None;
+
+    // holds the object of the first button clicked
     var first_button = None;
+
+    // holds the answer for the first button clicked
     var first_answer = None;
 
-    function firstClick(input, answer) {
+    function rightOrWrong(input, answer) {
         input.addEventListener('click', function () {
+
+            // if 'count' is eual to 0...
             if (count == 0) {
+
+                // increments 'count' by 1
                 count++;
+
+                // equates 'id' to its intented value
                 id = input.id;
+
+                // equates 'first_button' to its intended value
                 first_button = input;
+
+                // equates 'first_answer' to its intended value
                 first_answer = answer.value;
+
+                // changes the background color of the clicked
+                // button into light gray
                 input.style.backgroundColor = '#d3d3d3';
+
+                // console logs for debugging
                 console.log(`The count is ${count}`);
                 console.log(`You clicked button ${id}`);
+
+                // stops the propagation of the click:
+                // stops the function from executing up
+                // to 'count 2'
                 input.stopImmediatePropagation();
             }
 
+            // if count is equal to 1...
             if (count == 1) {
+
+                // and if the button clicked is the same
+                // as the first one...
                 if (id == input.id) {
+
+                    // increments 'count'
                     count++;
+
+                    // resets the background color
                     input.style.backgroundColor = '';
+
+                    // console logs for debugging
                     console.log(`The count is ${count}`);
                     console.log(`You took your input back.`)
+
+                    // resets 'count' back to 0
                     count = 0;
                 }
+
+                // if the button clicked is NOT the same
+                // as the first one...
                 else if (id != input.id) {
+
+                    // and if the 'input' of the second button
+                    // is the same as the answer to the first
+                    // button clicked...
                     if (input.innerText == first_answer) {
-                        console.log('You got it right!');
+
+                        // changes the background color of first and
+                        // second button clicked to green
                         input.style.backgroundColor = '#90ee90';
-                        first_button.style.backgroundColor = '#90ee90'; 
+                        first_button.style.backgroundColor = '#90ee90';
+                        
+                        // disables the two buttons
                         input.setAttribute('disabled', 'true');
                         first_button.setAttribute('disabled', 'true');
+                        
+                        // console log for debugging
+                        console.log('You got it right!');
                         count = 0;
                     }
+
+                    // if its not the same as the answer to the
+                    // first button...
                     if (input.innerText != first_answer) {
-                        console.log('Not quite right!');
+
+                        // resets the background color
                         input.style.backgroundColor = '';
                         first_button.style.backgroundColor = '';
+
+                        // console log for debugging
+                        console.log('Not quite right!');
+
+                        // resets the count
                         count = 0;
                     }
                 }
@@ -70,29 +135,54 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
+<!-- counters for 'random_words' and 'random_definitions' - 
+ this is for ensuring that the for loop of each button goes
+ through each item of the lists. -->
 {% set word_counter = [] %}
 {% set definition_counter = [] %}
 
 <p>You picked Sublist No.{{ sublist }}</p>
 
 {% for i in range(10) %}
-    <!-- temporary solution only -->
+    <!-- temp solution only, just to make sure that
+     there are five buttons per row-->
     {% if loop.index == 6 %}
         <br>
     {% endif %}
+
     <button class='choices' id='a{{ loop.index }}'>
+
+        <!-- if the item in 'arrange' is 0 -->
         {% if arrange[loop.index - 1] == 0 %}
+
+            <!-- dumps the latest word from 'random_words' -->
             {{ random_words[word_counter|length] }}
+
+            <!-- holds the answer (or rather, the match) -->
             <input type='hidden' id='aa{{ loop.index }}' value='{{ random_definitions[word_counter|length] }}'></input>
+
+            <!-- increments the counter (afaik, there is no
+             increment for jinja, so I used a list that I will
+             append to and I will count how many items it has) -->
             {% set __ = word_counter.append(1) %}
+
+        <!-- if the item in 'arrange' is 1 -->
         {% elif arrange[loop.index - 1] == 1 %}
+
+            <!-- dumps the latest definition from 'random_definitions' -->
             {{ random_definitions[definition_counter|length] }}
+
+            <!-- holds the match -->
             <input type='hidden' id='aa{{ loop.index }}' value='{{ random_words[definition_counter|length] }}'></input>
+
+            <!-- increments the counter, same method -->
             {% set __ = definition_counter.append(1) %}
         {% endif %}
     </button>
+
+    <!-- calls the function for doing the complicated bits -->
     <script>
-        firstClick( document.getElementById('a{{ loop.index }}'),
+        rightOrWrong( document.getElementById('a{{ loop.index }}'),
                     document.getElementById('aa{{ loop.index }}'),
                 );
     </script>

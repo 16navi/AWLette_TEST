@@ -251,16 +251,30 @@ def form():
 @app.route('/match', methods=['GET'])
 def match():
     sublist = request.args.get('sublist')
+
+    # holds the random words
     random_words = []
+
+    # holds the definitions for the random words
     random_definitions = []
+
+    # an array of 0's and 1's that will decide wether
+    # a button will hold a 'word' or a 'definition'
     arrange = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+
+    # shuffles the 'arrange' list before passing into template
     random.shuffle(arrange)
 
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
+
+        # uses random.sample to get 5 random words from 'words'
         random_words = random.sample(words, 5)
 
     for word in random_words:
+    
+        # takes the first definition of each 'word' in 'random_words'
+        # and appends it to 'random_definitions'
         random_definitions.append(word.definition[0])
 
     return render_template('match.html',
