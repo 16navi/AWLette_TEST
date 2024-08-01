@@ -272,7 +272,7 @@ def match():
         random_words = random.sample(words, 5)
 
     for word in random_words:
-    
+
         # takes the first definition of each 'word' in 'random_words'
         # and appends it to 'random_definitions'
         random_definitions.append(word.definition[0])
@@ -288,18 +288,18 @@ def match():
 def question_answer():
     sublist = request.args.get('sublist')
     words = []
-    random_word = None
+    random_words = None
     question_type = None
 
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
-        random_word = random.choice(words)
+        random_words = random.sample(words, 4)
 
         question_type = random.randint(1, 5)
-    
+
     return render_template('question_answer.html',
                            sublist=sublist,
-                           random_word=random_word,
+                           random_words=random_words,
                            question_type=question_type)
 
 
@@ -314,6 +314,12 @@ def quiz():
 def filter_shuffle(seq):
     result = list(seq)
     random.shuffle(result)
+    return result
+
+
+@app.template_filter('choice')
+def filter_choice(seq):
+    result = random.choice(seq)
     return result
 
 

@@ -1,5 +1,19 @@
 {% include 'nav.html' %}
 
+<!-- Scripting -->
+<script>
+    function rightOrWrong(question, input) {
+        input.addEventListener('click', function(){
+            if (question.id.replace('a', '') == input.id.replace('b', '')) {
+                console.log('You got it!');
+            }
+            else {
+                console.log('Try again!');
+            }
+        });
+    };
+</script>
+
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
@@ -15,27 +29,71 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
+{% set question_word = random_words|choice %}
+
 <p>You picked Sublist No.{{ sublist }}</p>
 
-{% if question_type == 1 %}
-    <p>1. given def, answer the word</p>
-{% endif %}
+        {% if question_type == 1 %}
+            <p>1. given def, answer the word</p>
+            <p id='a{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
 
-{% if question_type == 2 %}
-    <p>2. given word, answer def</p>
-{% endif %}
+            {% for choice_word in random_words %}
+                <button id='b{{ choice_word.id }}'>{{ choice_word }}</button>
 
-{% if question_type == 3 %}
-    <p>3. given word, answer synonym</p>
-{% endif %}
+                <script>
+                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                    document.getElementById('b{{ choice_word.id }}'))
+                </script>
+            {% endfor %}
+        {% elif question_type == 2 %}
+            <p>2. given word, answer def</p>
+            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the definition?</p>
 
-{% if question_type == 4 %}
-    <p>4. which form is this? (n, a, v)</p>
-{% endif %}
+            {% for choice_word in random_words %}
+                <button id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
 
-{% if question_type == 5 %}
-    <p>5. given word, answer collocation</p>
-{% endif %}
-<p>{{ random_word }}</p>
+                <script>
+                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                    document.getElementById('b{{ choice_word.id }}'))
+                </script>
+            {% endfor %}
+
+        {% elif question_type == 3 %}
+            <p>3. given word, answer synonym</p>
+            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the synonym?</p>
+
+            {% for choice_word in random_words %}
+                <button id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
+
+                <script>
+                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                    document.getElementById('b{{ choice_word.id }}'))
+                </script>
+            {% endfor %}
+
+        <!-- This type of question will require a different
+        function for right or wrong -->
+        {% elif question_type == 4 %}
+            <p>4. which form is this? (n, a, v)</p>
+            <p id='a{{ question_word.id }}'>{{ question_word.form[0] }} - noun, verb, or adjective?</p>
+
+            {% for choice_word in random_words %}
+                <button id='b{{ choice_word.id }}'>{{ choice_word.form[0].form_class }}</button>
+            {% endfor %}
+
+        {% elif question_type == 5 %}
+            <p>5. given word, answer collocation</p>
+            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the collocation?</p>
+
+            {% for choice_word in random_words %}
+                <button id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
+
+                <script>
+                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                    document.getElementById('b{{ choice_word.id }}'))
+                </script>
+            {% endfor %}
+
+    {% endif %}
 
 {% endif %}
