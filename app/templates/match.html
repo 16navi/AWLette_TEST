@@ -1,11 +1,59 @@
 {% include 'nav.html' %}
 <style>
     .choices {
-        padding-block: 50px;
-        padding-inline: 50px;
-        margin: calc(1em / 2);
+        width: 17.5%;
+        height: 30%;
+        margin: 2px;
     }
 </style>
+
+<script>
+    var count = 0;
+    var id = None;
+    var first_button = None;
+    var first_answer = None;
+
+    function firstClick(input, answer) {
+        input.addEventListener('click', function () {
+            if (count == 0) {
+                count++;
+                id = input.id;
+                first_button = input;
+                first_answer = answer.value;
+                input.style.backgroundColor = '#d3d3d3';
+                console.log(`The count is ${count}`);
+                console.log(`You clicked button ${id}`);
+                input.stopImmediatePropagation();
+            }
+
+            if (count == 1) {
+                if (id == input.id) {
+                    count++;
+                    input.style.backgroundColor = '';
+                    console.log(`The count is ${count}`);
+                    console.log(`You took your input back.`)
+                    count = 0;
+                }
+                else if (id != input.id) {
+                    if (input.innerText == first_answer) {
+                        console.log('You got it right!');
+                        input.style.backgroundColor = '#90ee90';
+                        first_button.style.backgroundColor = '#90ee90'; 
+                        input.setAttribute('disabled', 'true');
+                        first_button.setAttribute('disabled', 'true');
+                        count = 0;
+                    }
+                    if (input.innerText != first_answer) {
+                        console.log('Not quite right!');
+                        input.style.backgroundColor = '';
+                        first_button.style.backgroundColor = '';
+                        count = 0;
+                    }
+                }
+            }
+        }
+    )};
+</script>
 
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
@@ -22,6 +70,9 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
+{% set word_counter = [] %}
+{% set definition_counter = [] %}
+
 <p>You picked Sublist No.{{ sublist }}</p>
 
 {% for i in range(10) %}
@@ -29,7 +80,22 @@ Choose a sublist:
     {% if loop.index == 6 %}
         <br>
     {% endif %}
-    <button class='choices' id='a{{ loop.index }}'>hello</button>
+    <button class='choices' id='a{{ loop.index }}'>
+        {% if arrange[loop.index - 1] == 0 %}
+            {{ random_words[word_counter|length] }}
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ random_definitions[word_counter|length] }}'></input>
+            {% set __ = word_counter.append(1) %}
+        {% elif arrange[loop.index - 1] == 1 %}
+            {{ random_definitions[definition_counter|length] }}
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ random_words[definition_counter|length] }}'></input>
+            {% set __ = definition_counter.append(1) %}
+        {% endif %}
+    </button>
+    <script>
+        firstClick( document.getElementById('a{{ loop.index }}'),
+                    document.getElementById('aa{{ loop.index }}'),
+                );
+    </script>
 {% endfor %}
 
 {% endif %}

@@ -107,7 +107,6 @@ def logout():
 @app.route('/user_details')
 def user_details():
     user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
-    # Use context processor
     return render_template('user_details.html', user=user)
 
 
@@ -179,16 +178,8 @@ def fill_in_the_blank():
                    word.form[2]]
             all_forms.extend(add)
 
-        # generate five random ids
-        random_form_id = []
-        for i in range(5):
-            n = random.randint(1, 180)
-            random_form_id.append(n)
-
-        # replace the items in the 'forms' list with only the forms
-        # with the randomly chosen id
-        for i in random_form_id:
-            random_forms.append(all_forms[i-1])
+        # generate five random 'forms'
+        random_forms = random.sample(all_forms, 5)
 
     return render_template('fill_in_the_blank.html',
                            sublist=sublist,
@@ -260,8 +251,23 @@ def form():
 @app.route('/match', methods=['GET'])
 def match():
     sublist = request.args.get('sublist')
+    random_words = []
+    random_definitions = []
+    arrange = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+    random.shuffle(arrange)
+
+    if sublist:
+        words = models.Words.query.filter_by(sublist=sublist).all()
+        random_words = random.sample(words, 5)
+
+    for word in random_words:
+        random_definitions.append(word.definition[0])
+
     return render_template('match.html',
-                           sublist=sublist)
+                           sublist=sublist,
+                           random_words=random_words,
+                           random_definitions=random_definitions,
+                           arrange=arrange)
 
 
 @app.route('/question_answer')
