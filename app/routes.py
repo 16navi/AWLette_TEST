@@ -159,10 +159,10 @@ def word_lookfor():
 
 # Learn JavaScript to make the quizzes.
 # 1. Fill in the blank. (All good for now.)
-# 2. Form.
-# 3. Match.
+# 2. Form. (all goods)
+# 3. Match. (all goods)
 # 4. Question-Answer.
-# 5. Quiz
+# 5. Quiz.
 
 
 @app.route('/fill_in_the_blank', methods=['GET'])
