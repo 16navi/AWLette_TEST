@@ -284,9 +284,23 @@ def match():
                            arrange=arrange)
 
 
-@app.route('/question_answer')
+@app.route('/question_answer', methods=['GET'])
 def question_answer():
-    return render_template('question_answer.html')
+    sublist = request.args.get('sublist')
+    words = []
+    random_word = None
+    question_type = None
+
+    if sublist:
+        words = models.Words.query.filter_by(sublist=sublist).all()
+        random_word = random.choice(words)
+
+        question_type = random.randint(1, 5)
+    
+    return render_template('question_answer.html',
+                           sublist=sublist,
+                           random_word=random_word,
+                           question_type=question_type)
 
 
 @app.route('/quiz')

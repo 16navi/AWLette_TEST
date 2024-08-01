@@ -1,3 +1,41 @@
 {% include 'nav.html' %}
 
-answer the questions yo.
+<!-- While there is no value for 'sublist' -->
+{% if not sublist %}
+
+Choose a sublist:
+<form action='{{url_for('question_answer')}}' method='GET'>
+    <ul>
+        <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+    </ul>
+</form>
+
+{% endif %}
+
+<!-- When 'sublist' has value -->
+{% if sublist %}
+
+<p>You picked Sublist No.{{ sublist }}</p>
+
+{% if question_type == 1 %}
+    <p>1. given def, answer the word</p>
+{% endif %}
+
+{% if question_type == 2 %}
+    <p>2. given word, answer def</p>
+{% endif %}
+
+{% if question_type == 3 %}
+    <p>3. given word, answer synonym</p>
+{% endif %}
+
+{% if question_type == 4 %}
+    <p>4. which form is this? (n, a, v)</p>
+{% endif %}
+
+{% if question_type == 5 %}
+    <p>5. given word, answer collocation</p>
+{% endif %}
+<p>{{ random_word }}</p>
+
+{% endif %}
