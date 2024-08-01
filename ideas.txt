@@ -1,0 +1,4 @@
+give up button:
+    * user can click the button, enabling a give up option. This shows the correct answer for each quiz.
+    * but before clicking the button, a guilt message will pop up.
+    * this can go like "ARE YOU SURE? It's okay if you take some time to think for the right answer! After all, strain is important for muscle growth---and your brain is the smartest muscle!"
