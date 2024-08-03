@@ -107,7 +107,7 @@ Choose a sublist:
         function for right or wrong -->
         {% elif question_type == 4 %}
             <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_form_class }}'>{{ question_word.form[0] }} - noun, verb, or adjective?</p>
+            <p id='a{{ question_form_class }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
             <button class='choices' id='b1'>noun</button>
 

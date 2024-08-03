@@ -311,8 +311,14 @@ def question_answer():
 @app.route('/quiz', methods=['GET'])
 def quiz():
     sublist = request.args.get('sublist')
+    words = []
+
+    if sublist:
+        words = models.Words.query.filter_by(sublist=sublist).all()
+
     return render_template('quiz.html',
-                           sublist=sublist)
+                           sublist=sublist,
+                           words=words)
 
 # Custom Jinja filters
 
@@ -328,6 +334,24 @@ def filter_shuffle(seq):
 def filter_choice(seq):
     result = random.choice(seq)
     return result
+
+
+# Context processor stuffs
+@app.context_processor
+
+# I can't make this into a filter because 'sample' needs
+# two arguments. Instead, I used context processor
+def sample():
+    # '_sample' function inside 'sample' which needs two
+    # arguments, 'seq' for the list and 'amount' for the 
+    # amount of items to be sampled 
+    def _sample(seq, amount):
+        result = random.sample(seq, amount)
+        # internally returns 'result'
+        return result
+    # ultimately returns 'sample' as the returned value of
+    # '_sample' using 'dict'
+    return dict(sample=_sample) 
 
 
 if __name__ == '__main__':
