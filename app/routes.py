@@ -290,6 +290,7 @@ def question_answer():
     words = []
     random_words = None
     question_type = None
+    question_form_class = None
 
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
@@ -297,15 +298,21 @@ def question_answer():
 
         question_type = random.randint(1, 5)
 
+        if question_type == 4:
+            question_form_class = random.randint(1, 3)
+
     return render_template('question_answer.html',
                            sublist=sublist,
                            random_words=random_words,
-                           question_type=question_type)
+                           question_type=question_type,
+                           question_form_class=question_form_class)
 
 
-@app.route('/quiz')
+@app.route('/quiz', methods=['GET'])
 def quiz():
-    return render_template('quiz.html')
+    sublist = request.args.get('sublist')
+    return render_template('quiz.html',
+                           sublist=sublist)
 
 # Custom Jinja filters
 

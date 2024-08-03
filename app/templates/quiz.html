@@ -1,3 +1,20 @@
 {% include 'nav.html' %}
 
-Take the quiz yo.
+<!-- While there is no value for 'sublist' -->
+{% if not sublist %}
+
+Choose a sublist:
+<form action='{{url_for('quiz')}}' method='GET'>
+    <ul>
+        <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+    </ul>
+</form>
+
+{% endif %}
+
+<!-- When 'sublist' has value -->
+{% if sublist %}
+
+<p>You chose Sublist No. {{ sublist }}</p>
+
+{% endif %}

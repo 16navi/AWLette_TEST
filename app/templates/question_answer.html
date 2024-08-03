@@ -1,11 +1,29 @@
 {% include 'nav.html' %}
 
+<style>
+    #one_question {
+        background-color: pink;
+        border-style: solid;
+        border-width: 1px;
+        padding: 5px;
+    }
+
+    .choices {
+        padding: 10px;
+        width: 400px;
+        height: 100px;
+        margin: 5px;
+        vertical-align: bottom;
+    }
+</style>
+
 <!-- Scripting -->
 <script>
     function rightOrWrong(question, input) {
         input.addEventListener('click', function(){
             if (question.id.replace('a', '') == input.id.replace('b', '')) {
                 console.log('You got it!');
+                location.reload();
             }
             else {
                 console.log('Try again!');
@@ -29,33 +47,43 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
-{% set question_word = random_words|choice %}
+    {% set question_word = random_words|choice %}
 
-<p>You picked Sublist No.{{ sublist }}</p>
+    <p>You picked Sublist No.{{ sublist }}</p>
 
+    <div id='one_question'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
             <p id='a{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
 
             {% for choice_word in random_words %}
-                <button id='b{{ choice_word.id }}'>{{ choice_word }}</button>
+               {% if loop.index == 3 %}
+                   <br>
+               {% endif %}
 
-                <script>
-                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                    document.getElementById('b{{ choice_word.id }}'))
-                </script>
+                   <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word }}</button>
+
+                   <script>
+                       rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                       document.getElementById('b{{ choice_word.id }}'))
+                   </script>
             {% endfor %}
+
         {% elif question_type == 2 %}
             <p>2. given word, answer def</p>
             <p id='a{{ question_word.id }}'>{{ question_word }} - what's the definition?</p>
 
             {% for choice_word in random_words %}
-                <button id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
+                {% if loop.index == 3 %}
+                    <br>
+                {% endif %}
 
-                <script>
-                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                    document.getElementById('b{{ choice_word.id }}'))
-                </script>
+                        <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
+
+                        <script>
+                            rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                            document.getElementById('b{{ choice_word.id }}'))
+                        </script>
             {% endfor %}
 
         {% elif question_type == 3 %}
@@ -63,37 +91,64 @@ Choose a sublist:
             <p id='a{{ question_word.id }}'>{{ question_word }} - what's the synonym?</p>
 
             {% for choice_word in random_words %}
-                <button id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
+                    {% if loop.index == 3 %}
+                        <br>
+                    {% endif %}
 
-                <script>
-                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                    document.getElementById('b{{ choice_word.id }}'))
-                </script>
+                    <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
+
+                    <script>
+                        rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                        document.getElementById('b{{ choice_word.id }}'))
+                    </script>
             {% endfor %}
 
         <!-- This type of question will require a different
         function for right or wrong -->
         {% elif question_type == 4 %}
             <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_word.id }}'>{{ question_word.form[0] }} - noun, verb, or adjective?</p>
+            <p id='a{{ question_form_class }}'>{{ question_word.form[0] }} - noun, verb, or adjective?</p>
 
-            {% for choice_word in random_words %}
-                <button id='b{{ choice_word.id }}'>{{ choice_word.form[0].form_class }}</button>
-            {% endfor %}
+            <button class='choices' id='b1'>noun</button>
+
+            <script>
+                rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
+                                document.getElementById('b1'))
+            </script>
+            
+            <button class='choices' id='b2'>adjective</button>
+
+            <br>
+
+            <script>
+                rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
+                                document.getElementById('b2'))
+            </script>
+            
+            <button class='choices' id='b3'>verb</button>
+
+            <script>
+                rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
+                                document.getElementById('b3'))
+            </script>
 
         {% elif question_type == 5 %}
             <p>5. given word, answer collocation</p>
             <p id='a{{ question_word.id }}'>{{ question_word }} - what's the collocation?</p>
 
             {% for choice_word in random_words %}
-                <button id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
+                    {% if loop.index == 3 %}
+                        <br>
+                    {% endif %}
 
-                <script>
-                    rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                    document.getElementById('b{{ choice_word.id }}'))
-                </script>
+                    <button class='choices' id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
+
+                    <script>
+                        rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
+                                        document.getElementById('b{{ choice_word.id }}'))
+                    </script>
             {% endfor %}
-
+    </div>
     {% endif %}
 
 {% endif %}
