@@ -20,13 +20,19 @@
 
 <!-- Scripting -->
 <script>
+    correctItem = 0;
+
     function rightOrWrong(question, input, classmates) {
         input.addEventListener('click', function(){
+            correctItem++;
             if (question.id.replace('a', '') == input.id.replace('b', '')) {
                 console.log('You got it!');
                 input.style.backgroundColor = '#90ee90';
                 for (let i of classmates) {
                     i.setAttribute('disabled', 'true');
+                };
+                if (correctItem == 5) {
+                    location.reload();
                 };
             }
             else {
@@ -38,6 +44,9 @@
                     } else {
                         input.style.backgroundColor = '#ef7a71';
                         i.setAttribute('disabled', 'true');
+                    };
+                    if (correctItem == 5) {
+                        location.reload();
                     };
                 };
             }
