@@ -157,14 +157,6 @@ def word_lookfor():
         return redirect(url_for('homepage'))
 
 
-# Learn JavaScript to make the quizzes.
-# 1. Fill in the blank. (All good for now.)
-# 2. Form. (all goods)
-# 3. Match. (all goods)
-# 4. Question-Answer.
-# 5. Quiz.
-
-
 @app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
     sublist = request.args.get('sublist')
@@ -319,15 +311,18 @@ def question_answer():
 def quiz():
     sublist = request.args.get('sublist')
     words = []
+    question_amount = 5
 
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
 
     return render_template('quiz.html',
                            sublist=sublist,
-                           words=words)
+                           words=words,
+                           question_amount=question_amount)
 
 # Custom Jinja filters
+
 
 # Shuffle filter to shuffle elements in a list
 @app.template_filter('shuffle')
@@ -345,20 +340,19 @@ def filter_choice(seq):
 
 # Context processor stuffs
 @app.context_processor
-
 # I can't make this into a filter because 'sample' needs
 # two arguments. Instead, I used context processor
 def sample():
     # '_sample' function inside 'sample' which needs two
-    # arguments, 'seq' for the list and 'amount' for the 
-    # amount of items to be sampled 
+    # arguments, 'seq' for the list and 'amount' for the
+    # amount of items to be sampled
     def _sample(seq, amount):
         result = random.sample(seq, amount)
         # internally returns 'result'
         return result
     # ultimately returns 'sample' as the returned value of
     # '_sample' using 'dict'
-    return dict(sample=_sample) 
+    return dict(sample=_sample)
 
 
 if __name__ == '__main__':

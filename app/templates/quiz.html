@@ -31,7 +31,7 @@
                 for (let i of classmates) {
                     i.setAttribute('disabled', 'true');
                 };
-                if (correctItem == 5) {
+                if (correctItem == {{ question_amount|tojson }}) {
                     location.reload();
                 };
             }
@@ -45,7 +45,7 @@
                         input.style.backgroundColor = '#ef7a71';
                         i.setAttribute('disabled', 'true');
                     };
-                    if (correctItem == 5) {
+                    if (correctItem == {{ question_amount|tojson }}) {
                         location.reload();
                     };
                 };
@@ -71,7 +71,7 @@ Choose a sublist:
 
 <p>You chose Sublist No. {{ sublist }}</p>
 
-{% for i in range(5) %}
+{% for i in range(question_amount) %}
 
     {% set random_words = sample(words, 4) %}
     {% set question_type = range(1, 6)|choice %}
