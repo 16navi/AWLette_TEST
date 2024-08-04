@@ -194,6 +194,7 @@ def form():
     # 'random_forms_sublist'.
     random_forms_main = []
     random_blank_main = []
+    random_blank_amount = 0
 
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
@@ -217,6 +218,11 @@ def form():
             random_blank_sublist.extend(not_blanks)
             random_blank_main.append(random_blank_sublist)
             random_blank_sublist = []
+
+        # Count how many blank items will be generated
+        for content in random_blank_main:
+            for i in content:
+                random_blank_amount += i
 
         # This list will be nested inside 'random_forms_main'
         random_forms_sublist = []
@@ -245,7 +251,8 @@ def form():
     return render_template('form.html',
                            sublist=sublist,
                            random_forms_main=random_forms_main,
-                           random_blank_main=random_blank_main)
+                           random_blank_main=random_blank_main,
+                           random_blank_amount=random_blank_amount)
 
 
 @app.route('/match', methods=['GET'])

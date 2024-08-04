@@ -7,18 +7,22 @@
       height: 30px;
     }
 
-    table {
-        display: inline-table;
-    }
-
     input[type='text'] {
         text-align: center;
         background-color: None;
+    }
+
+    .choices {
+        width: 136px;
+        text-align: center;
     }
 </style>
 
 <!-- Scripting -->
 <script>
+    // array for holding '1' for each correct question answered
+    var correctItems = 0;
+
     // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
         
@@ -40,11 +44,16 @@
                     // sets the 'readonly' attribute of 'input' to true
                     input.setAttribute('readonly', 'true');
 
-                    // not sure if I will use this just yet
-                    // input.setAttribute('data-correct', 'true');
-
                     // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
+
+                    // appends '1' to 'correctItems'
+                    correctItems++;
+
+                    // reloads page if 'correctItems' has 5 items
+                    if (correctItems == 5) {
+                        location.reload();
+                    };
                 }
 
                 // else, if they are not equal...
@@ -82,17 +91,14 @@ Choose a sublist:
  filling in the blanks in the sentence -->
 <table>
     <tr>
-        <th>Choices</th>
-    </tr>
     {% for form in random_forms|shuffle %}
-    <tr>
-        <td id='b{{ random_forms.index(form) }}'>{{ form|capitalize }}</td>
-    </tr>
+        <td class='choices' id='b{{ random_forms.index(form) }}'>{{ form|capitalize }}</td>
     {% endfor %}
+    </tr>
 </table>
 
 <!-- Lists the sentences with input fields in between -->
-<table>
+<br><table>
     <tr>
         <th>Fill in the Blanks</th>
     </tr>
@@ -132,7 +138,7 @@ Choose a sublist:
                 {{ sentence_blanked1.pop(-1) or "" }}
 
                 {{ sentence_blanked1|join(' ')|capitalize }} 
-                <input type='text' id='a{{ loop.index }}' data-correct='false'></input> 
+                <input type='text' id='a{{ loop.index }}'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
                 <!-- Call the function -->

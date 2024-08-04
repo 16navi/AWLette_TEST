@@ -22,6 +22,14 @@
 
 <!-- Scripting -->
 <script>
+    // sets a constant to 'random_blank_amount'
+    const blankAmount = 15 - {{ random_blank_amount|tojson }};
+
+    // 'correctItems' to increment '1' for every corect item
+    var correctItem = 0;
+
+    console.log(blankAmount);
+
     // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
         
@@ -43,11 +51,16 @@
                     // sets the 'readonly' attribute of 'input' to true
                     input.setAttribute('readonly', 'true');
 
-                    // not sure if I will use this just yet
-                    // input.setAttribute('data-correct', 'true');
-
                     // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
+
+                    // increments 1 to 'correctItems'
+                    correctItem++;
+
+                    // if correctItems is equal to 'blankAmount', reload page
+                    if (correctItem == blankAmount) {
+                        location.reload();
+                    };
                 }
 
                 // else, if they are not equal...

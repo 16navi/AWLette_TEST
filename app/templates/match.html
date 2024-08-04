@@ -13,8 +13,11 @@
 
 <!-- Scripting -->
 <script>
-    // hold the count for the amount
-    // of clicked button
+    // counts the correct items
+    var correctItem = 0;
+
+    // holds count if buton clicked is first or
+    // second
     var count = 0;
 
     // holds the id of the first button clicked
@@ -54,7 +57,7 @@
 
                 // stops the propagation of the click:
                 // stops the function from executing up
-                // to 'count 2'
+                // to 'count 1'
                 input.stopImmediatePropagation();
             }
 
@@ -97,9 +100,17 @@
                         input.setAttribute('disabled', 'true');
                         first_button.setAttribute('disabled', 'true');
                         
+                        // increments 'corectItem'
+                        correctItem++;
+
                         // console log for debugging
                         console.log('You got it right!');
                         count = 0;
+
+                        // if 'correctItem' = 5
+                        if (correctItem == 5) {
+                            location.reload();
+                        };
                     }
 
                     // if its not the same as the answer to the
@@ -145,6 +156,11 @@ Choose a sublist:
 
 <p>You picked Sublist No.{{ sublist }}</p>
 
+<!-- creates two shuffled lists from 'random_words', each to be used
+ by 'word' type buttons and 'definition' type buttons -->
+{% set word_random_words = random_words|shuffle %}
+{% set definition_random_words = random_words|shuffle %}
+
 {% for i in range(10) %}
     <!-- temp solution only, just to make sure that
      there are five buttons per row-->
@@ -157,11 +173,11 @@ Choose a sublist:
         <!-- if the item in 'arrange' is 0 -->
         {% if arrange[loop.index - 1] == 0 %}
 
-            <!-- dumps the latest word from 'random_words' -->
-            {{ random_words[word_counter|length] }}
+            <!-- dumps the latest word from 'word_random_words' -->
+            {{ word_random_words[word_counter|length] }}
 
             <!-- holds the answer (or rather, the match) -->
-            <input type='hidden' id='aa{{ loop.index }}' value='{{ random_definitions[word_counter|length] }}'></input>
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ word_random_words[word_counter|length].definition[0] }}'></input>
 
             <!-- increments the counter (afaik, there is no
              increment for jinja, so I used a list that I will
@@ -171,11 +187,11 @@ Choose a sublist:
         <!-- if the item in 'arrange' is 1 -->
         {% elif arrange[loop.index - 1] == 1 %}
 
-            <!-- dumps the latest definition from 'random_definitions' -->
-            {{ random_definitions[definition_counter|length] }}
+            <!-- dumps the latest definition from 'definition_random_word' -->
+            {{ definition_random_words[definition_counter|length].definition[0] }}
 
             <!-- holds the match -->
-            <input type='hidden' id='aa{{ loop.index }}' value='{{ random_words[definition_counter|length] }}'></input>
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ definition_random_words[definition_counter|length] }}'></input>
 
             <!-- increments the counter, same method -->
             {% set __ = definition_counter.append(1) %}

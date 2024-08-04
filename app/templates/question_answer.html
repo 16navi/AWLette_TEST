@@ -23,7 +23,11 @@
         input.addEventListener('click', function(){
             if (question.id.replace('a', '') == input.id.replace('b', '')) {
                 console.log('You got it!');
+                input.style.backgroundColor = '#90ee90';
                 location.reload();
+                // setTimeout(function () {
+                //     location.reload()
+                // }, 1000);
             }
             else {
                 console.log('Try again!');
