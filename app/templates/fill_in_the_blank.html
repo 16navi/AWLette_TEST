@@ -54,9 +54,11 @@
 
                     // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
+                    xhttp.onload = function () {
+                        console.log(xhttp.responseText);
+                    };
                     xhttp.open('POST', '/fill_request', true);
                     xhttp.send(fillCorrectItems);
-                    console.log(xhttp.responseText);
 
                     // reloads page if 'correctItems' has 5 items
                     if (fillCorrectItems.length == 5) {

@@ -91,6 +91,7 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
+    fill_progress = db.Column(db.Text())
     # __table_args__ = (
     #     db.UniqueConstraint('username', 'password'),
     # )

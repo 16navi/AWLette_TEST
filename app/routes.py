@@ -161,9 +161,29 @@ def word_lookfor():
 @app.route('/fill_request', methods=['POST'])
 def fill_request():
     print('Heya!') #  DEBUG
-    fill_correct_items = request.get_json('fillCorrectItems')
-    response = 'Got it!'
-    return response
+    fill_correct_items = []
+    json_item = request.get_json('fillCorrectItems')
+
+    # NOT FINISHED YET
+
+    # if flask_login.current_user.is_authenticated is True:
+    #     fill_query = models.Users.query.filter_by(id=flask_login.current_user.id).with_entities(models.Users.fill_progress).first()
+
+    #     if not fill_correct_items:
+    #         print('nothing in list yet!') #  DEBUG
+    #         fill_correct_items.append(json_item)
+
+    #     else:
+    #         print('something in list already!') #  DEBUG
+    #         for item in fill_correct_items:
+    #             if item != json_item:
+    #                 fill_correct_items.append(json_item)
+
+    #     fill_query = fill_correct_items
+    #     db.session.commit()
+
+    return ('From Python: Got it!')
+
 
 # Quizzes
 @app.route('/fill_in_the_blank', methods=['GET', 'POST'])
