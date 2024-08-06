@@ -157,9 +157,18 @@ def word_lookfor():
         return redirect(url_for('homepage'))
 
 
-@app.route('/fill_in_the_blank', methods=['GET'])
+# AJAX request route
+@app.route('/fill_request', methods=['POST'])
+def fill_request():
+    print('Heya!') #  DEBUG
+    fill_correct_items = request.get_json('fillCorrectItems')
+    response = 'Got it!'
+    return response
+
+# Quizzes
+@app.route('/fill_in_the_blank', methods=['GET', 'POST'])
 def fill_in_the_blank():
-    sublist = request.args.get('sublist')
+    sublist = request.form.get('sublist')
     random_forms = []
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()

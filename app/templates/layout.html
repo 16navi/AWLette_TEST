@@ -3,13 +3,12 @@
     <head>
         <title>AWLette: AWL Companion</title>
         <link rel = "stylesheet" href = "static/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
-        <nav>{% include 'nav.html' %}</nav>
-        <header>{% include 'header.html' %}</header>
+        {% include 'nav.html' %}
         <main>
             {% block content %}{% endblock %}
         </main>
-        <footer>{% include 'footer.html' %}</footer>
     </body>
 </html>

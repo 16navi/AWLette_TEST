@@ -1,4 +1,6 @@
-{% include 'nav.html' %}
+{% extends 'layout.html' %}
+
+{% block content %}
 
 <!-- Styling for table -->
 <style>
@@ -21,7 +23,7 @@
 <!-- Scripting -->
 <script>
     // array for holding '1' for each correct question answered
-    var correctItems = 0;
+    var fillCorrectItems = [];
 
     // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
@@ -48,10 +50,16 @@
                     input.style.backgroundColor = '#90ee90';
 
                     // appends '1' to 'correctItems'
-                    correctItems++;
+                    fillCorrectItems.push(answer.getAttribute('data-form_id'));
+
+                    // using AJAX, use an XMLHttpRequest() to pass the id
+                    const xhttp = new XMLHttpRequest();
+                    xhttp.open('POST', '/fill_request', true);
+                    xhttp.send(fillCorrectItems);
+                    console.log(xhttp.responseText);
 
                     // reloads page if 'correctItems' has 5 items
-                    if (correctItems == 5) {
+                    if (fillCorrectItems.length == 5) {
                         location.reload();
                     };
                 }
@@ -64,9 +72,9 @@
 
                     // makes bg color of 'input' red
                     input.style.backgroundColor = '#ff7f7f';
-                }
-            }
-        })
+                };
+            };
+        });
     };
 </script>
 
@@ -74,7 +82,7 @@
 {% if not sublist %}
 
 Choose a sublist:
-<form action='{{url_for('fill_in_the_blank')}}' method='GET'>
+<form action='{{url_for('fill_in_the_blank')}}' method='POST'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
     </ul>
@@ -92,7 +100,7 @@ Choose a sublist:
 <table>
     <tr>
     {% for form in random_forms|shuffle %}
-        <td class='choices' id='b{{ random_forms.index(form) }}'>{{ form|capitalize }}</td>
+        <td class='choices' id='b{{ random_forms.index(form) }}' data-form_id='{{ form.id }}'>{{ form|capitalize }}</td>
     {% endfor %}
     </tr>
 </table>
@@ -164,3 +172,5 @@ Choose a sublist:
 </table>
 
 {% endif %}
+
+{% endblock %}

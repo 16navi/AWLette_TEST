@@ -3,9 +3,9 @@ give up button:
     * but before clicking the button, a guilt message will pop up.
     * this can go like "ARE YOU SURE? It's okay if you take some time to think for the right answer! After all, strain is important for muscle growth---and your brain is the smartest muscle!"
 
-log-in roles:
-    * guests have access to all words and quizzes, but no progress tracking
-    * users (who signed up and are logged in) have all the words and quizzes PLUS progress tracking
+user roles:
+    * guests (haven't signed up) have access to all words and quizzes, but no progress tracking
+    * users (signed up and are logged in) have all the words and quizzes PLUS progress tracking
 
     * students are users that joined a 'classroom'
         - have user access plus the custom quizzes that their teachers can make
@@ -20,7 +20,34 @@ log-in roles:
             * can have as many questions as the teacher wants
         - turn leaderboard on or off
 
-    * admins have the following:
+    * admins have the following: 
         - add words and sublists of words
         - change the 'content' (definitions, synonyms, etc) of a word
         - remove users
+        - remove classrooms
+
+progress tracking:
+    * seperate progress tracking for each quiz
+    * keeps track of every word the user gets right for every quiz (by recording its id)
+    * 
+
+How the answers in the quiz quiz is checked:
+    * instead of immediately deciding wether the answer is right or wrong, hold the clicked answer first then have a 'submit' button bellow which
+    * shows if the answers chosen were right or wrong, and if wrong, show the right answers
+
+How the answers in the quiz quiz is checked:
+    * should automatically decide if right or wrong
+
+Next and Previous button for word:
+    * should be at the bottom of the page
+
+Choices in fill in the blanks:
+    * can be the root word instead of the exact answer (or can be randomly chosen to be either)
+    * nominalisation of the root word 
+
+Progress tracking for quiz quiz:
+    * can also keep track of the ratio of rights over wrong across all the user's attempt at quiz quiz
+
+THINGS I DID THAT WERE APPARENTLY AGAINST THE CONVENTION
+1. HTML id's are supposed to look like "lorem-ipsum"---not underscores. ://///
+

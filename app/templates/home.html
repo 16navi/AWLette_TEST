@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+
+{% include 'header.html' %}
+
 <!--Searchbar-->
 
 {% with messages = get_flashed_messages() %}
@@ -27,4 +30,7 @@
         <li><a href = '/question_answer'>Question and Answer.</a></li>
         <li><a href = '/quiz'>Take the quiz.</a></li>
     </ul>
+
+{% include 'footer.html' %}
 {% endblock %}
+
