@@ -1,6 +1,7 @@
 from app.routes import db
 from flask_login import UserMixin
 
+# reset auto-increment: UPDATE sqlite_sequence SET seq=1 WHERE name="<table>"
 
 WordSynonym = db.Table('WordSynonym',
                        db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
@@ -91,10 +92,20 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
-    fill_progress = db.Column(db.Text())
+    progtrack = db.relationship('ProgTrack', backref='progtrack_word')
     # __table_args__ = (
     #     db.UniqueConstraint('username', 'password'),
     # )
 
     def __repr__(self):
         return self.username
+
+
+class ProgTrack(db.Model):
+    __tablename__ = 'ProgTrack'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    fill_progress = db.Column(db.Text())
+
+    def __repr__(self):
+        return self.collocation

@@ -161,104 +161,97 @@ def word_lookfor():
 # AJAX request route
 @app.route('/progress_tracker', methods=['POST'])
 def progress_tracker():
-    # takes 'correctItem' via the XMLHttpRequest
-    # 'correctItem' is present in all quizzes, and is a dictionary
-    # key specifies what quiz the progress was from
-    # value is the id of the correct answer
-    posted_dict = request.get_json()['correctItem']
-    quiz_type, correct_id, sublist, progress_in = None, None, None, None
-    dict_values, dict_keys, fill_progress = [], [], []
+    # get the posted dictionary
+    posted_dict = request.get_json()
 
-    # goes through each key, value and appends to respective
-    # lists to be able to assign the above variables with their
-    # respective values
-    for key, value in posted_dict.items():
-        dict_values.append(value)
+    # assign necessary values
+    sublist, quiz_type, correct_id = None, None, None
+    dict_values, dict_keys, correct_list = [], [], []
+    for key, value in posted_dict['correctItem'].items():
         dict_keys.append(key)
-    
-    # variable assignment
-    quiz_type = dict_keys[0]
+        dict_values.append(value)
+
     correct_id = int(dict_values[0])
     sublist = int(dict_values[1])
+    quiz_type = dict_keys[0]
+    
+    progress_dict = {
+        sublist : correct_list
+    }
 
-    # to hold both the sublist and the id's per sublist, i will use
-    # a dict. This will be assigned a value later
-    progress_dict = None
-
-    # if the current user is authenticated (they are logged in)
     if flask_login.current_user.is_authenticated is True:
-
-        # get from database the column 'fill_progress'
-        query = models.Users.query.filter_by(id=flask_login.current_user.id).first()
-
-        # assigns which column in the database the progress will be recorded
-        if quiz_type == 'fill':
-            progress_in = query.fill_progress
-
-        # if 'progress_in' is None (there are currently no tracked progress for this user)
-        if not progress_in:
-            print('no progress found in the databse for this user!') #  DEBUG
-
-            # initialize 'fill_progress'---the python list that will hold the
-            # 'correct_id' value if it is not in the list yet
-            fill_progress = []
-
-            # initializes 'progress_dict' to have the following key:value
-            progress_dict = {
-                sublist : fill_progress
-                }
-
-        # if 'progress_in' already exists
-        else:
-            print("this user's progress is tracked!") #  DEBUG
-
-            # goes through each dict in the database to look for the one with
-            # the key equal to 'sublist'
-            for dict in progress_in:
-                for key, value in dict:
-                    if key == sublist:
-                        progress_dict = dict
-                        fill_progress = progress_dict[sublist]
-            
-            # if no dict containing the current sublist is found, (meaning, 
-            # there is no tracked progress for that sublist yet) initialize 
-            # 'progress_dict' as the following
-            if progress_dict is None:
-                progress_dict = {
-                    sublist : fill_progress
-                    }
-
-        # if 'fill_progress' is initialized as having nothing inside
-        if not fill_progress:
-            print('nothing in the list yet!') #  DEBUG
-
-            # append to 'fill_progress' 'correct_id' (since there is no tracked progress,
-            # any progress is new progress)
-            fill_progress.append(correct_id)
-
-            # appends 'progress_dict
-            for_adding = json.dumps(fill_progress)
-
-            # equates 'query', the 'fill_progress' column in the database, to 'for_adding'
-            query.fill_progress = for_adding
+        tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).all()
+        new_tracker = models.ProgTrack()
+        if not tracker:
+            print('user has no recorded progress in everything!') #  DEBUG
+            new_tracker.users_id = flask_login.current_user.id
+            db.session.add(new_tracker)
             db.session.commit()
 
-        # if 'fill_progress' is initialized with values inside it
+            if quiz_type == 'fill':
+                # Now that user exists in 'ProgTrack', we will query for user
+                user = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).first()
+                correct_list.append(correct_id)
+                user.fill_progress = json.dumps(progress_dict)
+                db.session.commit()
+        
         else:
-            print('list has something inside!') #  DEBUG
 
-            # checks for new progress by not appending to 'fill_progress' the value of
-            # 'correct_id' that is found in the list
-            if correct_id not in fill_progress:
-                    print('this is new progress!') #  DEBUG
+            # for fill quizzes
+            if quiz_type == 'fill':
+                loop_index = -1
+                found_index = None
 
-                    # same process as above
-                    fill_progress.append(correct_id)
-                    for_adding = json.dumps(fill_progress)
-                    query.fill_progress = for_adding
+                # for each row in the database in 'tracker'
+                for row in tracker:
+                    loop_index += 1
+                    # initialize variables for iteration
+                    row_key = None
+                    row_value = None
+
+                    # for key, value in pythonified 'fill_progress' which is a dict 
+                    for key, value in json.loads(row.fill_progress).items():
+                        row_key = key
+                        row_value = value
+
+                    # if 'sublist' is the same as the 'row_key'
+                    if str(sublist) == row_key:
+                        print(f'found tracker for sublist no. {sublist}!') #  DEBUG
+                        found_index = loop_index
+
+                        # get the 'row_value' which contains the 'correct_list'
+                        correct_list = row_value
+
+                # if 'correct_list' is still empty, that means we found no tracker for
+                # this sublist
+                if not correct_list:
+                    print(f'no tracker for sublist no. {sublist}...') #  DEBUG
+                    new_tracker.users_id = flask_login.current_user.id
+                    
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist : correct_list
+                        }
+                    print(progress_dict)
+
+                    new_tracker.fill_progress = json.dumps(progress_dict)
+                    db.session.add(new_tracker)
                     db.session.commit()
-            else:
-                print('this is NOT new progress!')
+
+                else:
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist : correct_list
+                    }
+
+                    print(progress_dict)
+                    found_tracker = tracker[found_index]
+                    found_tracker.fill_progress = json.dumps(progress_dict)
+                    db.session.commit()
 
     return ('From Python: Got it!')
 
