@@ -218,23 +218,25 @@ def progress_tracker():
                 for key, value in dict:
                     if key == sublist:
                         progress_dict = dict
+                        fill_progress = progress_dict[sublist]
             
             # if no dict containing the current sublist is found, (meaning, 
             # there is no tracked progress for that sublist yet) initialize 
             # 'progress_dict' as the following
-            progress_dict = {
-                sublist : fill_progress
-                }
+            if progress_dict is None:
+                progress_dict = {
+                    sublist : fill_progress
+                    }
 
         # if 'fill_progress' is initialized as having nothing inside
         if not fill_progress:
             print('nothing in the list yet!') #  DEBUG
 
-            # append to 'fill_progress' 'json_item' (since there is no tracked progress,
+            # append to 'fill_progress' 'correct_id' (since there is no tracked progress,
             # any progress is new progress)
             fill_progress.append(correct_id)
 
-            # converts 'fill_progress', a python list, into JSON
+            # appends 'progress_dict
             for_adding = json.dumps(fill_progress)
 
             # equates 'query', the 'fill_progress' column in the database, to 'for_adding'
@@ -246,7 +248,7 @@ def progress_tracker():
             print('list has something inside!') #  DEBUG
 
             # checks for new progress by not appending to 'fill_progress' the value of
-            # 'json_item' that is found in the list
+            # 'correct_id' that is found in the list
             if correct_id not in fill_progress:
                     print('this is new progress!') #  DEBUG
 
