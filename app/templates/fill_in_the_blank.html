@@ -23,7 +23,8 @@
 <!-- Scripting -->
 <script>
     // array for holding '1' for each correct question answered
-    var fillCorrectItems = [];
+    var count = 0;
+    var correctItem = None;
 
     // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
@@ -49,8 +50,9 @@
                     // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
 
-                    // appends '1' to 'correctItems'
-                    fillCorrectItems.push(answer.getAttribute('data-form_id'));
+                    // appends '1' to 'count'
+                    count++;
+                    correctItem = answer.getAttribute('data-form_id');
 
                     // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
@@ -58,10 +60,10 @@
                         console.log(xhttp.responseText);
                     };
                     xhttp.open('POST', '/fill_request', true);
-                    xhttp.send(fillCorrectItems);
+                    xhttp.send(correctItem);
 
                     // reloads page if 'correctItems' has 5 items
-                    if (fillCorrectItems.length == 5) {
+                    if (count == 5) {
                         location.reload();
                     };
                 }

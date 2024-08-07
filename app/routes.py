@@ -6,6 +6,7 @@ import flask_login
 import os
 from app.forms import Sign_Up, Log_In, Search_Bar
 import random
+import json
 
 
 #  SQLAlchemy stuff
@@ -160,27 +161,62 @@ def word_lookfor():
 # AJAX request route
 @app.route('/fill_request', methods=['POST'])
 def fill_request():
-    print('Heya!') #  DEBUG
-    fill_correct_items = []
-    json_item = request.get_json('fillCorrectItems')
+    # takes 'correctItem' via the XMLHttpRequest
+    json_item = request.get_json('correctItem')
 
-    # NOT FINISHED YET
+    # if the current user is authenticated (they are logged in)
+    if flask_login.current_user.is_authenticated is True:
 
-    # if flask_login.current_user.is_authenticated is True:
-    #     fill_query = models.Users.query.filter_by(id=flask_login.current_user.id).with_entities(models.Users.fill_progress).first()
+        # get from database the column 'fill_progress'
+        query = models.Users.query.filter_by(id=flask_login.current_user.id).first()
 
-    #     if not fill_correct_items:
-    #         print('nothing in list yet!') #  DEBUG
-    #         fill_correct_items.append(json_item)
+        # if 'query' is None (there are currently no tracked progress for this user)
+        if not query.fill_progress:
+            print('no progress found in the databse for this user!') #  DEBUG
 
-    #     else:
-    #         print('something in list already!') #  DEBUG
-    #         for item in fill_correct_items:
-    #             if item != json_item:
-    #                 fill_correct_items.append(json_item)
+            # initialize 'fill_progress'---the python list that will hold the
+            # 'correctItem' value if it is not in the list yet
+            fill_progress = []
 
-    #     fill_query = fill_correct_items
-    #     db.session.commit()
+        # if 'query' already exists
+        else:
+            print("this user's progress is tracked!") #  DEBUG
+
+            # initializes 'fill_progress' as the parsed JSON list (which comes from
+            # 'query', if it exists) containing the current progress of the user
+            fill_progress = json.loads(query.fill_progress)
+
+    # if 'fill_progress' is initialized as having nothing inside
+    if not fill_progress:
+        print('nothing in the list yet!') #  DEBUG
+
+        # append to 'fill_progress' 'json_item' (since there is no tracked progress,
+        # any progress is new progress)
+        fill_progress.append(json_item)
+
+        # converts 'fill_progress', a python list, into JSON
+        for_adding = json.dumps(fill_progress)
+
+        # equates 'query', the 'fill_progress' column in the database, to 'for_adding'
+        query.fill_progress = for_adding
+        db.session.commit()
+
+    # if 'fill_progress' is initialized with values inside it
+    else:
+        print('list has something inside!') #  DEBUG
+
+        # checks for new progress by not appending to 'fill_progress' the value of
+        # 'json_item' that is found in the list
+        for item in fill_progress:
+            print(item) #  DEBUG
+            if item != json_item:
+                print('this is new progress!') #  DEBUG
+
+                # same process as above
+                fill_progress.append(json_item)
+                for_adding = json.dumps(fill_progress)
+                query.fill_progress = for_adding
+                db.session.commit()
 
     return ('From Python: Got it!')
 
