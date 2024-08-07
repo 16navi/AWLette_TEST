@@ -15,3 +15,15 @@ def decrypt(password):
         decpass += decch
     return decpass[::-1]
 
+dict1_list = []
+
+my_dict1 = {
+    1 : dict1_list
+    }
+
+print(my_dict1)
+
+dict1_list.append(1)
+dict1_list.append(2)
+
+print(my_dict1)

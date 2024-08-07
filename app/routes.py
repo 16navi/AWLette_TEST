@@ -159,10 +159,31 @@ def word_lookfor():
 
 
 # AJAX request route
-@app.route('/fill_request', methods=['POST'])
-def fill_request():
+@app.route('/progress_tracker', methods=['POST'])
+def progress_tracker():
     # takes 'correctItem' via the XMLHttpRequest
-    json_item = request.get_json('correctItem')
+    # 'correctItem' is present in all quizzes, and is a dictionary
+    # key specifies what quiz the progress was from
+    # value is the id of the correct answer
+    posted_dict = request.get_json()['correctItem']
+    quiz_type, correct_id, sublist, progress_in = None, None, None, None
+    dict_values, dict_keys, fill_progress = [], [], []
+
+    # goes through each key, value and appends to respective
+    # lists to be able to assign the above variables with their
+    # respective values
+    for key, value in posted_dict.items():
+        dict_values.append(value)
+        dict_keys.append(key)
+    
+    # variable assignment
+    quiz_type = dict_keys[0]
+    correct_id = int(dict_values[0])
+    sublist = int(dict_values[1])
+
+    # to hold both the sublist and the id's per sublist, i will use
+    # a dict. This will be assigned a value later
+    progress_dict = None
 
     # if the current user is authenticated (they are logged in)
     if flask_login.current_user.is_authenticated is True:
@@ -170,21 +191,40 @@ def fill_request():
         # get from database the column 'fill_progress'
         query = models.Users.query.filter_by(id=flask_login.current_user.id).first()
 
-        # if 'query' is None (there are currently no tracked progress for this user)
-        if not query.fill_progress:
+        # assigns which column in the database the progress will be recorded
+        if quiz_type == 'fill':
+            progress_in = query.fill_progress
+
+        # if 'progress_in' is None (there are currently no tracked progress for this user)
+        if not progress_in:
             print('no progress found in the databse for this user!') #  DEBUG
 
             # initialize 'fill_progress'---the python list that will hold the
-            # 'correctItem' value if it is not in the list yet
+            # 'correct_id' value if it is not in the list yet
             fill_progress = []
 
-        # if 'query' already exists
+            # initializes 'progress_dict' to have the following key:value
+            progress_dict = {
+                sublist : fill_progress
+                }
+
+        # if 'progress_in' already exists
         else:
             print("this user's progress is tracked!") #  DEBUG
 
-            # initializes 'fill_progress' as the parsed JSON list (which comes from
-            # 'query', if it exists) containing the current progress of the user
-            fill_progress = json.loads(query.fill_progress)
+            # goes through each dict in the database to look for the one with
+            # the key equal to 'sublist'
+            for dict in progress_in:
+                for key, value in dict:
+                    if key == sublist:
+                        progress_dict = dict
+            
+            # if no dict containing the current sublist is found, (meaning, 
+            # there is no tracked progress for that sublist yet) initialize 
+            # 'progress_dict' as the following
+            progress_dict = {
+                sublist : fill_progress
+                }
 
         # if 'fill_progress' is initialized as having nothing inside
         if not fill_progress:
@@ -192,7 +232,7 @@ def fill_request():
 
             # append to 'fill_progress' 'json_item' (since there is no tracked progress,
             # any progress is new progress)
-            fill_progress.append(json_item)
+            fill_progress.append(correct_id)
 
             # converts 'fill_progress', a python list, into JSON
             for_adding = json.dumps(fill_progress)
@@ -207,11 +247,11 @@ def fill_request():
 
             # checks for new progress by not appending to 'fill_progress' the value of
             # 'json_item' that is found in the list
-            if json_item not in fill_progress:
+            if correct_id not in fill_progress:
                     print('this is new progress!') #  DEBUG
 
                     # same process as above
-                    fill_progress.append(json_item)
+                    fill_progress.append(correct_id)
                     for_adding = json.dumps(fill_progress)
                     query.fill_progress = for_adding
                     db.session.commit()

@@ -24,7 +24,10 @@
 <script>
     // array for holding '1' for each correct question answered
     var count = 0;
-    var correctItem = None;
+    var correctItem = {
+        'fill' : '',
+        'sublist' : {{ sublist|tojson }}
+    };
 
     // Function for checking if the answer is right or wrong
     function rightOrWrong(input, answer) {
@@ -52,15 +55,17 @@
 
                     // appends '1' to 'count'
                     count++;
-                    correctItem = answer.getAttribute('data-form_id');
+                    correctItem['fill'] = answer.getAttribute('data-form_id');
+                    console.log(correctItem['fill']);
 
                     // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
                     xhttp.onload = function () {
                         console.log(xhttp.responseText);
                     };
-                    xhttp.open('POST', '/fill_request', true);
-                    xhttp.send(correctItem);
+                    xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                    xhttp.setRequestHeader('Content-Type', 'application/json');
+                    xhttp.send(JSON.stringify({correctItem}));
 
                     // reloads page if 'correctItems' has 5 items
                     if (count == 5) {
