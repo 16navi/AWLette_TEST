@@ -174,84 +174,164 @@ def progress_tracker():
     correct_id = int(dict_values[0])
     sublist = int(dict_values[1])
     quiz_type = dict_keys[0]
-    
+
     progress_dict = {
-        sublist : correct_list
+        sublist: correct_list
     }
 
     if flask_login.current_user.is_authenticated is True:
         tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).all()
         new_tracker = models.ProgTrack()
+
+        # look for any progress for a specific type of quiz---meaning, look
+        # for a row where a specific column is not null
+
         if not tracker:
-            print('user has no recorded progress in everything!') #  DEBUG
+            print('user has no recorded progress in everything!')  # DEBUG
             new_tracker.users_id = flask_login.current_user.id
             db.session.add(new_tracker)
             db.session.commit()
 
+            # for fill quizzes
             if quiz_type == 'fill':
                 # Now that user exists in 'ProgTrack', we will query for user
                 user = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).first()
                 correct_list.append(correct_id)
                 user.fill_progress = json.dumps(progress_dict)
                 db.session.commit()
-        
-        else:
+
+            # for form quizzes
+            if quiz_type == 'form':
+                # Now that user exists in 'ProgTrack', we will query for user
+                user = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).first()
+                correct_list.append(correct_id)
+                user.form_progress = json.dumps(progress_dict)
+                db.session.commit()
+
+        elif tracker:
+
+            for i in tracker:
+                if quiz_type == 'fill':
+                    if i.fill_progress is not None:
+                        print('there is progress for fill!')
+                        loop_index = -1
+                        found_index = None
+
+                        # for each row in the database in 'tracker'
+                        for row in tracker:
+                            loop_index += 1
+                            # initialize variables for iteration
+                            row_key = None
+                            row_value = None
+
+                            # for key, value in pythonified 'fill_progress' which is a dict
+                            for key, value in json.loads(row.fill_progress).items():
+                                row_key = key
+                                row_value = value
+
+                            # if 'sublist' is the same as the 'row_key'
+                            if str(sublist) == row_key:
+                                print(f'found tracker for sublist no. {sublist}!')  # DEBUG
+                                found_index = loop_index
+
+                                # get the 'row_value' which contains the 'correct_list'
+                                correct_list = row_value
+
+                        # if 'correct_list' is still empty, that means we found no tracker for
+                        # this sublist
+                        if not correct_list:
+                            print(f'no tracker for sublist no. {sublist}...')  # DEBUG
+                            new_tracker.users_id = flask_login.current_user.id
+
+                            if correct_id not in correct_list:
+                                correct_list.append(correct_id)
+
+                            progress_dict = {
+                                sublist: correct_list
+                                }
+                            print(progress_dict)
+
+                            new_tracker.fill_progress = json.dumps(progress_dict)
+                            db.session.add(new_tracker)
+                            db.session.commit()
+
+                        else:
+                            if correct_id not in correct_list:
+                                correct_list.append(correct_id)
+
+                            progress_dict = {
+                                sublist: correct_list
+                            }
+
+                            print(progress_dict)
+                            found_tracker = tracker[found_index]
+                            found_tracker.fill_progress = json.dumps(progress_dict)
+                            db.session.commit()
+
+                    else:
+                        print('there is NO progress for fill!')
+
+                if quiz_type == 'form':
+                    if i.form_progress is not None:
+                        print('there is progress for form!')
+                        loop_index = -1
+                        found_index = None
+
+                        # for each row in the database in 'tracker'
+                        for row in tracker:
+                            loop_index += 1
+                            # initialize variables for iteration
+                            row_key = None
+                            row_value = None
+
+                            # for key, value in pythonified 'form_progress' which is a dict
+                            for key, value in json.loads(row.form_progress).items():
+                                row_key = key
+                                row_value = value
+
+                            # if 'sublist' is the same as the 'row_key'
+                            if str(sublist) == row_key:
+                                print(f'found tracker for sublist no. {sublist}!')  # DEBUG
+                                found_index = loop_index
+
+                                # get the 'row_value' which contains the 'correct_list'
+                                correct_list = row_value
+
+                        # if 'correct_list' is still empty, that means we found no tracker for
+                        # this sublist
+                        if not correct_list:
+                            print(f'no tracker for sublist no. {sublist}...')  # DEBUG
+                            new_tracker.users_id = flask_login.current_user.id
+
+                            if correct_id not in correct_list:
+                                correct_list.append(correct_id)
+
+                            progress_dict = {
+                                sublist: correct_list
+                                }
+                            print(progress_dict)
+
+                            new_tracker.form_progress = json.dumps(progress_dict)
+                            db.session.add(new_tracker)
+                            db.session.commit()
+
+                        else:
+                            if correct_id not in correct_list:
+                                correct_list.append(correct_id)
+
+                            progress_dict = {
+                                sublist: correct_list
+                            }
+
+                            print(progress_dict)
+                            found_tracker = tracker[found_index]
+                            found_tracker.form_progress = json.dumps(progress_dict)
+                            db.session.commit()
+
+                    else:
+                        print('there is NO progress for form!')
 
             # for fill quizzes
-            if quiz_type == 'fill':
-                loop_index = -1
-                found_index = None
-
-                # for each row in the database in 'tracker'
-                for row in tracker:
-                    loop_index += 1
-                    # initialize variables for iteration
-                    row_key = None
-                    row_value = None
-
-                    # for key, value in pythonified 'fill_progress' which is a dict 
-                    for key, value in json.loads(row.fill_progress).items():
-                        row_key = key
-                        row_value = value
-
-                    # if 'sublist' is the same as the 'row_key'
-                    if str(sublist) == row_key:
-                        print(f'found tracker for sublist no. {sublist}!') #  DEBUG
-                        found_index = loop_index
-
-                        # get the 'row_value' which contains the 'correct_list'
-                        correct_list = row_value
-
-                # if 'correct_list' is still empty, that means we found no tracker for
-                # this sublist
-                if not correct_list:
-                    print(f'no tracker for sublist no. {sublist}...') #  DEBUG
-                    new_tracker.users_id = flask_login.current_user.id
-                    
-                    if correct_id not in correct_list:
-                        correct_list.append(correct_id)
-
-                    progress_dict = {
-                        sublist : correct_list
-                        }
-                    print(progress_dict)
-
-                    new_tracker.fill_progress = json.dumps(progress_dict)
-                    db.session.add(new_tracker)
-                    db.session.commit()
-
-                else:
-                    if correct_id not in correct_list:
-                        correct_list.append(correct_id)
-
-                    progress_dict = {
-                        sublist : correct_list
-                    }
-
-                    print(progress_dict)
-                    found_tracker = tracker[found_index]
-                    found_tracker.fill_progress = json.dumps(progress_dict)
-                    db.session.commit()
 
     return ('From Python: Got it!')
 
@@ -291,11 +371,8 @@ def form():
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()
 
-        # generate five random word ids
-        random_word_id = []
-        for i in range(5):
-            n = random.randint(1, 60)
-            random_word_id.append(n)
+        # sample five random words
+        random_words = random.sample(words, 5)
 
         # for deciding which 'form' becomes blank
         random_blank_sublist = []
@@ -320,25 +397,19 @@ def form():
         random_forms_sublist = []
 
         # For every 'id' in 'random_word_id'...
-        for i in random_word_id:
+        for word in random_words:
 
-            # for every 'word' in 'words'...
-            for word in words:
+            # add every form of the word into 'random_forms_sublist'
+            add = [word.form[0],
+                   word.form[1],
+                   word.form[2]]
+            random_forms_sublist.extend(add)
 
-                # check if 'word.id' is equal to 'id'
-                if word.id == i:
+            # add 'random_forms_sublist' to '..._main'
+            random_forms_main.append(random_forms_sublist)
 
-                    # add every form of the word into 'random_forms_sublist
-                    add = [word.form[0],
-                           word.form[1],
-                           word.form[2]]
-                    random_forms_sublist.extend(add)
-
-                    # add 'random_forms_sublist' to '..._main'
-                    random_forms_main.append(random_forms_sublist)
-
-                    # remove the items in '..._sublist' and repeat
-                    random_forms_sublist = []
+            # remove the items in '..._sublist' and repeat
+            random_forms_sublist = []
 
     return render_template('form.html',
                            sublist=sublist,

@@ -56,7 +56,7 @@
                     // appends '1' to 'count'
                     count++;
                     correctItem['fill'] = answer.getAttribute('data-form_id');
-                    console.log(correctItem['fill']);
+                    console.log(correctItem['fill']); //  DEBUG
 
                     // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
@@ -94,6 +94,8 @@ Choose a sublist:
 <form action='{{url_for('fill_in_the_blank')}}' method='POST'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
     </ul>
 </form>
 

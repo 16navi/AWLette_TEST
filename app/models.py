@@ -106,6 +106,7 @@ class ProgTrack(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     fill_progress = db.Column(db.Text())
+    form_progress = db.Column(db.Text())
 
     def __repr__(self):
         return self.collocation

@@ -22,11 +22,17 @@
 
 <!-- Scripting -->
 <script>
+    // initializes a dict to send to server later
+    var correctItem = {
+        'form' : '',
+        'sublist' : {{ sublist|tojson }}
+    };
+
     // sets a constant to 'random_blank_amount'
     const blankAmount = 15 - {{ random_blank_amount|tojson }};
 
     // 'correctItems' to increment '1' for every corect item
-    var correctItem = 0;
+    var count = 0;
 
     console.log(blankAmount);
 
@@ -55,10 +61,21 @@
                     input.style.backgroundColor = '#90ee90';
 
                     // increments 1 to 'correctItems'
-                    correctItem++;
+                    count++;
+                    correctItem['form'] = answer.getAttribute('data-form_id');
+                    console.log(correctItem['form']); //  DEBUG
+
+                    // using AJAX, use an XMLHttpRequest() to pass the id
+                    const xhttp = new XMLHttpRequest();
+                    xhttp.onload = function () {
+                        console.log(xhttp.responseText);
+                    };
+                    xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                    xhttp.setRequestHeader('Content-Type', 'application/json');
+                    xhttp.send(JSON.stringify({correctItem}));
 
                     // if correctItems is equal to 'blankAmount', reload page
-                    if (correctItem == blankAmount) {
+                    if (count == blankAmount) {
                         location.reload();
                     };
                 }
@@ -84,6 +101,8 @@ Choose a sublist:
 <form action='{{url_for('form')}}' method='GET'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
     </ul>
 </form>
 
@@ -106,7 +125,7 @@ Choose a sublist:
         <td>
             {% if blanks [0] == 0 %}
                 <input type='text' id='a{{ loop.index }}1'></input>
-                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}1' value='{{ form_sublist[0] }}'></input>
+                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}1' value='{{ form_sublist[0] }}' data-form_id='{{ form_sublist[0].id }}'></input>
 
                 <script>
                     rightOrWrong(   document.getElementById('a{{ loop.index }}1'),
@@ -119,7 +138,7 @@ Choose a sublist:
         <td>
             {% if blanks [1] == 0 %}
                 <input type='text' id='a{{ loop.index }}2'></input>
-                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}2' value='{{ form_sublist[1] }}'></input>
+                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}2' value='{{ form_sublist[1] }}' data-form_id='{{ form_sublist[1].id }}'></input>
 
                 <script>
                     rightOrWrong(   document.getElementById('a{{ loop.index }}2'),
@@ -132,7 +151,7 @@ Choose a sublist:
         <td>
             {% if blanks [2] == 0 %}
                 <input type='text' id='a{{ loop.index }}3'></input>
-                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}3' value='{{ form_sublist[2] }}'></input>
+                <input type='hidden' id='b{{ random_forms_main.index(form_sublist) }}3' value='{{ form_sublist[2] }}' data-form_id='{{ form_sublist[2].id }}'></input>
 
                 <script>
                     rightOrWrong(   document.getElementById('a{{ loop.index }}3'),
