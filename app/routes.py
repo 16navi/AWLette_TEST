@@ -208,6 +208,22 @@ def progress_tracker():
                 user.form_progress = json.dumps(progress_dict)
                 db.session.commit()
 
+            # for match quizzes
+            if quiz_type == 'match':
+                # Now that user exists in 'ProgTrack', we will query for user
+                user = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).first()
+                correct_list.append(correct_id)
+                user.match_progress = json.dumps(progress_dict)
+                db.session.commit()
+
+            # for qna quizzes
+            if quiz_type == 'qna':
+                # Now that user exists in 'ProgTrack', we will query for user
+                user = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id).first()
+                correct_list.append(correct_id)
+                user.qna_progress = json.dumps(progress_dict)
+                db.session.commit()
+
         else:
             for i in reversed(tracker):
                 if quiz_type == 'fill':
@@ -218,6 +234,18 @@ def progress_tracker():
 
                 if quiz_type == 'form':
                     if i.form_progress is not None:
+                        quiz_progress = True
+                    else:
+                        quiz_progress = False
+
+                if quiz_type == 'match':
+                    if i.form_progress is not None:
+                        quiz_progress = True
+                    else:
+                        quiz_progress = False
+
+                if quiz_type == 'qna':
+                    if i.qna_progress is not None:
                         quiz_progress = True
                     else:
                         quiz_progress = False
@@ -271,6 +299,19 @@ def progress_tracker():
 
                     selected_tracker.fill_progress = json.dumps(progress_dict)
                     db.session.add(selected_tracker)
+                    db.session.commit()
+
+                elif correct_list:
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist: correct_list
+                    }
+
+                    print(f'\nprogress_dict is now --{progress_dict}-- adding to database...\n')
+                    found_tracker = tracker[found_index]
+                    found_tracker.fill_progress = json.dumps(progress_dict)
                     db.session.commit()
 
                 elif correct_list:
@@ -349,6 +390,132 @@ def progress_tracker():
                     found_tracker.form_progress = json.dumps(progress_dict)
                     db.session.commit()
 
+            if quiz_type == 'match':
+                print('\nthere is progress for match!\n')  # DEBUG
+                loop_index = -1
+                found_index = None
+
+                # for each row in the database in 'tracker'
+                for row in tracker:
+                    loop_index += 1
+                    # initialize variables for iteration
+                    row_key = None
+                    row_value = None
+
+                    # for key, value in pythonified 'match_progress' which is a dict
+                    if row.match_progress:
+                        for key, value in json.loads(row.match_progress).items():
+                            row_key = key
+                            row_value = value
+
+                        # if 'sublist' is the same as the 'row_key'
+                        if str(sublist) == row_key:
+                            print(f'\nfound tracker for sublist no. {sublist}!')  # DEBUG
+                            found_index = loop_index
+
+                            # get the 'row_value' which contains the 'correct_list'
+                            correct_list = row_value
+                            print(f'correct_list now has value: {correct_list}!\ncorrect_id will be added to this list shortly after...\n')  # DEBUG
+
+                # if 'correct_list' is still empty, that means we found no tracker for
+                # this sublist
+                if not correct_list:
+                    print(f'\nno tracker for sublist no. {sublist}...\n')  # DEBUG
+                    selected_tracker = new_tracker
+                    selected_tracker.users_id = flask_login.current_user.id
+
+                    for i in tracker:
+                        if i.match_progress is None:
+                            selected_tracker = i
+
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist: correct_list
+                        }
+                    print(f'\nprogress_dict is now --{progress_dict}-- adding to database...\n')
+
+                    selected_tracker.match_progress = json.dumps(progress_dict)
+                    db.session.add(selected_tracker)
+                    db.session.commit()
+
+                elif correct_list:
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist: correct_list
+                    }
+
+                    print(f'\nprogress_dict is now --{progress_dict}-- adding to database...\n')
+                    found_tracker = tracker[found_index]
+                    found_tracker.match_progress = json.dumps(progress_dict)
+                    db.session.commit()
+
+            if quiz_type == 'qna':
+                print('\nthere is progress for qna!\n')  # DEBUG
+                loop_index = -1
+                found_index = None
+
+                # for each row in the database in 'tracker'
+                for row in tracker:
+                    loop_index += 1
+                    # initialize variables for iteration
+                    row_key = None
+                    row_value = None
+
+                    # for key, value in pythonified 'qna_progress' which is a dict
+                    if row.qna_progress:
+                        for key, value in json.loads(row.qna_progress).items():
+                            row_key = key
+                            row_value = value
+
+                        # if 'sublist' is the same as the 'row_key'
+                        if str(sublist) == row_key:
+                            print(f'\nfound tracker for sublist no. {sublist}!')  # DEBUG
+                            found_index = loop_index
+
+                            # get the 'row_value' which contains the 'correct_list'
+                            correct_list = row_value
+                            print(f'correct_list now has value: {correct_list}!\ncorrect_id will be added to this list shortly after...\n')  # DEBUG
+
+                # if 'correct_list' is still empty, that means we found no tracker for
+                # this sublist
+                if not correct_list:
+                    print(f'\nno tracker for sublist no. {sublist}...\n')  # DEBUG
+                    selected_tracker = new_tracker
+                    selected_tracker.users_id = flask_login.current_user.id
+
+                    for i in tracker:
+                        if i.qna_progress is None:
+                            selected_tracker = i
+
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist: correct_list
+                        }
+                    print(f'\nprogress_dict is now --{progress_dict}-- adding to database...\n')
+
+                    selected_tracker.qna_progress = json.dumps(progress_dict)
+                    db.session.add(selected_tracker)
+                    db.session.commit()
+
+                elif correct_list:
+                    if correct_id not in correct_list:
+                        correct_list.append(correct_id)
+
+                    progress_dict = {
+                        sublist: correct_list
+                    }
+
+                    print(f'\nprogress_dict is now --{progress_dict}-- adding to database...\n')
+                    found_tracker = tracker[found_index]
+                    found_tracker.qna_progress = json.dumps(progress_dict)
+                    db.session.commit()
+
         if quiz_progress is False:
             if quiz_type == 'fill':
                 print('\nthere is NO progress for fill!\n')  # DEBUG
@@ -366,6 +533,24 @@ def progress_tracker():
                         selected_tracker = i
                 correct_list.append(correct_id)
                 selected_tracker.form_progress = json.dumps(progress_dict)
+                db.session.commit()
+
+            if quiz_type == 'match':
+                print('\nthere is NO progress for match!\n')  # DEBUG
+                for i in tracker:
+                    if i.match_progress is None:
+                        selected_tracker = i
+                correct_list.append(correct_id)
+                selected_tracker.match_progress = json.dumps(progress_dict)
+                db.session.commit()
+
+            if quiz_type == 'qna':
+                print('\nthere is NO progress for qna!\n')  # DEBUG
+                for i in tracker:
+                    if i.qna_progress is None:
+                        selected_tracker = i
+                correct_list.append(correct_id)
+                selected_tracker.qna_progress = json.dumps(progress_dict)
                 db.session.commit()
 
     return ('From Python: Got it!')
@@ -461,7 +646,7 @@ def match():
     random_words = []
 
     # holds the definitions for the random words
-    random_definitions = []
+    # random_definitions = []
 
     # an array of 0's and 1's that will decide wether
     # a button will hold a 'word' or a 'definition'
@@ -476,16 +661,9 @@ def match():
         # uses random.sample to get 5 random words from 'words'
         random_words = random.sample(words, 5)
 
-    for word in random_words:
-
-        # takes the first definition of each 'word' in 'random_words'
-        # and appends it to 'random_definitions'
-        random_definitions.append(word.definition[0])
-
     return render_template('match.html',
                            sublist=sublist,
                            random_words=random_words,
-                           random_definitions=random_definitions,
                            arrange=arrange)
 
 

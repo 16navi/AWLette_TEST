@@ -13,30 +13,36 @@
 
 <!-- Scripting -->
 <script>
+    // 'correctItem' dict for posting later
+    var correctItem = {
+        'match' : '',
+        'sublist' : {{ sublist|tojson }}
+    }; 
+
     // counts the correct items
-    var correctItem = 0;
+    var correctCount = 0;
 
     // holds count if buton clicked is first or
     // second
-    var count = 0;
+    var clickCount = 0;
 
     // holds the id of the first button clicked
-    var id = None;
+    var id = null;
 
     // holds the object of the first button clicked
-    var first_button = None;
+    var first_button = null;
 
     // holds the answer for the first button clicked
-    var first_answer = None;
+    var first_answer = null;
 
     function rightOrWrong(input, answer) {
         input.addEventListener('click', function () {
 
             // if 'count' is eual to 0...
-            if (count == 0) {
+            if (clickCount == 0) {
 
                 // increments 'count' by 1
-                count++;
+                clickCount++;
 
                 // equates 'id' to its intented value
                 id = input.id;
@@ -52,7 +58,7 @@
                 input.style.backgroundColor = '#d3d3d3';
 
                 // console logs for debugging
-                console.log(`The count is ${count}`);
+                console.log(`The count is ${clickCount}`);
                 console.log(`You clicked button ${id}`);
 
                 // stops the propagation of the click:
@@ -62,24 +68,24 @@
             }
 
             // if count is equal to 1...
-            if (count == 1) {
+            if (clickCount == 1) {
 
                 // and if the button clicked is the same
                 // as the first one...
                 if (id == input.id) {
 
                     // increments 'count'
-                    count++;
+                    clickCount++;
 
                     // resets the background color
                     input.style.backgroundColor = '';
 
                     // console logs for debugging
-                    console.log(`The count is ${count}`);
+                    console.log(`The count is ${clickCount}`);
                     console.log(`You took your input back.`)
 
                     // resets 'count' back to 0
-                    count = 0;
+                    clickCount = 0;
                 }
 
                 // if the button clicked is NOT the same
@@ -101,14 +107,27 @@
                         first_button.setAttribute('disabled', 'true');
                         
                         // increments 'corectItem'
-                        correctItem++;
+                        correctCount++;
+
+                        correctItem['match'] = answer.getAttribute('data-correct_id');
+                        console.log(correctItem['match']); //  DEBUG
+
+                        // using AJAX, use an XMLHttpRequest() to pass the id
+                        const xhttp = new XMLHttpRequest();
+                        xhttp.onload = function () {
+                            console.log(xhttp.responseText);
+                        };
+                        xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                        xhttp.setRequestHeader('Content-Type', 'application/json');
+                        xhttp.send(JSON.stringify({correctItem}));
+                        
 
                         // console log for debugging
                         console.log('You got it right!');
-                        count = 0;
+                        clickCount = 0;
 
-                        // if 'correctItem' = 5
-                        if (correctItem == 5) {
+                        // if 'correctCount' = 5
+                        if (correctCount == 5) {
                             location.reload();
                         };
                     }
@@ -125,7 +144,7 @@
                         console.log('Not quite right!');
 
                         // resets the count
-                        count = 0;
+                        clickCount = 0;
                     }
                 }
             }
@@ -140,6 +159,8 @@ Choose a sublist:
 <form action='{{url_for('match')}}' method='GET'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
     </ul>
 </form>
 
@@ -177,7 +198,7 @@ Choose a sublist:
             {{ word_random_words[word_counter|length] }}
 
             <!-- holds the answer (or rather, the match) -->
-            <input type='hidden' id='aa{{ loop.index }}' value='{{ word_random_words[word_counter|length].definition[0] }}'></input>
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ word_random_words[word_counter|length].definition[0] }}' data-correct_id='{{ word_random_words[word_counter|length].id }}'></input>
 
             <!-- increments the counter (afaik, there is no
              increment for jinja, so I used a list that I will
@@ -191,7 +212,7 @@ Choose a sublist:
             {{ definition_random_words[definition_counter|length].definition[0] }}
 
             <!-- holds the match -->
-            <input type='hidden' id='aa{{ loop.index }}' value='{{ definition_random_words[definition_counter|length] }}'></input>
+            <input type='hidden' id='aa{{ loop.index }}' value='{{ definition_random_words[definition_counter|length] }}' data-correct_id='{{ definition_random_words[definition_counter|length].id }}'></input>
 
             <!-- increments the counter, same method -->
             {% set __ = definition_counter.append(1) %}

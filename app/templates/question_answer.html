@@ -19,19 +19,49 @@
 
 <!-- Scripting -->
 <script>
-    function rightOrWrong(question, input) {
+    var correctItem = {
+        'qna' : '',
+        'sublist' : {{ sublist|tojson }}
+    };
+
+    function rightOrWrong(question, input, classmates) {
         input.addEventListener('click', function(){
             if (question.id.replace('a', '') == input.id.replace('b', '')) {
                 console.log('You got it!');
                 input.style.backgroundColor = '#90ee90';
-                location.reload();
-                // setTimeout(function () {
-                //     location.reload()
-                // }, 1000);
+                for (let i of classmates) {
+                    i.setAttribute('disabled', 'true');
+                };
+                correctItem['qna'] = question.getAttribute('data-correct_id');
+                console.log(correctItem['qna']);
+
+                // using AJAX, use an XMLHttpRequest() to pass the id
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function () {
+                    console.log(xhttp.responseText);
+                };
+                xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                xhttp.setRequestHeader('Content-Type', 'application/json');
+                xhttp.send(JSON.stringify({correctItem}));
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
             }
             else {
-                console.log('Try again!');
-            }
+                console.log('Oops! Sorry...');
+                for (let i of classmates) {
+                    if (i.id.replace('b', '') == question.id.replace('a', '')) {
+                        i.style.backgroundColor = '#90ee90';
+                        i.setAttribute('disabled', 'true');
+                    } else {
+                        input.style.backgroundColor = '#ef7a71';
+                        i.setAttribute('disabled', 'true');
+                    };
+                };
+                setTimeout(function() {
+                    location.reload();
+                }, 2000);
+            };
         });
     };
 </script>
@@ -43,6 +73,8 @@ Choose a sublist:
 <form action='{{url_for('question_answer')}}' method='GET'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
     </ul>
 </form>
 
@@ -58,7 +90,7 @@ Choose a sublist:
     <div id='one_question'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
-            <p id='a{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
+            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
 
             {% for choice_word in random_words %}
                {% if loop.index == 3 %}
@@ -69,13 +101,14 @@ Choose a sublist:
 
                    <script>
                        rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                       document.getElementById('b{{ choice_word.id }}'))
+                                       document.getElementById('b{{ choice_word.id }}'),
+                                       document.getElementsByClassName('choices'))
                    </script>
             {% endfor %}
 
         {% elif question_type == 2 %}
             <p>2. given word, answer def</p>
-            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the definition?</p>
+            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the definition?</p>
 
             {% for choice_word in random_words %}
                 {% if loop.index == 3 %}
@@ -86,13 +119,14 @@ Choose a sublist:
 
                         <script>
                             rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                            document.getElementById('b{{ choice_word.id }}'))
+                                            document.getElementById('b{{ choice_word.id }}'),
+                                            document.getElementsByClassName('choices'))
                         </script>
             {% endfor %}
 
         {% elif question_type == 3 %}
             <p>3. given word, answer synonym</p>
-            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the synonym?</p>
+            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the synonym?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
@@ -103,7 +137,8 @@ Choose a sublist:
 
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                        document.getElementById('b{{ choice_word.id }}'))
+                                        document.getElementById('b{{ choice_word.id }}'),
+                                        document.getElementsByClassName('choices'))
                     </script>
             {% endfor %}
 
@@ -111,13 +146,14 @@ Choose a sublist:
         function for right or wrong -->
         {% elif question_type == 4 %}
             <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_form_class }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+            <p id='a{{ question_form_class }}' data-correct_id='{{ question_word.id }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
             <button class='choices' id='b1'>noun</button>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
-                                document.getElementById('b1'))
+                                document.getElementById('b1'),
+                                document.getElementsByClassName('choices'))
             </script>
             
             <button class='choices' id='b2'>adjective</button>
@@ -126,19 +162,21 @@ Choose a sublist:
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
-                                document.getElementById('b2'))
+                                document.getElementById('b2'),
+                                document.getElementsByClassName('choices'))
             </script>
             
             <button class='choices' id='b3'>verb</button>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
-                                document.getElementById('b3'))
+                                document.getElementById('b3'),
+                                document.getElementsByClassName('choices'))
             </script>
 
         {% elif question_type == 5 %}
             <p>5. given word, answer collocation</p>
-            <p id='a{{ question_word.id }}'>{{ question_word }} - what's the collocation?</p>
+            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the collocation?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
@@ -149,7 +187,8 @@ Choose a sublist:
 
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
-                                        document.getElementById('b{{ choice_word.id }}'))
+                                        document.getElementById('b{{ choice_word.id }}'),
+                                        document.getElementsByClassName('choices'))
                     </script>
             {% endfor %}
     </div>

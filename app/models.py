@@ -1,7 +1,7 @@
 from app.routes import db
 from flask_login import UserMixin
 
-# reset auto-increment: UPDATE sqlite_sequence SET seq=1 WHERE name="<table>"
+# reset auto-increment: UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'ProgTrack';
 
 WordSynonym = db.Table('WordSynonym',
                        db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
@@ -107,3 +107,5 @@ class ProgTrack(db.Model):
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     fill_progress = db.Column(db.Text())
     form_progress = db.Column(db.Text())
+    match_progress = db.Column(db.Text())
+    qna_progress = db.Column(db.Text())
