@@ -1,15 +1,6 @@
-{% include 'nav.html' %}
+{% extends 'layout.html' %}
 
-<!-- Styling -->
-<style>
-    .choices {
-        width: 17.5%;
-        height: 30%;
-        margin: 5px;
-        padding-inline: 1px;
-        vertical-align: bottom;
-    }
-</style>
+{% block content %}
 
 <!-- Scripting -->
 <script>
@@ -228,3 +219,4 @@ Choose a sublist:
 {% endfor %}
 
 {% endif %}
+{% endblock %}

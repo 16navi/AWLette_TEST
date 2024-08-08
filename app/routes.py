@@ -108,6 +108,9 @@ def logout():
 @app.route('/user_details')
 def user_details():
     user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
+    for progtrack in user.progtrack:
+        if progtrack.fill_progress:
+            print(progtrack.fill_progress)
     return render_template('user_details.html', user=user)
 
 
@@ -719,6 +722,31 @@ def filter_shuffle(seq):
 @app.template_filter('choice')
 def filter_choice(seq):
     result = random.choice(seq)
+    return result
+
+
+@app.template_filter('json_loads')
+def filter_json_loads(str):
+    if str:
+        result = json.loads(str)
+    else:
+        result = str
+    return result
+
+
+@app.template_filter('type')
+def filter_choice(obj):
+    result = type(obj)
+    return result
+
+
+@app.template_filter('items')
+def filter_choice(dict):
+    result = []
+    if dict:
+        for key, value in dict.items():
+            result.append(int(key))
+            result.append(value)
     return result
 
 

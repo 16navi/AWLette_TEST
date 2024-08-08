@@ -92,7 +92,7 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
-    progtrack = db.relationship('ProgTrack', backref='progtrack_word')
+    progtrack = db.relationship('ProgTrack', backref='progtrack_users')
     # __table_args__ = (
     #     db.UniqueConstraint('username', 'password'),
     # )
@@ -103,8 +103,8 @@ class Users(UserMixin, db.Model):
 
 class ProgTrack(db.Model):
     __tablename__ = 'ProgTrack'
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     fill_progress = db.Column(db.Text())
     form_progress = db.Column(db.Text())
     match_progress = db.Column(db.Text())
