@@ -108,9 +108,6 @@ def logout():
 @app.route('/user_details')
 def user_details():
     user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
-    for progtrack in user.progtrack:
-        if progtrack.fill_progress:
-            print(progtrack.fill_progress)
     return render_template('user_details.html', user=user)
 
 
@@ -252,7 +249,7 @@ def progress_tracker():
                         quiz_progress = True
                     else:
                         quiz_progress = False
-        
+
         if quiz_progress is True:
             if quiz_type == 'fill':
                 print('\nthere is progress for fill!\n')  # DEBUG
@@ -735,13 +732,13 @@ def filter_json_loads(str):
 
 
 @app.template_filter('type')
-def filter_choice(obj):
+def filter_tyoe(obj):
     result = type(obj)
     return result
 
 
 @app.template_filter('items')
-def filter_choice(dict):
+def filter_items(dict):
     result = []
     if dict:
         for key, value in dict.items():

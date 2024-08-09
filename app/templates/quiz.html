@@ -1,22 +1,5 @@
-{% include 'nav.html' %}
-
-<style>
-    div {
-        background-color: #d3d3d3;
-        border-style: solid;
-        border-width: 1px;
-        padding: 5px;
-        margin: 10px;
-    }
-
-    button:not(.sublist) {
-        padding: 10px;
-        width: 400px;
-        height: 100px;
-        margin: 5px;
-        vertical-align: bottom;
-    }
-</style>
+{% extends 'layout.html' %}
+{% block content %}
 
 <!-- Scripting -->
 <script>
@@ -69,123 +52,127 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
-<p>You chose Sublist No. {{ sublist }}</p>
+    <p>You chose Sublist No. {{ sublist }}</p>
 
-{% for i in range(question_amount) %}
+    {% for i in range(question_amount) %}
 
-    {% set random_words = sample(words, 4) %}
-    {% set question_type = range(1, 6)|choice %}
-    {% set question_form_class = range(1, 4)|choice %}
-    {% set question_word = random_words|choice %}
+        {% set random_words = sample(words, 4) %}
+        {% set question_type = range(1, 6)|choice %}
+        {% set question_form_class = range(1, 4)|choice %}
+        {% set question_word = random_words|choice %}
 
-    {% set container_loop_index = loop.index %}
+        {% set container_loop_index = loop.index %}
 
-    <div id='c{{ container_loop_index }}'>
-    {% if question_type == 1 %}
-        <p>1. given def, answer the word</p>
-        <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
+        <div id='c{{ container_loop_index }}'>
+        {% if question_type == 1 %}
+            <p>1. given def, answer the word</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
 
-        {% for choice_word in random_words %}
-           {% if loop.index == 3 %}
-               <br>
-           {% endif %}
+            {% for choice_word in random_words %}
+               {% if loop.index == 3 %}
+                   <br>
+               {% endif %}
 
-               <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word }}</button>
+                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word }}</button>
 
-               <script>
-                   rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                    document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
-                                    document.getElementsByClassName('choices{{ container_loop_index }}'))
-               </script>
-        {% endfor %}
+                   <script>
+                       rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
+                                        document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
+                                        document.getElementsByClassName('choices{{ container_loop_index }}'))
+                   </script>
+            {% endfor %}
 
-    {% elif question_type == 2 %}
-        <p>2. given word, answer def</p>
-        <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the definition?</p>
+        {% elif question_type == 2 %}
+            <p>2. given word, answer def</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the definition?</p>
 
-        {% for choice_word in random_words %}
-            {% if loop.index == 3 %}
-                <br>
-            {% endif %}
+            {% for choice_word in random_words %}
+                {% if loop.index == 3 %}
+                    <br>
+                {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+
+                        <script>
+                            rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
+                                             document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
+                                             document.getElementsByClassName('choices{{ container_loop_index }}'))
+                        </script>
+            {% endfor %}
+
+        {% elif question_type == 3 %}
+            <p>3. given word, answer synonym</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the synonym?</p>
+
+            {% for choice_word in random_words %}
+                    {% if loop.index == 3 %}
+                        <br>
+                    {% endif %}
+
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
 
                     <script>
                         rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
                                          document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
                                          document.getElementsByClassName('choices{{ container_loop_index }}'))
                     </script>
-        {% endfor %}
+            {% endfor %}
 
-    {% elif question_type == 3 %}
-        <p>3. given word, answer synonym</p>
-        <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the synonym?</p>
+        <!-- This type of question will require a different
+        function for right or wrong -->
+        {% elif question_type == 4 %}
+            <p>4. which form is this? (n, a, v)</p>
+            <p id='a{{ question_form_class }}{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
-        {% for choice_word in random_words %}
-                {% if loop.index == 3 %}
-                    <br>
-                {% endif %}
+            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}'>noun</button>
 
-                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
+            <script>
+                rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
+                                 document.getElementById('b1{{ container_loop_index }}'),
+                                 document.getElementsByClassName('choices{{ container_loop_index }}'))
+            </script>
 
-                <script>
-                    rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                     document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
-                                     document.getElementsByClassName('choices{{ container_loop_index }}'))
-                </script>
-        {% endfor %}
+            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}'>adjective</button>
 
-    <!-- This type of question will require a different
-    function for right or wrong -->
-    {% elif question_type == 4 %}
-        <p>4. which form is this? (n, a, v)</p>
-        <p id='a{{ question_form_class }}{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+            <script>
+                rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
+                                 document.getElementById('b2{{ container_loop_index }}'),
+                                 document.getElementsByClassName('choices{{ container_loop_index }}'))
+            </script>
 
-        <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}'>noun</button>
+            <br>
 
-        <script>
-            rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
-                             document.getElementById('b1{{ container_loop_index }}'),
-                             document.getElementsByClassName('choices{{ container_loop_index }}'))
-        </script>
-        
-        <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}'>adjective</button>
+            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}'>verb</button>
 
-        <script>
-            rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
-                             document.getElementById('b2{{ container_loop_index }}'),
-                             document.getElementsByClassName('choices{{ container_loop_index }}'))
-        </script>
+            <script>
+                rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
+                                 document.getElementById('b3{{ container_loop_index }}'),
+                                 document.getElementsByClassName('choices{{ container_loop_index }}'))
+            </script>
 
-        <br>
-        
-        <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}'>verb</button>
+        {% elif question_type == 5 %}
+            <p>5. given word, answer collocation</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the collocation?</p>
 
-        <script>
-            rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
-                             document.getElementById('b3{{ container_loop_index }}'),
-                             document.getElementsByClassName('choices{{ container_loop_index }}'))
-        </script>
+            {% for choice_word in random_words %}
+                    {% if loop.index == 3 %}
+                        <br>
+                    {% endif %}
 
-    {% elif question_type == 5 %}
-        <p>5. given word, answer collocation</p>
-        <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the collocation?</p>
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
 
-        {% for choice_word in random_words %}
-                {% if loop.index == 3 %}
-                    <br>
-                {% endif %}
+                    <script>
+                        rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
+                                         document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
+                                         document.getElementsByClassName('choices{{ container_loop_index }}'))
+                    </script>
+            {% endfor %}
+        {% endif %}
+        </div>
+    {% endfor %}
 
-                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
-
-                <script>
-                    rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                     document.getElementById('b{{ choice_word.id }}{{ container_loop_index }}'),
-                                     document.getElementsByClassName('choices{{ container_loop_index }}'))
-                </script>
-        {% endfor %}
-    {% endif %}
-    </div>
-{% endfor %}
+    <button class='submit' type='button'>Submit</button>
 
 {% endif %}
+
+{% endblock %}

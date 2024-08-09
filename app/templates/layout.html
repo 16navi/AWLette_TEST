@@ -4,13 +4,20 @@
         <title>AWLette: AWL Companion</title>
     {% if request.endpoint == 'layout' %}
         <link href="{{ url_for('static', filename='layout_style.css') }}" rel="stylesheet" type="text/css">
+    {% elif request.endpoint == 'fill_in_the_blank' %}
+        <link href="{{ url_for('static', filename='fill_style.css') }}" rel="stylesheet" type="text/css">
+    {% elif request.endpoint == 'form' %}
+        <link href="{{ url_for('static', filename='form_style.css') }}" rel="stylesheet" type="text/css">
     {% elif request.endpoint == 'match' %}
-        <link href="{{ url_for('static', filename='match_style.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='match_style.css') }}" rel="stylesheet" type="text/css">
+    {% elif request.endpoint == 'quiz' %}
+    <link href="{{ url_for('static', filename='quiz_style.css') }}" rel="stylesheet" type="text/css">
     {% endif %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
         {% include 'nav.html' %}
+        <p>Disclaimer: Sublists No. 2 and 3 are <strong>not actually sublists.</strong> The words inside them are from Sublist No. 1, I just had to temporarily put them into their respective sublists for trialling.</p>
         <main>
             {% block content %}{% endblock %}
         </main>
