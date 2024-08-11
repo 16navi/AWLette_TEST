@@ -105,6 +105,7 @@ class ProgTrack(db.Model):
     __tablename__ = 'ProgTrack'
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+    sublist = db.Column(db.Integer())
     fill_progress = db.Column(db.Text())
     form_progress = db.Column(db.Text())
     match_progress = db.Column(db.Text())

@@ -3,11 +3,15 @@
 
 <!-- Scripting -->
 <script>
-    function rightOrWrong(question, classmates, submit) {  
-        var correctItem = {
+    console.log({{ question_amount|tojson }});
+
+    var correctList = [];
+    var correctItem = {
             'quiz' : '',
             'sublist' : {{ sublist|tojson }}
         };
+
+    function rightOrWrong(question, classmates, submit) { 
     
         classmates.forEach(function(classmate) {
             classmate.isInput = false;
@@ -51,7 +55,9 @@
                     if (i.id.replace('b', '') == question.id.replace('a', '')) {
                         i.style.backgroundColor = '#90ee90';
                     };
-                };   
+                };
+                correctList.push(0);
+                console.log(correctList);
             } else if (input.id.replace('b', '') == question.id.replace('a', '')) {
                 console.log(input.id);
                 console.log(`You got Question ${question.id} right!`);
@@ -59,15 +65,8 @@
                 for (let i of classmates) {
                     i.setAttribute('disabled', 'true');
                 };
-                correctItem['quiz'] = input.id.replace('b', '');
-                // using AJAX, use an XMLHttpRequest() to pass the id
-                const xhttp = new XMLHttpRequest();
-                xhttp.onload = function () {
-                    console.log(xhttp.responseText);
-                };
-                xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
-                xhttp.setRequestHeader('Content-Type', 'application/json');
-                xhttp.send(JSON.stringify({correctItem}));
+                correctList.push(input.id.slice(2));
+                console.log(correctList);
             } else if (input.id.replace('b', '') != question.id.replace('a', '')) {
                 console.log(input.id);
                 console.log(`You got Question ${question.id} wrong...`);
@@ -78,7 +77,40 @@
                         i.style.backgroundColor = '#90ee90';
                     };
                 };
+                correctList.push(0);
+                console.log(correctList.length);
             };
+
+            function correctListIsComplete() {
+                return new Promise((resolve) => {
+                    if (correctList.length == {{ question_amount|tojson }}) {
+                        resolve(true);
+                    };
+                });
+            };          
+
+            async function postCorrectItem() {
+                waitFor = await correctListIsComplete();
+                if (waitFor == true) {
+                    for (let listId of correctList) {
+                        if (listId != 0) {
+                            setTimeout( function() {
+                                correctItem['quiz'] = listId;
+                                // using AJAX, use an XMLHttpRequest() to pass the id
+                                const xhttp = new XMLHttpRequest();
+                                xhttp.onload = function () {
+                                    console.log(xhttp.responseText);
+                                };
+                                xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                                xhttp.setRequestHeader('Content-Type', 'application/json');
+                                xhttp.send(JSON.stringify({correctItem}));
+                            }, 50);
+                        };
+                    };
+                };
+            };
+
+            postCorrectItem();
         });
     };
 </script>
@@ -90,6 +122,8 @@ Choose a sublist:
 <form action='{{url_for('quiz')}}' method='GET'>
     <ul>
         <li><button class='sublist' name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button class='sublist' name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button class='sublist' name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
     </ul>
 </form>
 
