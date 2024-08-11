@@ -3,101 +3,47 @@
 
 <!-- Scripting -->
 <script>
-    correctItem = 0;
-
-    function rightOrWrong2(question, input, classmates, submit) {
-        input.addEventListener('click', function(){
-            correctItem++;
-            if (question.id.replace('a', '') == input.id.replace('b', '')) {
-                console.log('You got it!');
-                input.style.backgroundColor = '#90ee90';
-                for (let i of classmates) {
-                    i.setAttribute('disabled', 'true');
-                };
-                if (correctItem == {{ question_amount|tojson }}) {
-                    location.reload();
-                };
-            } else if (question.id.replace('a', '') != input.id.replace('b', '')) {
-                console.log('Oops! Sorry...');
-                for (let i of classmates) {
-                    if (i.id.replace('b', '') == question.id.replace('a', '')) {
-                        i.style.backgroundColor = '#90ee90';
-                        i.setAttribute('disabled', 'true');
-                    } else {
-                        input.style.backgroundColor = '#ef7a71';
-                        i.setAttribute('disabled', 'true');
-                    };
-                    if (correctItem == {{ question_amount|tojson }}) {
-                        location.reload();
-                    };
-                };
-            }
-        });
-    };
-
-    function rightOrWrong(question, classmates, submit) {
-        clickCount = 0;
-        input = null;
-
-        console.log(question);
-        console.log(submit);
-
+    function rightOrWrong(question, classmates, submit) {  
+        var correctItem = {
+            'quiz' : '',
+            'sublist' : {{ sublist|tojson }}
+        };
+    
         classmates.forEach(function(classmate) {
-            console.log(classmate);
+            classmate.isInput = false;
             classmate.firstClick = false;
 
             classmate.addEventListener('click', function(){
-                if (clickCount == 0) {
-                    if (classmate.firstClick == false) {
-                        input = classmate;
-                        clickCount++;
-                        console.log(`You chose button ${classmate.id} as your input.`);
-                        for (let i of classmates) {
-                            i.style.backgroundColor = '';
-                            i.firstClick = false;
-                        };
-                        classmate.firstClick = true;
-                        classmate.style.backgroundColor = '#a3a3a3';
-                        classmate.stopImmediatePropagation();
+                if (classmate.firstClick == false) {
+                    classmate.isInput = true;
+                    console.log(`You're input is now button ${classmate.id}`);
+                    for (let i of classmates) {
+                        i.style.backgroundColor = '';
+                        i.firstClick = false;
                     };
-                    if (classmate.firstClick == true) {
-                        console.log(classmate.firstClick);
-                        input = null;
-                        clickCount = 0;
-                        classmate.firstClick = false;
-                        console.log('You took your input back.');
-                        classmate.style.backgroundColor = '';
-                        classmate.stopImmediatePropagation();
-                    };
+                    classmate.firstClick = true;
+                    classmate.style.backgroundColor = '#a3a3a3';
+                    classmate.stopImmediatePropagation();
                 };
-                if (clickCount == 1) {
-                    if (classmate.firstClick == true) {
-                        console.log(classmate.firstClick);
-                        input = null;
-                        clickCount = 0;
-                        classmate.firstClick = false;
-                        console.log('You took your input back.');
-                        classmate.style.backgroundColor = '';
-                        classmate.stopImmediatePropagation();
-                    };
-                    if (classmate.firstClick == false) {
-                        console.log(classmate.firstClick);
-                        input = classmate;
-                        clickCount = 0;
-                        console.log(`You're input is now button ${input.id}`);
-                        for (let i of classmates) {
-                            i.style.backgroundColor = '';
-                            i.firstClick = false;
-                        };
-                        classmate.firstClick = true;
-                        classmate.style.backgroundColor = '#a3a3a3';
-                        classmate.stopImmediatePropagation();
-                    };
+                if (classmate.firstClick == true) {
+                    classmate.isInput = null;
+                    classmate.firstClick = false;
+                    console.log('You took your input back.');
+                    classmate.style.backgroundColor = '';
+                    classmate.stopImmediatePropagation();
                 };
             });
         });
 
         submit.addEventListener('click', function() {
+            input = null;
+
+            for (let i of classmates) {
+                if (i.isInput == true) {
+                    input = i
+                };
+            };
+
             if (input == null) {
                 console.log(`You got Question ${question.id} wrong...`);
                 for (let i of classmates) {
@@ -105,14 +51,25 @@
                     if (i.id.replace('b', '') == question.id.replace('a', '')) {
                         i.style.backgroundColor = '#90ee90';
                     };
-                };
+                };   
             } else if (input.id.replace('b', '') == question.id.replace('a', '')) {
+                console.log(input.id);
                 console.log(`You got Question ${question.id} right!`);
                 input.style.backgroundColor = '#90ee90';
                 for (let i of classmates) {
                     i.setAttribute('disabled', 'true');
                 };
+                correctItem['quiz'] = input.id.replace('b', '');
+                // using AJAX, use an XMLHttpRequest() to pass the id
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function () {
+                    console.log(xhttp.responseText);
+                };
+                xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                xhttp.setRequestHeader('Content-Type', 'application/json');
+                xhttp.send(JSON.stringify({correctItem}));
             } else if (input.id.replace('b', '') != question.id.replace('a', '')) {
+                console.log(input.id);
                 console.log(`You got Question ${question.id} wrong...`);
                 input.style.backgroundColor = '#ef7a71';
                 for (let i of classmates) {

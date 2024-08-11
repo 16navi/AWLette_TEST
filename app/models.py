@@ -109,3 +109,4 @@ class ProgTrack(db.Model):
     form_progress = db.Column(db.Text())
     match_progress = db.Column(db.Text())
     qna_progress = db.Column(db.Text())
+    quiz_progress = db.Column(db.Text())
