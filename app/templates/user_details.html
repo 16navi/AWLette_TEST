@@ -7,25 +7,19 @@ hi, {{ user.username }}! Your ID is {{ user.id }}
 
 <ul>
     {% for progtrack in user.progtrack %}
-        {% set values = progtrack.fill_progress|json_loads|items %}
-        {% set sublist = values[0] %}
-        {% set correct_list = values[1] %}
-            {% if progtrack.fill_progress %}
-                <li>Sublist {{ sublist }} - {{ (correct_list|length / 180 * 100)|round(2) }}%</li>
-            {% endif %}
+        {% if progtrack.fill_progress %}    
+            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</li>
+        {% endif %}
     {% endfor %}
 </ul>
 
-<h4>Your progress in changing the form is:</h4>
+<h4>Your progress in change the form is:</h4>
 
 <ul>
     {% for progtrack in user.progtrack %}
-        {% set values = progtrack.form_progress|json_loads|items %}
-        {% set sublist = values[0] %}
-        {% set correct_list = values[1] %}
-            {% if progtrack.form_progress %}
-                <li>Sublist {{ sublist }} - {{ (correct_list|length / 180 * 100)|round(2) }}%</li>
-            {% endif %}
+        {% if progtrack.form_progress %}    
+            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</li>
+        {% endif %}
     {% endfor %}
 </ul>
 
@@ -33,12 +27,9 @@ hi, {{ user.username }}! Your ID is {{ user.id }}
 
 <ul>
     {% for progtrack in user.progtrack %}
-        {% set values = progtrack.match_progress|json_loads|items %}
-        {% set sublist = values[0] %}
-        {% set correct_list = values[1] %}
-            {% if progtrack.match_progress %}
-                <li>Sublist {{ sublist }} - {{ (correct_list|length / 60 * 100)|round(2) }}%</li>
-            {% endif %}
+        {% if progtrack.match_progress %}    
+            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</li>
+        {% endif %}
     {% endfor %}
 </ul>
 
@@ -46,12 +37,19 @@ hi, {{ user.username }}! Your ID is {{ user.id }}
 
 <ul>
     {% for progtrack in user.progtrack %}
-        {% set values = progtrack.qna_progress|json_loads|items %}
-        {% set sublist = values[0] %}
-        {% set correct_list = values[1] %}
-            {% if progtrack.qna_progress %}
-                <li>Sublist {{ sublist }} - {{ (correct_list|length / 60 * 100)|round(2) }}%</li>
-            {% endif %}
+        {% if progtrack.qna_progress %}    
+            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</li>
+        {% endif %}
     {% endfor %}
 </ul>
+
+<!-- <h4>Your progress in fill in the blanks is:</h4>
+
+<ul>
+    {% for progtrack in user.progtrack %}
+        {% if progtrack.fill_progress %}    
+            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</li>
+        {% endif %}
+    {% endfor %}
+</ul> -->
 {% endblock %}

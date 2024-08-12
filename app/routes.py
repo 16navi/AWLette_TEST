@@ -99,6 +99,10 @@ def login():
                 return redirect(request.url)
 
 
+# Admin login
+# admin credentials: (Admin ,G1SJso3zIio)
+
+
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
@@ -462,16 +466,6 @@ def filter_json_loads(str):
 @app.template_filter('type')
 def filter_tyoe(obj):
     result = type(obj)
-    return result
-
-
-@app.template_filter('items')
-def filter_items(dict):
-    result = []
-    if dict:
-        for key, value in dict.items():
-            result.append(int(key))
-            result.append(value)
     return result
 
 
