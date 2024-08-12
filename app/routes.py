@@ -175,13 +175,16 @@ def progress_tracker():
         dict_keys.append(key)
         dict_values.append(value)
 
-    correct_id = int(dict_values[0])
+    
     sublist = int(dict_values[1])
     quiz_type = dict_keys[0]
 
+    if quiz_type  != 'quiz':
+        correct_id = int(dict_values[0])
+
     print(quiz_type)
 
-    if flask_login.current_user.is_authenticated is True:
+    if flask_login.current_user.is_authenticated is True and quiz_type != 'quiz':
         tracker = models.ProgTrack.query.filter_by(
             users_id=flask_login.current_user.id,
             sublist=sublist).first()
@@ -195,8 +198,8 @@ def progress_tracker():
             db.session.commit()
 
             tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id,
-                                                    sublist=sublist).first()
-            
+                                                       sublist=sublist).first()
+
             correct_list.append(correct_id)
 
             if quiz_type == 'fill':
@@ -209,12 +212,12 @@ def progress_tracker():
                 tracker.qna_progress = json.dumps(correct_list)
             if quiz_type == 'quiz':
                 tracker.quiz_progress = json.dumps(correct_list)
-            
+
             db.session.commit()
 
         else:
             tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id,
-                                                    sublist=sublist).first()\
+                                                       sublist=sublist).first()
 
             if quiz_type == 'fill':
                 user = tracker.fill_progress
@@ -232,13 +235,13 @@ def progress_tracker():
 
                 # takes the value of 'fill_progress' from databse and
                 # gives it to 'correct_list'
-                print(f'\nTaking the list from the database...\n')  # DEBUG
+                print('\nTaking the list from the database...\n')  # DEBUG
                 correct_list = json.loads(user)
                 print(f'\ncorrect_list was {correct_list}.\n')  # DEBUG
-
+                
                 if correct_id not in correct_list:
                     # append 'correct_id' to 'correct_list'
-                    print(f'\nAppending the correct id to the list...\n')  # DEBUG
+                    print('\nAppending the correct id to the list...\n')  # DEBUG
                     correct_list.append(correct_id)
                     print(f'\ncorrect_list is now {correct_list}.\n')  # DEBUG
 
@@ -264,7 +267,7 @@ def progress_tracker():
                 print(f'\nNo progress found for {quiz_type} for sublist No. {sublist}!\n')  # DEBUG
 
                 # append 'correct_id' to 'correct_list'
-                print(f'\nAppending the correct id to the list...\n')  # DEBUG
+                print('\nAppending the correct id to the list...\n')  # DEBUG
                 correct_list.append(correct_id)
                 print(f'\ncorrect_list is now {correct_list}.\n')  # DEBUG
 
@@ -281,7 +284,7 @@ def progress_tracker():
                     tracker.qna_progress = json.dumps(correct_list)
                 if quiz_type == 'quiz':
                     tracker.quiz_progress = json.dumps(correct_list)
-                
+
                 db.session.commit()
                 print('\nDone!\n')  # DEBUG
 

@@ -10,6 +10,48 @@
             'quiz' : '',
             'sublist' : {{ sublist|tojson }}
         };
+    
+    function test(buttons, questions) {
+        for (let i of buttons){
+            console.log(i.id);
+        };
+
+        for (let i of questions){
+            console.log(i.id);
+        };
+    };
+
+    function postCorrectItem() {
+        function correctListIsComplete() {
+            return new Promise((resolve) => {
+                if (correctList.length == {{ question_amount|tojson }}) {
+                    resolve(true);
+                };
+            });
+        };
+
+        async function ifComplete() {
+            waitFor = await correctListIsComplete();
+            if (waitFor == true) {
+                console.log('Promise resolved!')  // DEBUG
+                for (let listId of correctList) {
+                    if (listId != 0) {
+                        setTimeout( function() {
+                            correctItem['quiz'] = listId;
+                            // using AJAX, use an XMLHttpRequest() to pass the id
+                            const xhttp = new XMLHttpRequest();
+                            xhttp.onload = function () {
+                                console.log(xhttp.responseText);
+                            };
+                            xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+                            xhttp.setRequestHeader('Content-Type', 'application/json');
+                            xhttp.send(JSON.stringify({correctItem}));
+                        }, 50);
+                    };
+                };
+            };
+        };
+    };
 
     function rightOrWrong(question, classmates, submit) { 
     
@@ -66,7 +108,6 @@
                     i.setAttribute('disabled', 'true');
                 };
                 correctList.push(input.id.slice(2));
-                console.log(correctList);
             } else if (input.id.replace('b', '') != question.id.replace('a', '')) {
                 console.log(input.id);
                 console.log(`You got Question ${question.id} wrong...`);
@@ -78,39 +119,8 @@
                     };
                 };
                 correctList.push(0);
-                console.log(correctList.length);
+                postCorrectItem();
             };
-
-            function correctListIsComplete() {
-                return new Promise((resolve) => {
-                    if (correctList.length == {{ question_amount|tojson }}) {
-                        resolve(true);
-                    };
-                });
-            };          
-
-            async function postCorrectItem() {
-                waitFor = await correctListIsComplete();
-                if (waitFor == true) {
-                    for (let listId of correctList) {
-                        if (listId != 0) {
-                            setTimeout( function() {
-                                correctItem['quiz'] = listId;
-                                // using AJAX, use an XMLHttpRequest() to pass the id
-                                const xhttp = new XMLHttpRequest();
-                                xhttp.onload = function () {
-                                    console.log(xhttp.responseText);
-                                };
-                                xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
-                                xhttp.setRequestHeader('Content-Type', 'application/json');
-                                xhttp.send(JSON.stringify({correctItem}));
-                            }, 50);
-                        };
-                    };
-                };
-            };
-
-            postCorrectItem();
         });
     };
 </script>
@@ -148,14 +158,14 @@ Choose a sublist:
         <div id='c{{ container_loop_index }}'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word.definition[0] }} - what's the word?</p>
 
             {% for choice_word in random_words %}
                {% if loop.index == 3 %}
                    <br>
                {% endif %}
 
-                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word }}</button>
+                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word }}</button>
             {% endfor %}
 
             <script>
@@ -166,14 +176,14 @@ Choose a sublist:
 
         {% elif question_type == 2 %}
             <p>2. given word, answer def</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the definition?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the definition?</p>
 
             {% for choice_word in random_words %}
                 {% if loop.index == 3 %}
                     <br>
                 {% endif %}
 
-                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word.definition[0] }}</button>
             {% endfor %}
 
             <script>
@@ -184,14 +194,14 @@ Choose a sublist:
 
         {% elif question_type == 3 %}
             <p>3. given word, answer synonym</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the synonym?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the synonym?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
                         <br>
                     {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word.synonym[0] }}</button>
             {% endfor %}
 
             <script>
@@ -204,15 +214,15 @@ Choose a sublist:
         function for right or wrong -->
         {% elif question_type == 4 %}
             <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_form_class }}{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+            <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
-            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}'>noun</button>
+            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice>noun</button>
 
-            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}'>adjective</button>
+            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice>adjective</button>
 
             <br>
 
-            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}'>verb</button>
+            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice>verb</button>
 
             <script>
                 rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
@@ -222,14 +232,14 @@ Choose a sublist:
 
         {% elif question_type == 5 %}
             <p>5. given word, answer collocation</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}'>{{ question_word }} - what's the collocation?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the collocation?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
                         <br>
                     {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice> {{ choice_word.collocation[0] }}</button>
             {% endfor %}
 
             <script>
@@ -239,6 +249,11 @@ Choose a sublist:
             </script>
         {% endif %}
         </div>
+
+        <script>
+            test(document.querySelectorAll('button[data-choice]'),
+                 document.querySelectorAll('p[data-question]'));
+        </script>
     {% endfor %}
 
 {% endif %}
