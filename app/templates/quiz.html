@@ -6,41 +6,9 @@
 
     var correctList = [];
     var correctItem = {
-            'quiz' : '',
+            'quiz' : correctList,
             'sublist' : {{ sublist|tojson }}
         };
-
-    // function postCorrectItem() {
-    //     function correctListIsComplete() {
-    //         return new Promise((resolve) => {
-    //             if (correctList.length == {{ question_amount|tojson }}) {
-    //                 resolve(true);
-    //             };
-    //         });
-    //     };
-
-    //     async function ifComplete() {
-    //         waitFor = await correctListIsComplete();
-    //         if (waitFor == true) {
-    //             console.log('Promise resolved!')  // DEBUG
-    //             for (let listId of correctList) {
-    //                 if (listId != 0) {
-    //                     setTimeout( function() {
-    //                         correctItem['quiz'] = listId;
-    //                         // using AJAX, use an XMLHttpRequest() to pass the id
-    //                         const xhttp = new XMLHttpRequest();
-    //                         xhttp.onload = function () {
-    //                             console.log(xhttp.responseText);
-    //                         };
-    //                         xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
-    //                         xhttp.setRequestHeader('Content-Type', 'application/json');
-    //                         xhttp.send(JSON.stringify({correctItem}));
-    //                     }, 50);
-    //                 };
-    //             };
-    //         };
-    //     };
-    // };
 
     function chooseAnswer(classmates) { 
         classmates.forEach(function(classmate) {
@@ -101,10 +69,21 @@
             } else if (question.isAnswered == false) {
                 console.log(`No answer for question ${question.id}. Oh well...`)
                 question.parentNode.style.backgroundColor = '#f2dfde';
+                correctList.push(0);
             } else {
                 console.log(`You got question ${question.id} wrong...`);
                 question.parentNode.style.backgroundColor = '#f2dfde';
             };
+        };
+        console.log(correctList);
+        if (correctList.length == 5) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                console.log(xhttp.responseText);
+            };
+            xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({correctItem}));
         };
     };
 </script>
