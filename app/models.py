@@ -92,10 +92,8 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
+    access = db.Column(db.Integer())
     progtrack = db.relationship('ProgTrack', backref='progtrack_users')
-    # __table_args__ = (
-    #     db.UniqueConstraint('username', 'password'),
-    # )
 
     def __repr__(self):
         return self.username

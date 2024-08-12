@@ -11,7 +11,7 @@ import json
 
 #  SQLAlchemy stuff
 basedir = os.path.abspath(os.path.dirname(__file__))
-db = SQLAlchemy()
+db = SQLAlchemy() 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'AWL.db')
 app.secret_key = '56893655e2db25e3825b5bc259bb9032'
 db.init_app(app)
@@ -67,6 +67,7 @@ def signup():
             else:
                 new_user.username = username
                 new_user.password = password
+                new_user.access = 1
                 db.session.add(new_user)
                 db.session.commit()
                 flash(f'Welcome, { username }!')
