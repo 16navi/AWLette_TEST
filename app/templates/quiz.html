@@ -3,76 +3,66 @@
 
 <!-- Scripting -->
 <script>
-    console.log({{ question_amount|tojson }});
 
     var correctList = [];
     var correctItem = {
             'quiz' : '',
             'sublist' : {{ sublist|tojson }}
         };
-    
-    function test(buttons, questions) {
-        for (let i of buttons){
-            console.log(i.id);
-        };
 
-        for (let i of questions){
-            console.log(i.id);
-        };
-    };
+    // function postCorrectItem() {
+    //     function correctListIsComplete() {
+    //         return new Promise((resolve) => {
+    //             if (correctList.length == {{ question_amount|tojson }}) {
+    //                 resolve(true);
+    //             };
+    //         });
+    //     };
 
-    function postCorrectItem() {
-        function correctListIsComplete() {
-            return new Promise((resolve) => {
-                if (correctList.length == {{ question_amount|tojson }}) {
-                    resolve(true);
-                };
-            });
-        };
+    //     async function ifComplete() {
+    //         waitFor = await correctListIsComplete();
+    //         if (waitFor == true) {
+    //             console.log('Promise resolved!')  // DEBUG
+    //             for (let listId of correctList) {
+    //                 if (listId != 0) {
+    //                     setTimeout( function() {
+    //                         correctItem['quiz'] = listId;
+    //                         // using AJAX, use an XMLHttpRequest() to pass the id
+    //                         const xhttp = new XMLHttpRequest();
+    //                         xhttp.onload = function () {
+    //                             console.log(xhttp.responseText);
+    //                         };
+    //                         xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
+    //                         xhttp.setRequestHeader('Content-Type', 'application/json');
+    //                         xhttp.send(JSON.stringify({correctItem}));
+    //                     }, 50);
+    //                 };
+    //             };
+    //         };
+    //     };
+    // };
 
-        async function ifComplete() {
-            waitFor = await correctListIsComplete();
-            if (waitFor == true) {
-                console.log('Promise resolved!')  // DEBUG
-                for (let listId of correctList) {
-                    if (listId != 0) {
-                        setTimeout( function() {
-                            correctItem['quiz'] = listId;
-                            // using AJAX, use an XMLHttpRequest() to pass the id
-                            const xhttp = new XMLHttpRequest();
-                            xhttp.onload = function () {
-                                console.log(xhttp.responseText);
-                            };
-                            xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
-                            xhttp.setRequestHeader('Content-Type', 'application/json');
-                            xhttp.send(JSON.stringify({correctItem}));
-                        }, 50);
-                    };
-                };
-            };
-        };
-    };
-
-    function rightOrWrong(question, classmates, submit) { 
-    
+    function chooseAnswer(classmates) { 
         classmates.forEach(function(classmate) {
             classmate.isInput = false;
             classmate.firstClick = false;
+            classmate.isCorrect = false;
 
             classmate.addEventListener('click', function(){
                 if (classmate.firstClick == false) {
-                    classmate.isInput = true;
                     console.log(`You're input is now button ${classmate.id}`);
                     for (let i of classmates) {
                         i.style.backgroundColor = '';
                         i.firstClick = false;
+                        i.isInput = false;
                     };
+                    classmate.isInput = true;
                     classmate.firstClick = true;
                     classmate.style.backgroundColor = '#a3a3a3';
                     classmate.stopImmediatePropagation();
                 };
                 if (classmate.firstClick == true) {
-                    classmate.isInput = null;
+                    classmate.isInput = false;
                     classmate.firstClick = false;
                     console.log('You took your input back.');
                     classmate.style.backgroundColor = '';
@@ -80,48 +70,42 @@
                 };
             });
         });
+    };
 
-        submit.addEventListener('click', function() {
-            input = null;
+    function rightOrWrong(buttons, questions) {
+        for (let question of questions) {
+            question.isAnswered = false;
 
-            for (let i of classmates) {
-                if (i.isInput == true) {
-                    input = i
-                };
-            };
-
-            if (input == null) {
-                console.log(`You got Question ${question.id} wrong...`);
-                for (let i of classmates) {
-                    i.setAttribute('disabled', 'true');
-                    if (i.id.replace('b', '') == question.id.replace('a', '')) {
-                        i.style.backgroundColor = '#90ee90';
+            for (let button of buttons) {
+                if (button.getAttribute('data-choice') == question.getAttribute('data-question')) {
+                    button.setAttribute('disabled', 'true');
+                    if (button.id.replace('b', '') == question.id.replace('a', '')) {
+                        button.style.backgroundColor = '#90ee90';
+                        button.isCorrect = true;
+                    };
+                    if (button.isInput == true && button.isCorrect == true) {
+                        correctList.push(button.id.slice(2));
+                        question.isCorrect = true;
+                        question.isAnswered = true;
+                    } else if (button.isInput == true && button.isCorrect == false) {
+                        button.style.backgroundColor = '#ef7a71';
+                        correctList.push(0);
+                        question.isAnswered = true;
                     };
                 };
-                correctList.push(0);
-                console.log(correctList);
-            } else if (input.id.replace('b', '') == question.id.replace('a', '')) {
-                console.log(input.id);
-                console.log(`You got Question ${question.id} right!`);
-                input.style.backgroundColor = '#90ee90';
-                for (let i of classmates) {
-                    i.setAttribute('disabled', 'true');
-                };
-                correctList.push(input.id.slice(2));
-            } else if (input.id.replace('b', '') != question.id.replace('a', '')) {
-                console.log(input.id);
-                console.log(`You got Question ${question.id} wrong...`);
-                input.style.backgroundColor = '#ef7a71';
-                for (let i of classmates) {
-                    i.setAttribute('disabled', 'true');
-                    if (i.id.replace('b', '') == question.id.replace('a', '')) {
-                        i.style.backgroundColor = '#90ee90';
-                    };
-                };
-                correctList.push(0);
-                postCorrectItem();
             };
-        });
+            
+            if (question.isCorrect == true) {
+                console.log(`You got question ${question.id} right!`);
+                question.parentNode.style.backgroundColor = '#d4f2d4';
+            } else if (question.isAnswered == false) {
+                console.log(`No answer for question ${question.id}. Oh well...`)
+                question.parentNode.style.backgroundColor = '#f2dfde';
+            } else {
+                console.log(`You got question ${question.id} wrong...`);
+                question.parentNode.style.backgroundColor = '#f2dfde';
+            };
+        };
     };
 </script>
 
@@ -144,8 +128,6 @@ Choose a sublist:
 
     <p>You chose Sublist No. {{ sublist }}</p>
 
-    <button id='submit' type='button'>Submit</button>
-
     {% for i in range(question_amount) %}
 
         {% set random_words = sample(words, 4) %}
@@ -158,103 +140,93 @@ Choose a sublist:
         <div id='c{{ container_loop_index }}'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word.definition[0] }} - what's the word?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
 
             {% for choice_word in random_words %}
                {% if loop.index == 3 %}
                    <br>
                {% endif %}
 
-                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word }}</button>
+                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
             {% endfor %}
 
             <script>
-                rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                 document.querySelectorAll('.choices{{ container_loop_index }}'),
-                                 document.getElementById('submit'))
+                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
             </script>
 
         {% elif question_type == 2 %}
             <p>2. given word, answer def</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the definition?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the definition?</p>
 
             {% for choice_word in random_words %}
                 {% if loop.index == 3 %}
                     <br>
                 {% endif %}
 
-                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word.definition[0] }}</button>
+                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
             {% endfor %}
 
             <script>
-                rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                 document.querySelectorAll('.choices{{ container_loop_index }}'),
-                                 document.getElementById('submit'))
+                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
             </script>
 
         {% elif question_type == 3 %}
             <p>3. given word, answer synonym</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the synonym?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the synonym?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
                         <br>
                     {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice>{{ choice_word.synonym[0] }}</button>
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
             {% endfor %}
 
             <script>
-                rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                 document.querySelectorAll('.choices{{ container_loop_index }}'),
-                                 document.getElementById('submit'))
+                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
             </script>
 
         <!-- This type of question will require a different
         function for right or wrong -->
         {% elif question_type == 4 %}
             <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+            <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
-            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice>noun</button>
+            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
 
-            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice>adjective</button>
+            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
 
             <br>
 
-            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice>verb</button>
+            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
 
             <script>
-                rightOrWrong(    document.getElementById('a{{ question_form_class }}{{ container_loop_index }}'),
-                                 document.querySelectorAll('.choices{{ container_loop_index }}'),
-                                 document.getElementById('submit'))
+                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
             </script>
 
         {% elif question_type == 5 %}
             <p>5. given word, answer collocation</p>
-            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question>{{ question_word }} - what's the collocation?</p>
+            <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the collocation?</p>
 
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
                         <br>
                     {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice> {{ choice_word.collocation[0] }}</button>
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
             {% endfor %}
 
             <script>
-                rightOrWrong(    document.getElementById('a{{ question_word.id }}{{ container_loop_index }}'),
-                                 document.querySelectorAll('.choices{{ container_loop_index }}'),
-                                 document.getElementById('submit'))
+                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
             </script>
         {% endif %}
         </div>
-
-        <script>
-            test(document.querySelectorAll('button[data-choice]'),
-                 document.querySelectorAll('p[data-question]'));
-        </script>
     {% endfor %}
+
+    <button id='submit' type='button' onclick='rightOrWrong(
+        document.querySelectorAll("button[data-choice]"),
+        document.querySelectorAll("p[data-question]")
+    )'>Submit</button>
 
 {% endif %}
 

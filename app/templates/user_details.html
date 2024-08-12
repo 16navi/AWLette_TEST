@@ -42,14 +42,4 @@ hi, {{ user.username }}! Your ID is {{ user.id }}
         {% endif %}
     {% endfor %}
 </ul>
-
-<!-- <h4>Your progress in fill in the blanks is:</h4>
-
-<ul>
-    {% for progtrack in user.progtrack %}
-        {% if progtrack.fill_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</li>
-        {% endif %}
-    {% endfor %}
-</ul> -->
 {% endblock %}
