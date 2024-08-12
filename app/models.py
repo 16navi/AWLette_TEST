@@ -93,6 +93,7 @@ class Users(UserMixin, db.Model):
     username = db.Column(db.Text())
     password = db.Column(db.Text())
     access = db.Column(db.Integer())
+    is_admin = db.Column(db.Integer())
     progtrack = db.relationship('ProgTrack', backref='progtrack_users')
 
     def __repr__(self):

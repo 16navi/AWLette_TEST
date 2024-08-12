@@ -1,3 +1,6 @@
+about refreshing quiz content:
+    * instead of refreshing, use async posts to get the necessary data in the background and then just continuously show the questions after getting it right.
+
 give up button:
     * user can click the button, enabling a give up option. This shows the correct answer for each quiz.
     * but before clicking the button, a guilt message will pop up.

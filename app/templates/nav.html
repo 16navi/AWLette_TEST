@@ -1,13 +1,16 @@
 <nav>
     <ul>
-        <li><a href = {{ url_for('homepage') }}>Home</a></li>
-        <li><a href = {{ url_for('about') }}>About</a></li>
+        <li><a href='{{ url_for('homepage') }}'>Home</a></li>
+        <li><a href='{{ url_for('about') }}'>About</a></li>
         {% if not current_user.is_authenticated %}
-            <li><a href = {{ url_for('signup') }}>Sign Up</a></li>
-            <li><a href = {{ url_for('login') }}>Log In</a></li>
+            <li><a href='{{ url_for('signup') }}'>Sign Up</a></li>
+            <li><a href='{{ url_for('login') }}'>Log In</a></li>
         {% else %}
-            <li><a href = {{ url_for('user_details') }}>{{ current_user }}</a></li>
-            <li><a href = {{ url_for('logout') }}>Log Out</a></li>
+            <li><a href='{{ url_for('user_details') }}'>{{ current_user }}</a></li>
+            <li><a href='{{ url_for('logout') }}'>Log Out</a></li>
+            {% if current_user.is_admin == 1 %}
+                <li><a href='{{ url_for('admin_powers') }}'>Admin Powers !!!</a></li>
+            {% endif %}
         {% endif %}
     </ul>
 </nav>

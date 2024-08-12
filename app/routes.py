@@ -11,7 +11,7 @@ import json
 
 #  SQLAlchemy stuff
 basedir = os.path.abspath(os.path.dirname(__file__))
-db = SQLAlchemy() 
+db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'AWL.db')
 app.secret_key = '56893655e2db25e3825b5bc259bb9032'
 db.init_app(app)
@@ -44,59 +44,88 @@ def homepage():
     return render_template('home.html', form=form)
 
 
+# Admin login
+# admin credentials: (Admin ,G1SJso3zIio)
+@app.route('/admin_powers')
+def admin_powers():
+    if flask_login.current_user.is_authenticated:
+        if flask_login.current_user.is_admin:
+            return render_template('admin.html')
+        else:
+            flash(f"You're not Admin, aren't you, {flask_login.current_user}?")
+            return redirect(url_for('homepage'))
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
+    
+
+@app.route('/teacher_request')
+def teacher_request():
+    return render_template('teacher_request.html')
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = Sign_Up()
-    uniqueUser = None
-    if request.method == 'GET':  # Render signup template first.
-        return render_template('signup.html', form=form, title='Sign Up')
+    if not flask_login.current_user.is_authenticated:
+        form = Sign_Up()
+        uniqueUser = None
+        if request.method == 'GET':  # Render signup template first.
+            return render_template('signup.html', form=form, title='Sign Up')
+        else:
+            if form.validate_on_submit():
+                # if form validates on submit, do the following.
+                new_user = models.Users()
+                username = form.username.data
+                password = encrypt(form.password.data)
+                uniqueUser = new_user.query.filter_by(username=username).first()
+                # query any username in the database with the
+                # same name from the form data 'username'.
+                if uniqueUser:
+                    flash('This user already exists. Try logging in.')
+                    return render_template('signup.html',
+                                           form=form,
+                                           title='Sign Up')
+                else:
+                    new_user.username = username
+                    new_user.password = password
+                    new_user.access = 1
+                    db.session.add(new_user)
+                    db.session.commit()
+                    flask_login.login_user(new_user)
+                    flash(f'Welcome, { username }!')
+                    return redirect(url_for('homepage'))
     else:
-        if form.validate_on_submit():
-            # if form validates on submit, do the following.
-            new_user = models.Users()
-            username = form.username.data
-            password = encrypt(form.password.data)
-            uniqueUser = new_user.query.filter_by(username=username).first()
-            # query any username in the database with the
-            # same name from the form data 'username'.
-            if uniqueUser:
-                flash('This user already exists. Try logging in.')
-                return render_template('signup.html',
-                                       form=form,
-                                       title='Sign Up')
-            else:
-                new_user.username = username
-                new_user.password = password
-                new_user.access = 1
-                db.session.add(new_user)
-                db.session.commit()
-                flash(f'Welcome, { username }!')
-                return redirect(url_for('homepage'))
+        flash(f"You're already logged in, {flask_login.current_user}!")
+        return redirect(url_for('homepage'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = Log_In()
-    if request.method == 'GET':
-        return render_template('login.html', form=form, title='Log In')
-    else:
-        if form.validate_on_submit():
-            user = models.Users.query.filter_by(username=form.username.data).first()
-            if user:
-                if decrypt(user.password) == form.password.data:
-                    flask_login.login_user(user)
-                    flash(f'Long time no see, {user}!')
-                    return redirect(url_for('homepage'))
+    if not flask_login.current_user.is_authenticated:
+        form = Log_In()
+        if request.method == 'GET':
+            return render_template('login.html', form=form, title='Log In')
+        else:
+            if form.validate_on_submit():
+                user = models.Users.query.filter_by(username=form.username.data).first()
+                if user:
+                    if decrypt(user.password) == form.password.data:
+                        flask_login.login_user(user)
+                        if not user.is_admin:
+                            flash(f'Long time no see, {user}!')
+                            return redirect(url_for('homepage'))
+                        else:
+                            flash('Howdy, Admin!')
+                            return redirect(url_for('homepage'))
+                    else:
+                        flash('Bad log in. Try again.')
+                        return redirect(request.url)
                 else:
                     flash('Bad log in. Try again.')
                     return redirect(request.url)
-            else:
-                flash('Bad log in. Try again.')
-                return redirect(request.url)
-
-
-# Admin login
-# admin credentials: (Admin ,G1SJso3zIio)
+    else:
+        flash(f"You're already logged in, {flask_login.current_user}!")
+        return redirect(url_for('homepage'))
 
 
 @app.route('/logout')
@@ -107,8 +136,12 @@ def logout():
 
 @app.route('/user_details')
 def user_details():
-    user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
-    return render_template('user_details.html', user=user)
+    if flask_login.current_user.is_authenticated:
+        user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
+        return render_template('user_details.html', user=user)
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
 
 
 @app.route('/about')
@@ -171,11 +204,10 @@ def progress_tracker():
         dict_keys.append(key)
         dict_values.append(value)
 
-    
     sublist = int(dict_values[1])
     quiz_type = dict_keys[0]
 
-    if quiz_type  != 'quiz':
+    if quiz_type != 'quiz':
         correct_id = int(dict_values[0])
     else:
         for i in dict_values[0]:
@@ -238,7 +270,7 @@ def progress_tracker():
                 print('\nTaking the list from the database...\n')  # DEBUG
                 correct_list = json.loads(user)
                 print(f'\ncorrect_list was {correct_list}.\n')  # DEBUG
-                
+
                 if correct_id not in correct_list and quiz_type != 'quiz':
                     # append 'correct_id' to 'correct_list'
                     print('\nAppending the correct id to the list...\n')  # DEBUG
@@ -269,7 +301,7 @@ def progress_tracker():
                             print(f'\ncorrect_list is now {correct_list}.\n')  # DEBUG
                         else:
                             print(f'\nWord {id} is not new progress...\n')  # DEBUG
-                    
+
                     if len(correct_list) != before_length:
                         # replaces the old content with the appended 'correct_list'
                         print('\nAdding to database...\n')  # DEBUG
