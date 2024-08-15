@@ -12,8 +12,9 @@
     <link href="{{ url_for('static', filename='match_style.css') }}" rel="stylesheet" type="text/css">
     {% elif request.endpoint == 'quiz' %}
     <link href="{{ url_for('static', filename='quiz_style.css') }}" rel="stylesheet" type="text/css">
+    {% elif request.endpoint == 'question_answer' %}
+    <link href="{{ url_for('static', filename='qna_style.css') }}" rel="stylesheet" type="text/css">
     {% endif %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
         {% include 'nav.html' %}

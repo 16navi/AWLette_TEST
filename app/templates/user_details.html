@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+{% with user = current_user %}
+
 hi, {{ user.username }}! Your ID is {{ user.id }}
 
 <h4>Your progress in fill in the blanks is:</h4>
@@ -52,4 +54,6 @@ hi, {{ user.username }}! Your ID is {{ user.id }}
         {% endif %}
     {% endfor %}
 </ul>
+
+{% endwith %}
 {% endblock %}

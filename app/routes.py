@@ -4,8 +4,9 @@ from app.functions import encrypt, decrypt
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
 import os
-from app.forms import Sign_Up, Log_In, Search_Bar
+from app.forms import Sign_Up, Log_In, Search_Bar, Create_Classroom, Enrol
 import random
+import string
 import json
 
 
@@ -37,82 +38,173 @@ def loader_user(user_id):
     return models.Users.query.get(user_id)
 
 
+user = flask_login.current_user
+
+
 #  App Routes
 @app.route('/')
 def homepage():
     form = Search_Bar()
-    return render_template('home.html', form=form)
+    if not user.is_anonymous and user.is_teacher == 1:
+        classrooms = models.Classrooms.query.filter_by(teacher_id=user.id).all()
+        return render_template('home.html', form=form, classrooms=classrooms)
+    else:
+        return render_template('home.html', form=form)
 
 
 # Admin login
 # admin credentials: (Admin ,G1SJso3zIio)
 @app.route('/admin_powers')
 def admin_powers():
-    if flask_login.current_user.is_authenticated:
-        if flask_login.current_user.is_admin:
+    if user.is_authenticated:
+        if user.is_admin:
             return render_template('admin.html')
         else:
-            flash(f"You're not Admin, aren't you, {flask_login.current_user}?")
+            flash(f"You're not Admin, aren't you, {user}?")
             return redirect(url_for('homepage'))
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
-    
+
+
+# Teacher request AJAX route
+@app.route('/grant_or_reject', methods=['POST'])
+def grant_or_reject():
+    posted_dict = request.get_json()
+    action, id = None, None
+    for key, value in posted_dict.items():
+        action = key
+        id = value
+
+    if action == 'grant':
+        print(f'Admin granted user id {id} the role of teacher!')  # DEBUG
+        teacher = models.Users.query.filter_by(id=id).first()
+        teacher.is_teacher = 1
+        db.session.commit()
+
+    if action == 'reject':
+        print(f'Admin rejected the request of user id {id} for the role of teacher!')  # DEBUG
+        teacher = models.Users.query.filter_by(id=id).first()
+        teacher.is_teacher = None
+        db.session.commit()
+
+    return ('From Python: Got it!')
+
 
 @app.route('/teacher_request')
 def teacher_request():
-    return render_template('teacher_request.html')
+    requesting_teachers = models.Users.query.filter_by(is_teacher=0).all()
+    return render_template('teacher_request.html',
+                            requesting_teachers=requesting_teachers)
+
+
+@app.route('/create_classroom', methods=['GET', 'POST'])
+def create_classroom():
+    form = Create_Classroom()
+    if request.method == 'GET':
+        return render_template('create_classroom.html',
+                                form=form)
+    else:
+        if form.validate_on_submit():
+            new_classroom = models.Classrooms()
+            new_classroom.classroom = form.classroom_name.data
+            new_classroom.description = form.description.data
+            unique_code = None
+            # Check if code is unique by querying database for classrooms
+            # with the code
+            while not unique_code:
+                code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
+                query = models.Classrooms.query.filter_by(code=code).first()
+                if not query:
+                    unique_code = code
+            new_classroom.code = unique_code
+            new_classroom.teacher_id = user.id
+            db.session.add(new_classroom)
+            db.session.commit()
+            return redirect(url_for('homepage'))
+
+
+@app.route('/classroom/<classroom_id>')
+def classroom_listed(classroom_id):
+    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+    return render_template('classroom_listed.html', classroom=classroom)
+
+
+@app.route('/enrol', methods=['GET', 'POST'])
+def enrol():
+    if user.is_authenticated:
+        form = Enrol()
+        if request.method == 'GET':
+            return render_template('enrol.html', form=form)
+        else:
+            if form.validate_on_submit():
+                code = form.code.data
+                classroom = models.Classrooms.query.filter_by(code=code).first()
+                if not classroom:
+                    flash('Wrong code. Try again.')
+                    return redirect(request.url)
+                else:
+                    user.classroom.append(classroom)
+                    classroom.classroom_user.append(user)
+                    db.session.commit()
+                    flash(f'Welcome to Classroom {classroom}, {user}!')
+                    return redirect(url_for('homepage'))
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if not flask_login.current_user.is_authenticated:
+    if not user.is_authenticated:
         form = Sign_Up()
-        uniqueUser = None
+        unique_user = None
         if request.method == 'GET':  # Render signup template first.
-            return render_template('signup.html', form=form, title='Sign Up')
+            return render_template('signup.html',
+                                   form=form)
         else:
             if form.validate_on_submit():
                 # if form validates on submit, do the following.
                 new_user = models.Users()
                 username = form.username.data
                 password = encrypt(form.password.data)
-                uniqueUser = new_user.query.filter_by(username=username).first()
+                unique_user = new_user.query.filter_by(username=username).first()
                 # query any username in the database with the
                 # same name from the form data 'username'.
-                if uniqueUser:
+                if unique_user:
                     flash('This user already exists. Try logging in.')
                     return render_template('signup.html',
-                                           form=form,
-                                           title='Sign Up')
+                                           form=form)
                 else:
                     new_user.username = username
                     new_user.password = password
-                    new_user.access = 1
+                    if form.is_teacher.data:
+                        new_user.is_teacher = 0
                     db.session.add(new_user)
                     db.session.commit()
                     flask_login.login_user(new_user)
                     flash(f'Welcome, { username }!')
                     return redirect(url_for('homepage'))
     else:
-        flash(f"You're already logged in, {flask_login.current_user}!")
+        flash(f"You're already logged in, {user}!")
         return redirect(url_for('homepage'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if not flask_login.current_user.is_authenticated:
+    if not user.is_authenticated:
         form = Log_In()
         if request.method == 'GET':
-            return render_template('login.html', form=form, title='Log In')
+            return render_template('login.html',
+                                   form=form)
         else:
             if form.validate_on_submit():
-                user = models.Users.query.filter_by(username=form.username.data).first()
-                if user:
-                    if decrypt(user.password) == form.password.data:
-                        flask_login.login_user(user)
-                        if not user.is_admin:
-                            flash(f'Long time no see, {user}!')
+                login_user = models.Users.query.filter_by(username=form.username.data).first()
+                if login_user:
+                    if decrypt(login_user.password) == form.password.data:
+                        flask_login.login_user(login_user)
+                        if not login_user.is_admin:
+                            flash(f'Long time no see, {login_user}!')
                             return redirect(url_for('homepage'))
                         else:
                             flash('Howdy, Admin!')
@@ -124,7 +216,7 @@ def login():
                     flash('Bad log in. Try again.')
                     return redirect(request.url)
     else:
-        flash(f"You're already logged in, {flask_login.current_user}!")
+        flash(f"You're already logged in, {user}!")
         return redirect(url_for('homepage'))
 
 
@@ -136,9 +228,8 @@ def logout():
 
 @app.route('/user_details')
 def user_details():
-    if flask_login.current_user.is_authenticated:
-        user = models.Users.query.filter_by(id=flask_login.current_user.get_id()).first()
-        return render_template('user_details.html', user=user)
+    if user.is_authenticated:
+        return render_template('user_details.html')
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
@@ -191,7 +282,7 @@ def word_lookfor():
         return redirect(url_for('homepage'))
 
 
-# AJAX request route
+# AJAX request route for quizzes
 @app.route('/progress_tracker', methods=['POST'])
 def progress_tracker():
     # get the posted dictionary
@@ -214,20 +305,20 @@ def progress_tracker():
             if i != 0:
                 correct_id.append(int(i))
 
-    if flask_login.current_user.is_authenticated is True:
+    if user.is_authenticated is True:
         tracker = models.ProgTrack.query.filter_by(
-            users_id=flask_login.current_user.id,
+            users_id=user.id,
             sublist=sublist).first()
         new_tracker = models.ProgTrack()
 
         if not tracker:
             print('\nuser has no recorded progress for any quiz in this sublist!\n')  # DEBUG
-            new_tracker.users_id = flask_login.current_user.id
+            new_tracker.users_id = user.id
             new_tracker.sublist = sublist
             db.session.add(new_tracker)
             db.session.commit()
 
-            tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id,
+            tracker = models.ProgTrack.query.filter_by(users_id=user.id,
                                                        sublist=sublist).first()
 
             if quiz_type != 'quiz':
@@ -248,27 +339,27 @@ def progress_tracker():
             db.session.commit()
 
         else:
-            tracker = models.ProgTrack.query.filter_by(users_id=flask_login.current_user.id,
+            tracker = models.ProgTrack.query.filter_by(users_id=user.id,
                                                        sublist=sublist).first()
 
             if quiz_type == 'fill':
-                user = tracker.fill_progress
+                current_progress = tracker.fill_progress
             if quiz_type == 'form':
-                user = tracker.form_progress
+                current_progress = tracker.form_progress
             if quiz_type == 'match':
-                user = tracker.match_progress
+                current_progress = tracker.match_progress
             if quiz_type == 'qna':
-                user = tracker.qna_progress
+                current_progress = tracker.qna_progress
             if quiz_type == 'quiz':
-                user = tracker.quiz_progress
+                current_progress = tracker.quiz_progress
 
-            if user:
+            if current_progress:
                 print(f'\nThere is progress for {quiz_type} for sublist No. {sublist}!\n')  # DEBUG
 
                 # takes the value of 'fill_progress' from databse and
                 # gives it to 'correct_list'
                 print('\nTaking the list from the database...\n')  # DEBUG
-                correct_list = json.loads(user)
+                correct_list = json.loads(current_progress)
                 print(f'\ncorrect_list was {correct_list}.\n')  # DEBUG
 
                 if correct_id not in correct_list and quiz_type != 'quiz':

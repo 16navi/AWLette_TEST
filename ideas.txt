@@ -1,3 +1,15 @@
+teacher available pages:
+    * teachers shouldnt have quizzes available to them
+    * instead, the available pages should be:
+        - (all their classrooms)
+            * check a student's progress
+            * create an assessment
+        - create a classroom
+
+favorite word:
+    * users can favorite a word
+    * have a seperate page displaying the user's favorite words
+
 about refreshing quiz content:
     * instead of refreshing, use async posts to get the necessary data in the background and then just continuously show the questions after getting it right.
 
@@ -28,11 +40,6 @@ user roles:
         - change the 'content' (definitions, synonyms, etc) of a word
         - remove users
         - remove classrooms
-
-progress tracking:
-    * seperate progress tracking for each quiz
-    * keeps track of every word the user gets right for every quiz (by recording its id)
-    * 
 
 How the answers in the quiz quiz is checked:
     * instead of immediately deciding wether the answer is right or wrong, hold the clicked answer first then have a 'submit' button bellow which

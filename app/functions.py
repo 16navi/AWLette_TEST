@@ -1,3 +1,5 @@
+import random, string
+
 def encrypt(password):
     encpass = ""
     for ch in password:
@@ -14,3 +16,4 @@ def decrypt(password):
         decch = chr(asc)
         decpass += decch
     return decpass[::-1]
+

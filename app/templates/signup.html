@@ -1,22 +1,28 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Sign Up</h1> 
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+{% set logged_in = False %}
 
-<form method="POST" enctype="multipart/form-data"> 
-    {{ form.csrf_token }} 
-    <p>Username: {{ form.username }}</p>
-    <p>Password: {{ form.password }}</p>
-    <p><input type="submit" value="Submit"></p>
-</form>
+{% if logged_in == False %}
+  <h1>Sign Up</h1> 
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" enctype="multipart/form-data"> 
+      {{ form.csrf_token }} 
+      <p>Username: {{ form.username }}</p>
+      <p>Password: {{ form.password }}</p>
+      <p>Are you a teacher? {{ form.is_teacher }}</p>
+      <p><input type="submit" value="Submit"></p>
+  </form>
+{% endif %}
 
 {% endblock %}

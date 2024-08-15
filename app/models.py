@@ -5,14 +5,17 @@ from flask_login import UserMixin
 
 WordSynonym = db.Table('WordSynonym',
                        db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
-                       db.Column('synonym_id', db.Integer, db.ForeignKey('Synonyms.id'))
-                       )
+                       db.Column('synonym_id', db.Integer, db.ForeignKey('Synonyms.id')))
 
 
 WordCollocation = db.Table('WordCollocation',
                            db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),
-                           db.Column('collocation_id', db.Integer, db.ForeignKey('Collocations.id'))
-                           )
+                           db.Column('collocation_id', db.Integer, db.ForeignKey('Collocations.id')))
+
+
+UserClassroom = db.Table('UserClassroom',
+                          db.Column('users_id', db.Integer, db.ForeignKey('Users.id')),
+                          db.Column('classrooms_id', db.Integer, db.ForeignKey('Classrooms.id')))
 
 
 class Words(db.Model):
@@ -22,8 +25,8 @@ class Words(db.Model):
     word = db.Column(db.Text())
     picture = db.Column(db.Text())
     # One-to-Many Relationships
-    definition = db.relationship('Definitions', backref='definition_word')
-    form = db.relationship('Forms', backref='form_word')
+    definition = db.relationship('Definitions', backref='Words')
+    form = db.relationship('Forms', backref='Words')
     # Many-to-Many Relationships
     synonym = db.relationship('Synonyms',
                               secondary='WordSynonym',
@@ -66,8 +69,7 @@ class Synonyms(db.Model):
     # Many-to-Many Relationship
     synonym_word = db.relationship('Words',
                                    secondary='WordSynonym',
-                                   back_populates='synonym'
-                                   )
+                                   back_populates='synonym')
 
     def __repr__(self):
         return self.synonym
@@ -80,8 +82,7 @@ class Collocations(db.Model):
     # Many-to-Many Relationship
     collocation_word = db.relationship('Words',
                                        secondary='WordCollocation',
-                                       back_populates='collocation'
-                                       )
+                                       back_populates='collocation')
 
     def __repr__(self):
         return self.collocation
@@ -92,9 +93,13 @@ class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.Text())
     password = db.Column(db.Text())
-    access = db.Column(db.Integer())
     is_admin = db.Column(db.Integer())
-    progtrack = db.relationship('ProgTrack', backref='progtrack_users')
+    is_teacher = db.Column(db.Integer())
+    progtrack = db.relationship('ProgTrack', backref='Users')
+    # Many-to-Many Relationship
+    classroom = db.relationship('Classrooms',
+                                secondary='UserClassroom',
+                                back_populates='classroom_user')
 
     def __repr__(self):
         return self.username
@@ -110,3 +115,20 @@ class ProgTrack(db.Model):
     match_progress = db.Column(db.Text())
     qna_progress = db.Column(db.Text())
     quiz_progress = db.Column(db.Text())
+
+
+class Classrooms(db.Model):
+    __tablename__ = 'Classrooms'
+    teacher_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    code = db.Column(db.Text())
+    classroom = db.Column(db.Text())
+    description = db.Column(db.Text())
+
+    # Many-to-Many Relationship
+    classroom_user = db.relationship('Users',
+                                     secondary='UserClassroom',
+                                     back_populates='classroom')
+
+    def __repr__(self):
+        return self.classroom

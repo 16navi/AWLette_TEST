@@ -1,4 +1,64 @@
-{% extends 'home.html' %}
+{% extends 'layout.html' %}
 {% block content %}
-Wanna be a teacher?
+
+<p id='message'>No accounts requesting to be a teacher.</p>
+
+<script>
+    removeCount = 0;
+    requestAmount = {{ requesting_teachers|length|tojson }};
+    noRequestMessage = document.getElementById('message');
+    noRequestMessage.style.display = 'none';
+
+    function grantRequest(request) {
+        removeCount++;
+        grantDict = {
+            'grant' : request.id
+        };
+        xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            console.log(xhttp.responseText);
+            request.remove();
+        };
+        xhttp.open('POST', '{{ url_for('grant_or_reject') }}');
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify(grantDict));
+
+        if (removeCount == requestAmount) {
+            noRequestMessage.style.display = '';
+        };
+    };
+    function rejectRequest(request) {
+        removeCount++;
+        grantDict = {
+            'reject' : request.id
+        };
+        xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            console.log(xhttp.responseText);
+            request.remove();
+        };
+        xhttp.open('POST', '{{ url_for('grant_or_reject') }}');
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify(grantDict));
+
+        if (removeCount == requestAmount) {
+            noRequestMessage.style.display = '';
+        };
+    };
+</script>
+
+{% if requesting_teachers %}
+    <ul>
+    {% for teacher in requesting_teachers %}
+        <li id='{{ teacher.id }}'>{{ teacher }}
+            <button onclick='grantRequest(document.getElementById({{ teacher.id }}))' id='grant{{ loop.index  }}'>Grant Teacher Role</button>
+            <button onclick='rejectRequest(document.getElementById({{ teacher.id }}))' id='reject{{ loop.index }}'>Reject Request</button>
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if not requesting_teachers %}
+    <p>No accounts requesting to be a teacher.
+{% endif %}
 {% endblock %}
