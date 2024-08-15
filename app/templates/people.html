@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h3>People inside this class:</h3>
+<p>Teacher: {{ teacher }}</p>
+<p>Students:</p>
+<ul>
+    {% for student in classroom.student %}
+        <li><a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>{{ student }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -14,8 +14,8 @@ WordCollocation = db.Table('WordCollocation',
 
 
 UserClassroom = db.Table('UserClassroom',
-                          db.Column('users_id', db.Integer, db.ForeignKey('Users.id')),
-                          db.Column('classrooms_id', db.Integer, db.ForeignKey('Classrooms.id')))
+                         db.Column('users_id', db.Integer, db.ForeignKey('Users.id')),
+                         db.Column('classrooms_id', db.Integer, db.ForeignKey('Classrooms.id')))
 
 
 class Words(db.Model):

@@ -6,7 +6,6 @@ import flask_login
 import os
 from app.forms import Sign_Up, Log_In, Search_Bar, Create_Classroom, Enrol
 import random
-import string
 import json
 
 
@@ -60,7 +59,7 @@ def admin_powers():
         if user.is_admin:
             return render_template('admin.html')
         else:
-            flash(f"You're not Admin, aren't you, {user}?")
+            flash(f"You're not Admin, are you, {user}?")
             return redirect(url_for('homepage'))
     else:
         flash('How about logging in first?')
@@ -91,11 +90,11 @@ def grant_or_reject():
     return ('From Python: Got it!')
 
 
-@app.route('/teacher_request')
+@app.route('/admin_powers/teacher_request')
 def teacher_request():
     requesting_teachers = models.Users.query.filter_by(is_teacher=0).all()
     return render_template('teacher_request.html',
-                            requesting_teachers=requesting_teachers)
+                           requesting_teachers=requesting_teachers)
 
 
 @app.route('/create_classroom', methods=['GET', 'POST'])
@@ -105,7 +104,7 @@ def create_classroom():
             form = Create_Classroom()
             if request.method == 'GET':
                 return render_template('create_classroom.html',
-                                        form=form)
+                                       form=form)
             else:
                 if form.validate_on_submit():
                     new_classroom = models.Classrooms()
@@ -125,7 +124,7 @@ def create_classroom():
                     db.session.commit()
                     return redirect(url_for('homepage'))
         else:
-            flash(f"You're not a teacher, aren't you, {user}?")
+            flash(f"You're not a teacher, are you, {user}?")
             return redirect(url_for('homepage'))
     else:
         flash('How about logging in first?')
@@ -134,16 +133,45 @@ def create_classroom():
 
 @app.route('/classroom/<classroom_id>')
 def classroom_listed(classroom_id):
+    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     if user.is_anonymous:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
     elif user.is_teacher == 1:
-        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-        teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
-        return render_template('classroom_listed.html', classroom=classroom, teacher=teacher)
-    else:
-        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
         return render_template('classroom_listed.html', classroom=classroom)
+    else:
+        if user in classroom.student:
+            return render_template('classroom_listed.html', classroom=classroom)
+        else:
+            flash(f"You're not in this classroom, are you, {user}?")
+            return redirect(url_for('homepage'))
+
+
+@app.route('/classroom/<classroom_id>/people')
+def people(classroom_id):
+    if user.is_authenticated:
+        if user.is_teacher == 1:
+            classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+            teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
+            return render_template('people.html',
+                                   classroom=classroom,
+                                   teacher=teacher)
+        else:
+            flash(f"You're not a teacher, are you, {user}?")
+            return redirect(url_for('homepage'))
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
+
+
+@app.route('/classroom/<classroom_id>/people/<users_id>')
+def student_progress(classroom_id, users_id):
+    if user.is_teacher == 1:
+        student = models.Users.query.filter_by(id=users_id).first()
+        return render_template('student_progress.html', student=student)
+    elif user.is_authenticated and user.is_teacher != 1:
+        flash(f"You're not a teacher, are you, {user}?")
+        return redirect(url_for('homepage'))
 
 
 @app.route('/enrol', methods=['GET', 'POST'])
@@ -168,17 +196,6 @@ def enrol():
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
-    
-
-@app.route('/student_progress/<users_id>')
-def student_progress(users_id):
-    if user.is_teacher == 1:
-        student = models.Users.query.filter_by(id=users_id).first()
-        return render_template('student_progress.html', student=student)
-    elif user.is_authenticated and user.is_teacher != 1:
-        flash(f"You're not a teacher, aren't you, {user}?")
-        return redirect(url_for('homepage'))
-
 
 
 @app.route('/signup', methods=['GET', 'POST'])

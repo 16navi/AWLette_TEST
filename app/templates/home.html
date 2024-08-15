@@ -21,6 +21,20 @@
 </form>
 
 <!--All the other stuff-->
+    {% if current_user.enrolment %}
+    <ul>
+      {% for classroom in current_user.enrolment %}
+        <li><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
+      {% endfor %}
+    </ul>
+    {% elif current_user.is_teacher == 1 %}
+    <ul>
+    {% for classroom in classrooms %}
+      <li><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
     <ul>
         <li><a href='/sublist'>See all the words.</a></li>
       {% if current_user.is_anonymous or current_user.is_teacher != 1 %}
@@ -33,20 +47,9 @@
       {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
         <li><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></li>
       {% elif not current_user.is_anonymous %}
-        {% for classroom in classrooms %}
-          <li><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
-        {% endfor %}
         <li><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></li>
       {% endif %}
     </ul>
-
-    {% if current_user.enrolment %}
-    <ul>
-      {% for classroom in current_user.enrolment %}
-        <li><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
-      {% endfor %}
-    </ul>
-    {% endif %}
 
 {% include 'footer.html' %}
 {% endblock %}
