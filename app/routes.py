@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from app.functions import encrypt, decrypt
+from app.functions import encrypt, decrypt, generate_code
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
 import os
@@ -100,28 +100,36 @@ def teacher_request():
 
 @app.route('/create_classroom', methods=['GET', 'POST'])
 def create_classroom():
-    form = Create_Classroom()
-    if request.method == 'GET':
-        return render_template('create_classroom.html',
-                                form=form)
-    else:
-        if form.validate_on_submit():
-            new_classroom = models.Classrooms()
-            new_classroom.classroom = form.classroom_name.data
-            new_classroom.description = form.description.data
-            unique_code = None
-            # Check if code is unique by querying database for classrooms
-            # with the code
-            while not unique_code:
-                code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-                query = models.Classrooms.query.filter_by(code=code).first()
-                if not query:
-                    unique_code = code
-            new_classroom.code = unique_code
-            new_classroom.teacher_id = user.id
-            db.session.add(new_classroom)
-            db.session.commit()
+    if user.is_authenticated:
+        if user.is_teacher == 1:
+            form = Create_Classroom()
+            if request.method == 'GET':
+                return render_template('create_classroom.html',
+                                        form=form)
+            else:
+                if form.validate_on_submit():
+                    new_classroom = models.Classrooms()
+                    new_classroom.classroom = form.classroom_name.data
+                    new_classroom.description = form.description.data
+                    unique_code = None
+                    # Check if code is unique by querying database for classrooms
+                    # with the code
+                    while not unique_code:
+                        code = generate_code(3)
+                        query = models.Classrooms.query.filter_by(code=code).first()
+                        if not query:
+                            unique_code = code
+                    new_classroom.code = unique_code
+                    new_classroom.teacher_id = user.id
+                    db.session.add(new_classroom)
+                    db.session.commit()
+                    return redirect(url_for('homepage'))
+        else:
+            flash(f"You're not a teacher, aren't you, {user}?")
             return redirect(url_for('homepage'))
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
 
 
 @app.route('/classroom/<classroom_id>')
@@ -131,7 +139,8 @@ def classroom_listed(classroom_id):
         return redirect(url_for('homepage'))
     elif user.is_teacher == 1:
         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-        return render_template('classroom_listed.html', classroom=classroom)
+        teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
+        return render_template('classroom_listed.html', classroom=classroom, teacher=teacher)
     else:
         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
         return render_template('classroom_listed.html', classroom=classroom)
@@ -159,6 +168,17 @@ def enrol():
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
+    
+
+@app.route('/student_progress/<users_id>')
+def student_progress(users_id):
+    if user.is_teacher == 1:
+        student = models.Users.query.filter_by(id=users_id).first()
+        return render_template('student_progress.html', student=student)
+    elif user.is_authenticated and user.is_teacher != 1:
+        flash(f"You're not a teacher, aren't you, {user}?")
+        return redirect(url_for('homepage'))
+
 
 
 @app.route('/signup', methods=['GET', 'POST'])
