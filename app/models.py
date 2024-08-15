@@ -97,9 +97,9 @@ class Users(UserMixin, db.Model):
     is_teacher = db.Column(db.Integer())
     progtrack = db.relationship('ProgTrack', backref='Users')
     # Many-to-Many Relationship
-    classroom = db.relationship('Classrooms',
+    enrolment = db.relationship('Classrooms',
                                 secondary='UserClassroom',
-                                back_populates='classroom_user')
+                                back_populates='student')
 
     def __repr__(self):
         return self.username
@@ -126,9 +126,9 @@ class Classrooms(db.Model):
     description = db.Column(db.Text())
 
     # Many-to-Many Relationship
-    classroom_user = db.relationship('Users',
-                                     secondary='UserClassroom',
-                                     back_populates='classroom')
+    student = db.relationship('Users',
+                              secondary='UserClassroom',
+                              back_populates='enrolment')
 
     def __repr__(self):
         return self.classroom

@@ -126,8 +126,15 @@ def create_classroom():
 
 @app.route('/classroom/<classroom_id>')
 def classroom_listed(classroom_id):
-    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    return render_template('classroom_listed.html', classroom=classroom)
+    if user.is_anonymous:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
+    elif user.is_teacher == 1:
+        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+        return render_template('classroom_listed.html', classroom=classroom)
+    else:
+        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+        return render_template('classroom_listed.html', classroom=classroom)
 
 
 @app.route('/enrol', methods=['GET', 'POST'])
@@ -144,8 +151,8 @@ def enrol():
                     flash('Wrong code. Try again.')
                     return redirect(request.url)
                 else:
-                    user.classroom.append(classroom)
-                    classroom.classroom_user.append(user)
+                    user.enrolment.append(classroom)
+                    classroom.student.append(user)
                     db.session.commit()
                     flash(f'Welcome to Classroom {classroom}, {user}!')
                     return redirect(url_for('homepage'))

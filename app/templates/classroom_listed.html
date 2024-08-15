@@ -4,4 +4,10 @@
 <h1>{{ classroom }}</h1>
 {{ classroom.description }}
 
+{% if current_user.is_teacher == 1 %}
+    {% for student in classroom.student %}
+        <p>{{ student }}</p>
+    {% endfor %}
+{% endif %}
+
 {% endblock %}
