@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<!-- Scripting -->
+<script>
+
+    var correctList = [];
+    var correctItem = {
+            'quiz_id': {{ quiz.id|tojson }},
+            'correct_ids': correctList,
+            'user': {{ current_user.id|tojson }}
+        };
+
+    function chooseAnswer(classmates) { 
+        classmates.forEach(function(classmate) {
+            classmate.isInput = false;
+            classmate.firstClick = false;
+            classmate.isCorrect = false;
+
+            classmate.addEventListener('click', function(){
+                if (classmate.firstClick == false) {
+                    console.log(`You're input is now button ${classmate.id}`);
+                    for (let i of classmates) {
+                        i.style.backgroundColor = '';
+                        i.firstClick = false;
+                        i.isInput = false;
+                    };
+                    classmate.isInput = true;
+                    classmate.firstClick = true;
+                    classmate.style.backgroundColor = '#a3a3a3';
+                    classmate.stopImmediatePropagation();
+                };
+                if (classmate.firstClick == true) {
+                    classmate.isInput = false;
+                    classmate.firstClick = false;
+                    console.log('You took your input back.');
+                    classmate.style.backgroundColor = '';
+                    classmate.stopImmediatePropagation();
+                };
+            });
+        });
+    };
+
+    function rightOrWrong(buttons, questions) {
+        for (let question of questions) {
+            question.isAnswered = false;
+
+            for (let button of buttons) {
+                if (button.getAttribute('data-choice') == question.getAttribute('data-question')) {
+                    button.setAttribute('disabled', 'true');
+                    if (button.id.replace('b', '') == question.id.replace('a', '')) {
+                        button.style.backgroundColor = '#90ee90';
+                        button.isCorrect = true;
+                    };
+                    if (button.isInput == true && button.isCorrect == true) {
+                        correctList.push(button.id.slice(2));
+                        question.isCorrect = true;
+                        question.isAnswered = true;
+                    } else if (button.isInput == true && button.isCorrect == false) {
+                        button.style.backgroundColor = '#ef7a71';
+                        correctList.push(0);
+                        question.isAnswered = true;
+                    };
+                };
+            };
+            
+            if (question.isCorrect == true) {
+                console.log(`You got question ${question.id} right!`);
+                question.parentNode.style.backgroundColor = '#d4f2d4';
+            } else if (question.isAnswered == false) {
+                console.log(`No answer for question ${question.id}. Oh well...`)
+                question.parentNode.style.backgroundColor = '#f2dfde';
+                correctList.push(0);
+            } else {
+                console.log(`You got question ${question.id} wrong...`);
+                question.parentNode.style.backgroundColor = '#f2dfde';
+            };
+        };
+        console.log(correctList);
+        if (correctList.length == 5) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                console.log(xhttp.responseText);
+            };
+            xhttp.open('POST', '{{ url_for('custom_quiz_tracker') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({correctItem}));
+        };
+    };
+</script>
+
+<h3>{{ quiz.name }}</h3>
+<p>goodluck!</p>
+
+{% for i in range(question_amount) %}
+    {% set random_words = sample(words, 4) %}
+    {% set question_type = types|choice %}
+    {% set question_form_class = range(1, 4)|choice %}
+    {% set question_word = random_words|choice %}
+    {% set container_loop_index = loop.index %}
+    <div id='c{{ container_loop_index }}'>
+    {% if question_type == 1 %}
+        <p>1. given def, answer the word</p>
+        <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
+        {% for choice_word in random_words %}
+           {% if loop.index == 3 %}
+               <br>
+           {% endif %}
+               <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
+        {% endfor %}
+        <script>
+            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+        </script>
+    {% elif question_type == 2 %}
+        <p>2. given word, answer def</p>
+        <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the definition?</p>
+        {% for choice_word in random_words %}
+            {% if loop.index == 3 %}
+                <br>
+            {% endif %}
+                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+        {% endfor %}
+        <script>
+            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+        </script>
+    {% elif question_type == 3 %}
+        <p>3. given word, answer synonym</p>
+        <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the synonym?</p>
+        {% for choice_word in random_words %}
+                {% if loop.index == 3 %}
+                    <br>
+                {% endif %}
+                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
+        {% endfor %}
+        <script>
+            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+        </script>
+    <!-- This type of question will require a different
+    function for right or wrong -->
+    {% elif question_type == 4 %}
+        <p>4. which form is this? (n, a, v)</p>
+        <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+        <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
+        <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
+        <br>
+        <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
+        <script>
+            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+        </script>
+    {% elif question_type == 5 %}
+        <p>5. given word, answer collocation</p>
+        <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word }} - what's the collocation?</p>
+        {% for choice_word in random_words %}
+                {% if loop.index == 3 %}
+                    <br>
+                {% endif %}
+                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
+        {% endfor %}
+        <script>
+            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+        </script>
+    {% endif %}
+    </div>
+{% endfor %}
+<button id='submit' type='button' onclick='rightOrWrong(
+    document.querySelectorAll("button[data-choice]"),
+    document.querySelectorAll("p[data-question]")
+)'>Submit</button>
+
+{% endblock %}

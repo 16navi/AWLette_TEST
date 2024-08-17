@@ -134,14 +134,20 @@ def create_classroom():
 @app.route('/classroom/<classroom_id>')
 def classroom_listed(classroom_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+    quizzes = models.Quiz.query.filter_by(classroom_id=classroom_id).all()
     if user.is_anonymous:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
     elif user.is_teacher == 1:
-        return render_template('classroom_listed.html', classroom=classroom)
+        return render_template('classroom_listed.html', classroom=classroom, quizzes=quizzes)
     else:
         if user in classroom.student:
-            return render_template('classroom_listed.html', classroom=classroom)
+            taken_quiz = models.UserQuiz.query.filter_by(users_id=user.id).all()
+            if taken_quiz:
+                for quiz in taken_quiz:
+                    quizzes.remove(quiz.quiz)
+                print(quizzes)
+            return render_template('classroom_listed.html', classroom=classroom, quizzes=quizzes)
         else:
             flash(f"You're not in this classroom, are you, {user}?")
             return redirect(url_for('homepage'))
@@ -156,24 +162,75 @@ def create_quiz(classroom_id):
         return render_template('create_quiz.html', form=form, sublist=sublist, words=words)
     else:
         if form.validate_on_submit():
-            print(form.item.data) #  DEBUG
-            print(form.question_type.data) #  DEBUG
+            new_quiz = models.Quiz()
+            new_quiz.name = form.name.data
+            new_quiz.classroom_id = classroom_id
+            new_quiz.item = form.item.data
+            new_quiz.question_types = json.dumps(form.question_type.data)
+            new_quiz.word_pool = form.word_pool.data
+            db.session.add(new_quiz)
+            db.session.commit()
             flash('Quiz successfully created!')
             return redirect(url_for('classroom_listed', classroom_id=classroom_id))
+
+
+@app.route('/classroom/<classroom_id>/custom_quiz/<quiz_id>')
+def custom_quiz(classroom_id, quiz_id):
+    quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+    words = []
+    for id in json.loads(quiz.word_pool):
+        words.append(models.Words.query.filter_by(id=id).first())
+    question_amount = quiz.item
+    types = json.loads(quiz.question_types)
+    return render_template('custom_quiz.html',
+                           quiz=quiz,
+                           words=words,
+                           question_amount=question_amount,
+                           types=types)
+
+
+@app.route('/classroom/<classroom_id>/custom_quiz_progress/<quiz_id>')
+def custom_quiz_progress(classroom_id, quiz_id):
+    quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+    return render_template('custom_quiz_progress.html', quiz=quiz)
+
+
+# Custom Quiz AJAX
+@app.route('/custom_quiz_tracker', methods=['POST'])
+def custom_quiz_tracker():
+    posted_dict = request.get_json()
+    dict_values = []
+    for key, value in posted_dict['correctItem'].items():
+        dict_values.append(value)
+    quiz_id = dict_values[0]
+    correct_list = []
+    for i in dict_values[1]:
+        correct_list.append(int(i))
+    user_id = dict_values[2]
+
+    quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+    quizzee = models.Users.query.filter_by(id=user_id).first()
+    quizzee.finished_quiz.append(quiz)
+    quiz.student.append(quizzee)
+    db.session.commit()
+
+    quiz_tracker = models.UserQuiz.query.filter_by(users_id=user_id,
+                                                   quiz_id=quiz_id).first()
+    
+    quiz_tracker.score = json.dumps(correct_list)
+    db.session.commit()
+
+    return ('From Python: Got it!')
 
 
 @app.route('/classroom/<classroom_id>/people')
 def people(classroom_id):
     if user.is_authenticated:
-        if user.is_teacher == 1:
-            classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-            teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
-            return render_template('people.html',
-                                   classroom=classroom,
-                                   teacher=teacher)
-        else:
-            flash(f"You're not a teacher, are you, {user}?")
-            return redirect(url_for('homepage'))
+        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+        teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
+        return render_template('people.html',
+                               classroom=classroom,
+                               teacher=teacher)
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))

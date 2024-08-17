@@ -4,6 +4,7 @@
 <script>
     wordpoolGood = null
     questionTypeGood = null
+    itemGood = null
 
     function searchFor(searchbar, words) {
         searchbar.addEventListener('keydown', function() {
@@ -33,7 +34,7 @@
                 });
             } else {
                 questionTypeGood = true;
-                if (wordpoolGood == true) {
+                if (wordpoolGood == true && itemGood == true) {
                     form.submit();
                 };
             };
@@ -42,19 +43,24 @@
 
     function wordPoolSelection(buttons, wordpool) {
         selection = []
+        poolAmount = 0
         buttons.forEach(function(button) {
             button.clickCount = 0
             button.addEventListener('click', function(event){
                 if (button.clickCount == 0) {
                     button.clickCount = 1;
+                    poolAmount++;
+                    wordpool.setAttribute('data-amount', poolAmount.toString());
                     button.style.backgroundColor = '#90ee90';
-                    selection.push(button.id.replace('a', ''));
+                    selection.push(Number(button.id.replace('a', '')));
                     wordpool.value = JSON.stringify(selection);
                     console.log(wordpool.value);
                     this.stopPropagation();
                 };
                 if (button.clickCount == 1) {
                     button.clickCount = 0;
+                    poolAmount--;
+                    wordpool.setAttribute('data-amount', poolAmount.toString());
                     button.style.backgroundColor = '';
                     remove = selection.indexOf(button.id.replace('a', ''));
                     selection.splice(remove, 1);
@@ -67,18 +73,28 @@
 
     function wordpoolFilled(form, submit, wordpool) {
         submit.addEventListener('mousedown', function() {
-            if (wordpool.value == '') {
+            if (wordpool.getAttribute('data-amount') != 5) {
                 wordpoolGood = null;
                 console.log('Choose at least five words, dummy!');
-                form.addEventListener('submit')
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                });
             } else {
                 wordpoolGood = true;
-                if (questionTypeGood == true) {
+                if (questionTypeGood == true && itemGood == true) {
                     form.submit();
                 };
             };
         });
     }
+
+    function itemAnswered(submit, item) {
+        submit.addEventListener('mousedoen', function() {
+            if (5 <= item.value <= 60) {
+            itemGood = true;
+            };
+        });
+    };
 </script>
 
 
@@ -101,6 +117,9 @@ Choose a sublist:
 
 <form id='quiz' method='POST' enctype="multipart/form-data">
     {{ form.csrf_token }} 
+    <h4>What will your quiz be called?</h4>
+    <p>{{ form.name(placeholder='e.g. My Quiz') }}</p>
+
     <h4>How many items in the quiz?</h4>
     <p>{{ form.item(placeholder='at least 5.', style='width: 200px') }}</p>
 
@@ -155,6 +174,10 @@ Choose a sublist:
     wordpoolFilled(document.getElementById('quiz'),
                    document.getElementById('quiz-submit'),
                    document.getElementById('word_pool')
+    );
+
+    itemAnswered(document.getElementById('submit'),
+                 document.getElementById('item')
     );
 </script>
 

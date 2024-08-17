@@ -18,6 +18,21 @@ UserClassroom = db.Table('UserClassroom',
                          db.Column('classrooms_id', db.Integer, db.ForeignKey('Classrooms.id')))
 
 
+# Mutable association table
+class UserQuiz(db.Model):
+    __tablename__ = 'UserQuiz'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    quiz_id = db.Column(db.Integer, db.ForeignKey('Quiz.id'))
+    score = db.Column(db.Integer())
+
+    quiz = db.relationship('Quiz', backref='UserQuiz', viewonly=True)
+
+    def __repr__(self):
+        return self.quiz_id
+
+
+
 class Words(db.Model):
     __tablename__ = 'Words'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -96,10 +111,14 @@ class Users(UserMixin, db.Model):
     is_admin = db.Column(db.Integer())
     is_teacher = db.Column(db.Integer())
     progtrack = db.relationship('ProgTrack', backref='Users')
+    quiz_tracker = db.relationship('UserQuiz', backref='Users', viewonly=True)
     # Many-to-Many Relationship
     enrolment = db.relationship('Classrooms',
                                 secondary='UserClassroom',
                                 back_populates='student')
+    finished_quiz = db.relationship('Quiz',
+                                    secondary='UserQuiz',
+                                    back_populates='student')
 
     def __repr__(self):
         return self.username
@@ -139,10 +158,18 @@ class Quiz(db.Model):
     __tablename__ = 'Quiz'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     classroom_id = db.Column(db.Integer, db.ForeignKey('Classrooms.id'))
+    name = db.Column(db.Text())
     item = db.Column(db.Integer())
     word_pool = db.Column(db.Text())
     question_types = db.Column(db.Text())
     is_archived = db.Column(db.Integer())
 
+    quiz_tracker = db.relationship('UserQuiz', backref='Quiz', viewonly=True)
+
+    # Many-to-Many Relationship
+    student = db.relationship('Users',
+                              secondary='UserQuiz',
+                              back_populates='finished_quiz')
+
     def __repr__(self):
-        return self.id
+        return self.name

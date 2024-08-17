@@ -6,7 +6,15 @@
 <p>Students:</p>
 <ul>
     {% for student in classroom.student %}
-        <li><a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>{{ student }}</a></li>
+        <li>
+            {% if current_user.is_teacher == 1 %}
+            <a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
+                {{ student }}
+            </a>
+            {% else %}
+            {{ student }}
+            {% endif %}
+        </li>
     {% endfor %}
 </ul>
 

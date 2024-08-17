@@ -15,11 +15,33 @@
 {% endwith %}
 
 {% if current_user.is_teacher == 1 %}
+
+<h4>Quizzes</h4>
+
+<ul>
+{% for quiz in quizzes %}
+  <li><a href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
+{% endfor %}
+</ul>
+
 <p><a href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a></p>
 <p><a href='{{ url_for('create_quiz', classroom_id=classroom.id) }}'>Create a quiz</a></p>
 {% else %}
 
 <p>Hi, {{ current_user }}!</p>
+
+<h4>Quizzes</h4>
+<ul>
+  {% if not quizzes %}
+    <li>No quizzes for you right now.</li>
+  {% endif %}
+  {% for quiz in quizzes %}
+      <li><a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
+  {% endfor %}
+</ul>
+
+<p><a href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a></p>
+
 
 {% endif %}
 

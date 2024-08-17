@@ -10,7 +10,7 @@
         <link href="{{ url_for('static', filename='form_style.css') }}" rel="stylesheet" type="text/css">
     {% elif request.endpoint == 'match' %}
     <link href="{{ url_for('static', filename='match_style.css') }}" rel="stylesheet" type="text/css">
-    {% elif request.endpoint == 'quiz' %}
+    {% elif request.endpoint == 'quiz' or request.endpoint == 'custom_quiz' %}
     <link href="{{ url_for('static', filename='quiz_style.css') }}" rel="stylesheet" type="text/css">
     {% elif request.endpoint == 'question_answer' %}
     <link href="{{ url_for('static', filename='qna_style.css') }}" rel="stylesheet" type="text/css">

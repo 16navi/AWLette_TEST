@@ -63,6 +63,7 @@ class Create_Quiz(FlaskForm):
             print('hi!') #  DEBUG
             raise ValidationError('Choose at least one.')
 
+    name = StringField('name', validators=[InputRequired()])
     item = IntegerField('item', validators=[InputRequired(), NumberRange(min=5, max=60)])
-    question_type = MultiCheckboxField('question_type', choices=types, validators=[choose_one])
+    question_type = MultiCheckboxField('question_type', choices=types, validators=[choose_one], coerce=int)
     word_pool = HiddenField('word_pool')
