@@ -72,7 +72,7 @@
 {% if not sublist %}
 
 Choose a sublist:
-<form action='{{url_for('fill_in_the_blank')}}' method='POST'>
+<form action='{{url_for('fill_in_the_blank')}}' method='GET'>
     <ul>
         <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
         <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>

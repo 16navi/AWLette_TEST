@@ -124,6 +124,7 @@ class Classrooms(db.Model):
     code = db.Column(db.Text())
     classroom = db.Column(db.Text())
     description = db.Column(db.Text())
+    quiz = db.relationship('Quiz', backref='Classrooms')
 
     # Many-to-Many Relationship
     student = db.relationship('Users',
@@ -132,3 +133,16 @@ class Classrooms(db.Model):
 
     def __repr__(self):
         return self.classroom
+    
+
+class Quiz(db.Model):
+    __tablename__ = 'Quiz'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    classroom_id = db.Column(db.Integer, db.ForeignKey('Classrooms.id'))
+    item = db.Column(db.Integer())
+    word_pool = db.Column(db.Text())
+    question_types = db.Column(db.Text())
+    is_archived = db.Column(db.Integer())
+
+    def __repr__(self):
+        return self.id

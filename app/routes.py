@@ -4,7 +4,7 @@ from app.functions import encrypt, decrypt, generate_code
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
 import os
-from app.forms import Sign_Up, Log_In, Search_Bar, Create_Classroom, Enrol
+from app.forms import Sign_Up, Log_In, Search_Bar, Create_Classroom, Enrol, Create_Quiz
 import random
 import json
 
@@ -145,6 +145,21 @@ def classroom_listed(classroom_id):
         else:
             flash(f"You're not in this classroom, are you, {user}?")
             return redirect(url_for('homepage'))
+    
+
+@app.route('/classroom/<classroom_id>/create_quiz', methods=['GET', 'POST'])
+def create_quiz(classroom_id):
+    form = Create_Quiz()
+    if request.method == 'GET':
+        sublist = request.args.get('sublist')
+        words = models.Words.query.filter_by(sublist=sublist).all()
+        return render_template('create_quiz.html', form=form, sublist=sublist, words=words)
+    else:
+        if form.validate_on_submit():
+            print(form.item.data) #  DEBUG
+            print(form.question_type.data) #  DEBUG
+            flash('Quiz successfully created!')
+            return redirect(url_for('classroom_listed', classroom_id=classroom_id))
 
 
 @app.route('/classroom/<classroom_id>/people')
@@ -164,8 +179,8 @@ def people(classroom_id):
         return redirect(url_for('homepage'))
 
 
-@app.route('/classroom/<classroom_id>/people/<users_id>')
-def student_progress(classroom_id, users_id):
+@app.route('/classroom/people/<users_id>')
+def student_progress(users_id):
     if user.is_teacher == 1:
         student = models.Users.query.filter_by(id=users_id).first()
         return render_template('student_progress.html', student=student)
@@ -478,7 +493,7 @@ def progress_tracker():
 
 
 # Quizzes
-@app.route('/fill_in_the_blank', methods=['GET', 'POST'])
+@app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
     sublist = request.form.get('sublist')
     random_forms = []

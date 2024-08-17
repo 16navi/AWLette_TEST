@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<script>
+    wordpoolGood = null
+    questionTypeGood = null
+
+    function searchFor(searchbar, words) {
+        searchbar.addEventListener('keydown', function() {
+            words.forEach(function(word) {
+                if (word.innerHTML.includes(searchbar.value) == true) {
+                    word.style.display = '';
+                } else if (word.innerHTML.includes(searchbar.value) == false) {
+                    word.style.display = 'none';
+                };
+            });
+        });
+    };
+
+    function chooseOne(form, submit, checkboxes) {
+        submit.addEventListener('mousedown', function() {
+            clickedOne = null
+            for (let checkbox of checkboxes) {
+                if (checkbox.checked == true) {
+                    clickedOne = true;
+                };
+            };
+            if (clickedOne == null) {
+                questionTypeGood = null;
+                console.log('Choose at least one type, dummy!');
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                });
+            } else {
+                questionTypeGood = true;
+                if (wordpoolGood == true) {
+                    form.submit();
+                };
+            };
+        });
+    ;}
+
+    function wordPoolSelection(buttons, wordpool) {
+        selection = []
+        buttons.forEach(function(button) {
+            button.clickCount = 0
+            button.addEventListener('click', function(event){
+                if (button.clickCount == 0) {
+                    button.clickCount = 1;
+                    button.style.backgroundColor = '#90ee90';
+                    selection.push(button.id.replace('a', ''));
+                    wordpool.value = JSON.stringify(selection);
+                    console.log(wordpool.value);
+                    this.stopPropagation();
+                };
+                if (button.clickCount == 1) {
+                    button.clickCount = 0;
+                    button.style.backgroundColor = '';
+                    remove = selection.indexOf(button.id.replace('a', ''));
+                    selection.splice(remove, 1);
+                    wordpool.value = JSON.stringify(selection);
+                    console.log(wordpool.value);
+                };
+            });
+        });
+    };
+
+    function wordpoolFilled(form, submit, wordpool) {
+        submit.addEventListener('mousedown', function() {
+            if (wordpool.value == '') {
+                wordpoolGood = null;
+                console.log('Choose at least five words, dummy!');
+                form.addEventListener('submit')
+            } else {
+                wordpoolGood = true;
+                if (questionTypeGood == true) {
+                    form.submit();
+                };
+            };
+        });
+    }
+</script>
+
+
+<!-- While there is no value for 'sublist' -->
+{% if not sublist %}
+
+Choose a sublist:
+<form method='GET'>
+    <ul>
+        <li><button name='sublist' type='submit' id='sublist_button' value='1'>Sublist 1</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='2'>Sublist 2</button></li>
+        <li><button name='sublist' type='submit' id='sublist_button' value='3'>Sublist 3</button></li>
+    </ul>
+</form>
+
+{% endif %}
+
+
+{% if sublist %}
+
+<form id='quiz' method='POST' enctype="multipart/form-data">
+    {{ form.csrf_token }} 
+    <h4>How many items in the quiz?</h4>
+    <p>{{ form.item(placeholder='at least 5.', style='width: 200px') }}</p>
+
+    <h4>Which type of questions?</h4>
+    <ul>
+    {% for type in form.question_type %}
+        <li>{{ type(class='question_type') }}{{ type.label }}</li>
+    {% endfor %}
+    </ul>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+    {% endwith %} 
+
+    <h4>Select the words you want included in the quiz:</h4>
+    
+    {{ form.word_pool }}
+    <!-- search bar -->
+     <div id='word-selection' style='background-color: #b3b3b3; margin: 10px; padding: 10px; border-radius: 2px'>
+    <input id='search' form='none' type='text' placeholder='Search for a word.'><br><br>    
+
+    {% for word in words %}
+        <button form='none' class='words' id='a{{ word.id }}'>{{ word }}</button>
+    {% endfor %}
+
+    <script>
+        searchFor(document.getElementById('search'),
+                  document.querySelectorAll('.words')
+        );
+
+        wordPoolSelection(document.querySelectorAll('.words'),
+                          document.getElementById('word_pool')
+        );
+    </script>
+    </div>
+
+    <input id='quiz-submit' type='submit' value='Submit'>
+</form>
+
+<script>
+    chooseOne(document.getElementById('quiz'),
+              document.getElementById('quiz-submit'),
+              document.querySelectorAll('.question_type')
+    );
+
+    wordpoolFilled(document.getElementById('quiz'),
+                   document.getElementById('quiz-submit'),
+                   document.getElementById('word_pool')
+    );
+</script>
+
+{% endif %}
+
+{% endblock %}

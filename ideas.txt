@@ -1,3 +1,8 @@
+for quizzes modifiables:
+    * how many items
+    * which words from a chosen sublist (will ask what sublist at the beginning)
+    * which type of questions
+
 teacher available pages:
     * teachers shouldnt have quizzes available to them
     * instead, the available pages should be:
