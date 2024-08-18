@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<script>
+    function searchFor(searchbar, accounts) {
+        searchbar.addEventListener('keyup', function() {
+            accounts.forEach(function(account) {
+                if (account.innerHTML.toLowerCase().includes(searchbar.value.toLowerCase()) == true) {
+                    account.style.display = '';
+                } else {
+                    account.style.display = 'none';
+                };
+            });
+        });
+    };
+
+    function disableAccount(button, account) {
+        attribute = account.getAttribute('data-disabled'); 
+        if (attribute == 'true') {
+            button.style.backgroundColor = '#6e6e6e';
+            button.innerHTML = 'Enable Account';
+        } else {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable Account';
+        };
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            console.log(xhttp.responseText);
+        };
+
+      button.addEventListener('click', function() {
+        if (account.getAttribute('data-disabled') == 'false') {
+            button.style.backgroundColor = '#6e6e6e';
+            button.innerHTML = 'Enable Account';
+            account.setAttribute('data-disabled', 'true');
+
+            disableDict = {
+                'disable' : account.id.replace('a', '')
+            };
+
+            
+            xhttp.open('POST', '{{ url_for('account_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+
+            button.stopPropagation();
+        } else if (account.getAttribute('data-disabled') == 'true') {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable Account';
+            account.setAttribute('data-disabled', 'false');
+
+            disableDict = {
+                'enable' : account.id.replace('a', '')
+            };
+
+            xhttp.open('POST', '{{ url_for('account_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+        };
+      });  
+    };
+</script>
+
+<input id='search' form='none' type='text' placeholder='Search for an account.'><br><br>    
+
+<ul>
+{% for user in users %}
+    <li class='accounts' id='a{{ user.id }}'
+    {% if user.is_disabled %}
+        data-disabled='true'
+    {% else %}
+        data-disabled='false'
+    {% endif %}>{{user.id}} | {{ user }} - <button id='disable{{ loop.index }}'>Disable Account</button></li>
+    <script>
+        disableAccount(document.getElementById('disable{{ loop.index }}'),
+                       document.getElementById('a{{ user.id }}'))
+    </script>
+{% endfor %}
+</ul>
+
+<script>
+    searchFor(document.getElementById('search'),
+              document.querySelectorAll('.accounts'))
+</script>
+
+{% endblock %}

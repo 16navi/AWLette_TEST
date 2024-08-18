@@ -114,6 +114,7 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.Text())
     is_admin = db.Column(db.Integer())
     is_teacher = db.Column(db.Integer())
+    is_disabled = db.Column(db.Integer())
     progtrack = db.relationship('ProgTrack', backref='Users')
     quiz_tracker = db.relationship('UserQuiz', backref='Users', viewonly=True)
     # Many-to-Many Relationship
@@ -147,6 +148,7 @@ class Classrooms(db.Model):
     code = db.Column(db.Text())
     classroom = db.Column(db.Text())
     description = db.Column(db.Text())
+    is_disabled = db.Column(db.Integer())
     quiz = db.relationship('Quiz', backref='Classrooms')
 
     # Many-to-Many Relationship

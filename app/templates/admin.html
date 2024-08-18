@@ -4,9 +4,8 @@
 
 <h3>Your powers are:</h3>
 <ul>
-    <li>delete accounts!!! mwuahaha</li>
-    <li>delete classrooms !!! mwUAHAHA</li>
-    <li>edit anything about a word!! WTHH</li>
+    <li><a href='{{ url_for('disable_account') }}'>Disable an Account</a></li>
+    <li><a href='{{ url_for('disable_classroom') }}'>Disable a Classroom</a></li>
     <li><a href='{{ url_for('teacher_request') }}'>Requesting Teachers</a></li>
 </ul>
 {% endblock %}

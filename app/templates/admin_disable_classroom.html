@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<script>
+    function searchFor(searchbar, classrooms) {
+        searchbar.addEventListener('keyup', function() {
+            classrooms.forEach(function(classrooms) {
+                if (classroom.innerHTML.toLowerCase().includes(searchbar.value.toLowerCase()) == true) {
+                    classroom.style.display = '';
+                } else {
+                    classroom.style.display = 'none';
+                };
+            });
+        });
+    };
+
+    function disableclassroom(button, classroom) {
+        attribute = classroom.getAttribute('data-disabled'); 
+        if (attribute == 'true') {
+            button.style.backgroundColor = '#6e6e6e';
+            button.innerHTML = 'Enable Classroom';
+        } else {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable Classroom';
+        };
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            console.log(xhttp.responseText);
+        };
+
+      button.addEventListener('click', function() {
+        if (classroom.getAttribute('data-disabled') == 'false') {
+            button.style.backgroundColor = '#6e6e6e';
+            button.innerHTML = 'Enable classroom';
+            classroom.setAttribute('data-disabled', 'true');
+
+            disableDict = {
+                'disable' : classroom.id.replace('a', '')
+            };
+
+            
+            xhttp.open('POST', '{{ url_for('classroom_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+
+            button.stopPropagation();
+        } else if (classroom.getAttribute('data-disabled') == 'true') {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable classroom';
+            classroom.setAttribute('data-disabled', 'false');
+
+            disableDict = {
+                'enable' : classroom.id.replace('a', '')
+            };
+
+            xhttp.open('POST', '{{ url_for('classroom_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+        };
+      });  
+    };
+</script>
+
+<input id='search' form='none' type='text' placeholder='Search for a classroom.'><br><br>    
+
+<ul>
+{% for classroom in classrooms %}
+    <li class='classrooms' id='a{{ classroom.id }}'
+    {% if classroom.is_disabled %}
+        data-disabled='true'
+    {% else %}
+        data-disabled='false'
+    {% endif %}>{{classroom.id}} | {{ classroom }} - <button id='disable{{ loop.index }}'>Disable classroom</button></li>
+    <script>
+        disableclassroom(document.getElementById('disable{{ loop.index }}'),
+                       document.getElementById('a{{ classroom.id }}'))
+    </script>
+{% endfor %}
+</ul>
+
+<script>
+    searchFor(document.getElementById('search'),
+              document.querySelectorAll('.classrooms'))
+</script>
+
+{% endblock %}

@@ -45,7 +45,8 @@ user = flask_login.current_user
 def homepage():
     form = Search_Bar()
     if not user.is_anonymous and user.is_teacher == 1:
-        classrooms = models.Classrooms.query.filter_by(teacher_id=user.id).all()
+        classrooms = models.Classrooms.query.filter_by(teacher_id=user.id,
+                                                       is_disabled=None).all()
         return render_template('home.html', form=form, classrooms=classrooms)
     else:
         return render_template('home.html', form=form)
@@ -64,6 +65,68 @@ def admin_powers():
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
+    
+
+@app.route('/admin_powers/disable_account')
+def disable_account():
+    if not user.is_admin:
+        flash(f"You're not Admin, are you, {user}?")
+        return redirect(url_for('homepage'))
+    else:
+        users = models.Users.query.filter_by(is_admin=None).all()
+        return render_template('admin_disable_acc.html', users=users)
+
+
+# Account disabler AJAX route
+@app.route('/account_disabler', methods=['POST'])
+def account_disabler():
+    posted_dict = request.get_json()
+
+    dict_key, dict_value = None, None
+    for key, value in posted_dict['disableDict'].items():
+        dict_key, dict_value = key, value
+
+    account = models.Users.query.filter_by(id=int(dict_value)).first()
+
+    if dict_key == 'disable':
+        account.is_disabled = 1
+        db.session.commit()
+    else:
+        account.is_disabled = None
+        db.session.commit()
+
+    return ('From Python: Got it!')
+
+
+@app.route('/admin_powers/disable_classroom')
+def disable_classroom():
+    if not user.is_admin:
+        flash(f"You're not Admin, are you, {user}?")
+        return redirect(url_for('homepage'))
+    else:
+        classrooms = models.Classrooms.query.all()
+        return render_template('admin_disable_classroom.html', classrooms=classrooms)
+
+
+# Classroom disabler AJAX route
+@app.route('/classroom_disabler', methods=['POST'])
+def classroom_disabler():
+    posted_dict = request.get_json()
+
+    dict_key, dict_value = None, None
+    for key, value in posted_dict['disableDict'].items():
+        dict_key, dict_value = key, value
+
+    classroom = models.Classrooms.query.filter_by(id=int(dict_value)).first()
+
+    if dict_key == 'disable':
+        classroom.is_disabled = 1
+        db.session.commit()
+    else:
+        classroom.is_disabled = None
+        db.session.commit()
+
+    return ('From Python: Got it!')
 
 
 # Teacher request AJAX route
@@ -135,7 +198,10 @@ def create_classroom():
 def classroom_listed(classroom_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     quizzes = models.Quiz.query.filter_by(classroom_id=classroom_id).all()
-    if user.is_anonymous:
+    if classroom.is_disabled:
+        flash(f'Classroom {classroom} is disabled.')
+        return redirect(url_for('homepage'))
+    elif user.is_anonymous:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
     elif user.is_teacher == 1:
@@ -350,14 +416,18 @@ def login():
             if form.validate_on_submit():
                 login_user = models.Users.query.filter_by(username=form.username.data).first()
                 if login_user:
-                    if decrypt(login_user.password) == form.password.data:
-                        flask_login.login_user(login_user)
-                        if not login_user.is_admin:
-                            flash(f'Long time no see, {login_user}!')
-                            return redirect(url_for('homepage'))
+                    if not login_user.is_disabled:
+                        if decrypt(login_user.password) == form.password.data:
+                            flask_login.login_user(login_user)
+                            if not login_user.is_admin:
+                                flash(f'Long time no see, {login_user}!')
+                                return redirect(url_for('homepage'))
+                            else:
+                                flash('Howdy, Admin!')
+                                return redirect(url_for('homepage'))
                         else:
-                            flash('Howdy, Admin!')
-                            return redirect(url_for('homepage'))
+                            flash('Bad log in. Try again.')
+                            return redirect(request.url)
                     else:
                         flash('Bad log in. Try again.')
                         return redirect(request.url)
