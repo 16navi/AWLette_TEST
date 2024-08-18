@@ -13,11 +13,6 @@ WordCollocation = db.Table('WordCollocation',
                            db.Column('collocation_id', db.Integer, db.ForeignKey('Collocations.id')))
 
 
-UserClassroom = db.Table('UserClassroom',
-                         db.Column('users_id', db.Integer, db.ForeignKey('Users.id')),
-                         db.Column('classrooms_id', db.Integer, db.ForeignKey('Classrooms.id')))
-
-
 # Mutable association table
 class UserQuiz(db.Model):
     __tablename__ = 'UserQuiz'
@@ -27,9 +22,18 @@ class UserQuiz(db.Model):
     score = db.Column(db.Integer())
 
     quiz = db.relationship('Quiz', backref='UserQuiz', viewonly=True)
+    student = db.relationship('Users', backref='UserQuiz', viewonly=True)
 
     def __repr__(self):
         return self.quiz_id
+    
+
+# Mutable association table
+class UserClassroom(db.Model):
+    __tablename__ = 'UserClassroom'
+    dummy_column = db.Column(db.Integer, primary_key=True)
+    users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    classrooms_id = db.Column(db.Integer, db.ForeignKey('Classrooms.id'))
 
 
 

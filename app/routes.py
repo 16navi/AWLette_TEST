@@ -146,12 +146,45 @@ def classroom_listed(classroom_id):
             if taken_quiz:
                 for quiz in taken_quiz:
                     quizzes.remove(quiz.quiz)
-                print(quizzes)
+            for quiz in quizzes:
+                if quiz.is_archived:
+                    quizzes.remove(quiz)
             return render_template('classroom_listed.html', classroom=classroom, quizzes=quizzes)
         else:
             flash(f"You're not in this classroom, are you, {user}?")
             return redirect(url_for('homepage'))
+        
+
+@app.route('/classroom/<classroom_id>/leave/<user_id>')
+def leave_classroom(classroom_id, user_id):
+    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+    models.UserClassroom.query.filter_by(users_id=user_id,
+                                         classrooms_id=classroom_id).delete()
+    db.session.commit()
+    flash(f'You left Classroom {classroom}.')
+    return redirect(url_for('homepage'))
+
+
+# Quiz Archive AJAX Route
+@app.route('/quiz_archiver', methods=['POST'])
+def quiz_archiver():
+    posted_dict = request.get_json()
+    dict_value, dict_key = None, None
+    for key, value in posted_dict['archiveDict'].items():
+        dict_value = int(value)
+        dict_key = key
+
+    quiz = models.Quiz.query.filter_by(id=dict_value).first()
+
+    if dict_key == 'archive':
+        quiz.is_archived = 1
+        db.session.commit()
+    else:
+        quiz.is_archived = None
+        db.session.commit()
     
+    return ('From Python: Got it!')
+
 
 @app.route('/classroom/<classroom_id>/create_quiz', methods=['GET', 'POST'])
 def create_quiz(classroom_id):
@@ -191,8 +224,8 @@ def custom_quiz(classroom_id, quiz_id):
 
 @app.route('/classroom/<classroom_id>/custom_quiz_progress/<quiz_id>')
 def custom_quiz_progress(classroom_id, quiz_id):
-    quiz = models.Quiz.query.filter_by(id=quiz_id).first()
-    return render_template('custom_quiz_progress.html', quiz=quiz)
+    trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
+    return render_template('custom_quiz_progress.html', trackers=trackers)
 
 
 # Custom Quiz AJAX
@@ -728,6 +761,15 @@ def filter_json_loads(str):
 def filter_tyoe(obj):
     result = type(obj)
     return result
+
+
+@app.template_filter('score_count')
+def filter_score_count(list):
+    score = 0
+    for i in json.loads(list):
+        if i != 0:
+            score += 1
+    return score
 
 
 # Context processor stuffs

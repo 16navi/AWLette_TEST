@@ -1,12 +1,34 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<script>
+    function searchFor(searchbar, students) {
+        searchbar.addEventListener('keyup', function() {
+            students.forEach(function(students) {
+                if (students.id.toLowerCase().includes(searchbar.value) == true) {
+                    students.style.display = '';
+                } else if (students.id.toLowerCase().includes(searchbar.value) == false) {
+                    students.style.display = 'none';
+                };
+            });
+        });
+    };
+</script>
+
 <h3>People inside this class:</h3>
 <p>Teacher: {{ teacher }}</p>
+
+<h4>Student Progress</h4>
+
+
+{% if current_user.is_teacher == 1 %}
+<input id='search' form='none' type='text' placeholder='Search for a student.'><br><br>
+{% endif %}
+
 <p>Students:</p>
 <ul>
     {% for student in classroom.student %}
-        <li>
+        <li class='students' id='{{ student }}'>
             {% if current_user.is_teacher == 1 %}
             <a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
                 {{ student }}
@@ -17,5 +39,10 @@
         </li>
     {% endfor %}
 </ul>
+
+<script>
+    searchFor(document.getElementById('search'),
+              document.querySelectorAll('.students'))
+</script>
 
 {% endblock %}

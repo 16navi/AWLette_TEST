@@ -1,16 +1,3 @@
-for quizzes modifiables:
-    * how many items
-    * which words from a chosen sublist (will ask what sublist at the beginning)
-    * which type of questions
-
-teacher available pages:
-    * teachers shouldnt have quizzes available to them
-    * instead, the available pages should be:
-        - (all their classrooms)
-            * check a student's progress
-            * create an assessment
-        - create a classroom
-
 favorite word:
     * users can favorite a word
     * have a seperate page displaying the user's favorite words
@@ -45,13 +32,6 @@ user roles:
         - change the 'content' (definitions, synonyms, etc) of a word
         - remove users
         - remove classrooms
-
-How the answers in the quiz quiz is checked:
-    * instead of immediately deciding wether the answer is right or wrong, hold the clicked answer first then have a 'submit' button bellow which
-    * shows if the answers chosen were right or wrong, and if wrong, show the right answers
-
-How the answers in the quiz quiz is checked:
-    * should automatically decide if right or wrong
 
 Next and Previous button for word:
     * should be at the bottom of the page

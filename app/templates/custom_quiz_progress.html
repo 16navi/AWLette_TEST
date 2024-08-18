@@ -1,8 +1,31 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% for student in quiz.student %}
-{{ student }}
+<script>
+    function searchFor(searchbar, students) {
+        searchbar.addEventListener('keyup', function() {
+            students.forEach(function(students) {
+                if (students.id.toLowerCase().includes(searchbar.value) == true) {
+                    students.style.display = '';
+                } else if (students.id.toLowerCase().includes(searchbar.value) == false) {
+                    students.style.display = 'none';
+                };
+            });
+        });
+    };
+</script>
+
+<h4>Student Progress</h4>
+
+<input id='search' form='none' type='text' placeholder='Search for a student.'><br><br>
+
+{% for tracker in trackers %}
+    <div class='students' id='{{ tracker.student }}' style='background-color: #b3b3b3; padding: 10px; margin: 10px'>{{ tracker.student }} - {{ (tracker.score|score_count / tracker.quiz.item)|round(2) }}%</div>
 {% endfor %}
+
+<script>
+    searchFor(document.getElementById('search'),
+              document.querySelectorAll('.students'))
+</script>
 
 {% endblock %}

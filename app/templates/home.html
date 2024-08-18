@@ -46,7 +46,7 @@
       {% endif %}
       {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
         <li><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></li>
-      {% elif not current_user.is_anonymous %}
+      {% elif current_user.is_teacher == 1 %}
         <li><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></li>
       {% endif %}
     </ul>

@@ -7,7 +7,7 @@
     itemGood = null
 
     function searchFor(searchbar, words) {
-        searchbar.addEventListener('keydown', function() {
+        searchbar.addEventListener('keyup', function() {
             words.forEach(function(word) {
                 if (word.innerHTML.includes(searchbar.value) == true) {
                     word.style.display = '';
@@ -73,7 +73,7 @@
 
     function wordpoolFilled(form, submit, wordpool) {
         submit.addEventListener('mousedown', function() {
-            if (wordpool.getAttribute('data-amount') != 5) {
+            if (wordpool.getAttribute('data-amount') < 5) {
                 wordpoolGood = null;
                 console.log('Choose at least five words, dummy!');
                 form.addEventListener('submit', function(event) {
@@ -89,7 +89,7 @@
     }
 
     function itemAnswered(submit, item) {
-        submit.addEventListener('mousedoen', function() {
+        submit.addEventListener('mousedown', function() {
             if (5 <= item.value <= 60) {
             itemGood = true;
             };

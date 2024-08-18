@@ -1,6 +1,58 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<script>
+
+  function archiveQuiz(button, quiz) {
+    if (quiz.getAttribute('data-archived') == 'true') {
+      button.innerHTML = 'Unarchive';
+      button.style.backgroundColor = '#6e6e6e';
+    } else {
+      button.innerHTML = 'Archive';
+      button.style.backgroundColor = '';
+    };
+    
+    button.addEventListener('click', function() {
+      if (quiz.getAttribute('data-archived') == 'false') {
+        quiz.setAttribute('data-archived', 'true');
+        button.innerHTML = 'Unarchive';
+        button.style.backgroundColor = '#6e6e6e';
+
+        archiveDict = {
+          'archive' : quiz.id.replace('a', '')
+        };
+
+        const xhttp = new XMLHttpRequest()
+        xhttp.onload = function() {
+          console.log(xhttp.responseText);
+        };
+        xhttp.open('POST', '{{ url_for('quiz_archiver') }}', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify({archiveDict}))
+
+        button.stopPropagation();
+      };
+      if (quiz.getAttribute('data-archived') == 'true') {
+        quiz.setAttribute('data-archived', 'false');
+        button.innerHTML = 'Archive';
+        button.style.backgroundColor = '';
+
+        archiveDict = {
+          'unarchive' : quiz.id.replace('a', '')
+        };
+
+        const xhttp = new XMLHttpRequest()
+        xhttp.onload = function() {
+          console.log(xhttp.responseText);
+        };
+        xhttp.open('POST', '{{ url_for('quiz_archiver') }}', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify({archiveDict}));        
+      };
+    });
+  };
+</script>
+
 <h1>{{ classroom }}</h1>
 {{ classroom.description }}
 
@@ -20,7 +72,21 @@
 
 <ul>
 {% for quiz in quizzes %}
-  <li><a href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
+  <li>
+    <a id='a{{ quiz.id }}' href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'
+    {% if quiz.is_archived %}
+      data-archived='true'
+    {% else %}
+      data-archived='false'
+    {% endif %}>{{ quiz.name }}</a>
+    <button id='b{{ quiz.id }}'>Archive</button>
+  </li>
+
+  <script>
+    archiveQuiz(document.getElementById('b{{ quiz.id }}'),
+                document.getElementById('a{{ quiz.id }}'));
+  </script>
+
 {% endfor %}
 </ul>
 
@@ -36,13 +102,13 @@
     <li>No quizzes for you right now.</li>
   {% endif %}
   {% for quiz in quizzes %}
-      <li><a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
+    <li><a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
   {% endfor %}
 </ul>
 
 <p><a href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a></p>
 
-
+<p><a href='{{ url_for('leave_classroom', classroom_id=classroom.id, user_id=current_user.id) }}'>Leave this classroom</a></p>
 {% endif %}
 
 {% endblock %}
