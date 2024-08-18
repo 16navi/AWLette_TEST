@@ -4,6 +4,7 @@ favorite word:
 
 about refreshing quiz content:
     * instead of refreshing, use async posts to get the necessary data in the background and then just continuously show the questions after getting it right.
+    * craete a 'pending' state. users can still reload, but it will just load the same unanswered questions unless they get everything right.
 
 give up button:
     * user can click the button, enabling a give up option. This shows the correct answer for each quiz.

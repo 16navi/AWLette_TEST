@@ -1,7 +1,10 @@
-{% include 'nav.html' %}
+{% extends 'layout.html' %}
+{% block content %}
 
 <ul>
     {% for word in words %}
         <li><a href = "words/{{word}}">{{word.word}}</a></li>
     {% endfor %}
 </ul>
+
+{% endblock %}

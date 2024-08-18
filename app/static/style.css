@@ -106,16 +106,71 @@ header .icon #logo {
     z-index: 1;
 }
 
+/* Classroom buttons */
+.home-classroom-wrapper {
+    border: 1px #000 solid;
+    height: 100%;
+}
+
+.home-classroom-background {
+    /* border: 1px #000 solid; */
+    height: 20%;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    background-color: #fdf4ca;
+}
+
+.home-classroom-buttons {
+    /* border: 1px #000 solid; */
+    margin-inline: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.home-classroom-buttons div {
+    /* border: 1px #000 solid; */
+    margin: 5px;
+    background-color: #6cceff;
+    height: 210px;
+    box-shadow: inset -4px -4px 20px #8d8d8d;
+}
+
+.home-classroom-buttons a {
+    text-decoration: none;
+    color: #95625e;
+    font-size: 2rem;
+}
+
 /* Home main buttons */
+.home-main-background {
+    /* border: 1px #000 solid; */
+    height: 400px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    background-color: #fdf4ca;
+}
+
 .home-main-buttons {
+    /* border: 1px #000 solid; */
+    margin-inline: 10px;
+    position: relative;
+    bottom: 22px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
 }
 
 .home-main-buttons div {
+    /* border: 1px #000 solid; */
     margin: 5px;
     background-color: #6cceff;
     height: 210px;
+    box-shadow: inset -4px -4px 20px #8d8d8d;
+}
+
+.home-main-buttons a {
+    text-decoration: none;
+    color: #95625e;
+    font-size: 2rem;
 }
 
 /* Fill in the blanks */

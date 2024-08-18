@@ -18,33 +18,43 @@
 
 <!--All the other stuff-->
     {% if current_user.enrolment %}
-    <ul>
-      {% for classroom in current_user.enrolment %}
-        <li><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
-      {% endfor %}
-    </ul>
-    {% elif current_user.is_teacher == 1 %}
-    <ul>
-    {% for classroom in classrooms %}
-      <li><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-
-    <div class="home-main-buttons">
-        <div><a href='/sublist'>See all the words.</a></div>
-      {% if current_user.is_anonymous or current_user.is_teacher != 1 %}
-        <div><a href='/fill_in_the_blank'>Fill in the blanks.</a></div>
-        <div><a href='/form'>Change the form.</a></div>
-        <div><a href='/match'>Match the words.</a></div>
-        <div><a href='/question_answer'>Question and Answer.</a></div>
-        <div><a href='/quiz'>Take the quiz.</a></div>
-      {% endif %}
-      {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
-        <div><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></div>
+    <div class='home-classroom-wrapper'>
+      <div class='home-classroom-background'>
+        <div class='home-classroom-buttons'>
+          {% for classroom in current_user.enrolment %}
+            <div><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
       {% elif current_user.is_teacher == 1 %}
-        <div><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></div>
-      {% endif %}
+    <div class='home-classroom-wrapper'>
+      <div class='home-classroom-background'>
+        <div class='home-classroom-buttons'>
+          {% for classroom in classrooms %}
+            <div><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class='home-main-background'>
+      <div class="home-main-buttons">
+          <div><a href='/sublist'>See all the words.</a></div>
+        {% if current_user.is_anonymous or current_user.is_teacher != 1 %}
+          <div><a href='/fill_in_the_blank'>Fill in the blanks.</a></div>
+          <div><a href='/form'>Change the form.</a></div>
+          <div><a href='/match'>Match the words.</a></div>
+          <div><a href='/question_answer'>Question and Answer.</a></div>
+          <div><a href='/quiz'>Take the quiz.</a></div>
+        {% endif %}
+        {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
+          <div><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></div>
+        {% elif current_user.is_teacher == 1 %}
+          <div><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></div>
+        {% endif %}
+      </div>
     </div>
 
 {% include 'footer.html' %}
