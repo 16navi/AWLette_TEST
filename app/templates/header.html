@@ -1,3 +1,16 @@
 <header>
-    <h1>AWLette: AWL Companion</h1>
+    <div class='grid'>
+        <div class='title'>
+            <p id='heading'>AWLette</p>
+            <p id='subtitle'>academic word list companion</p>
+            <div class='searchbar'>
+                <form action='{{ url_for('word_lookfor') }}', method="GET" enctype="multipart/form-data">
+                <p>{{ form.searching(placeholder='Search for a word!') }}</p>
+            </form>
+            </div>
+        </div>
+        <div class='icon'>
+            <img id='logo' src = "\static\images\AWLette_icon.png" width = "250" height = "250" alt = "mga mukha nyo to mwuahaha"/>
+        </div>
+    </div>
 </header>

@@ -72,7 +72,7 @@ Choose a sublist:
 
     <p>You picked Sublist No.{{ sublist }}</p>
 
-    <div id='one_question'>
+    <div class='qna-question'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
             <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
@@ -82,7 +82,7 @@ Choose a sublist:
                    <br>
                {% endif %}
 
-                   <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word }}</button>
+                   <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word }}</button>
 
                    <script>
                        rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
@@ -100,7 +100,7 @@ Choose a sublist:
                     <br>
                 {% endif %}
 
-                        <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
+                        <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
 
                         <script>
                             rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
@@ -118,7 +118,7 @@ Choose a sublist:
                         <br>
                     {% endif %}
 
-                    <button class='choices' id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
+                    <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
 
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
@@ -133,7 +133,7 @@ Choose a sublist:
             <p>4. which form is this? (n, a, v)</p>
             <p id='a{{ question_form_class }}' data-correct_id='{{ question_word.id }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
-            <button class='choices' id='b1'>noun</button>
+            <button class='qna-choices' id='b1'>noun</button>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
@@ -141,7 +141,7 @@ Choose a sublist:
                                 document.getElementsByClassName('choices'))
             </script>
             
-            <button class='choices' id='b2'>adjective</button>
+            <button class='qna-choices' id='b2'>adjective</button>
 
             <br>
 
@@ -151,7 +151,7 @@ Choose a sublist:
                                 document.getElementsByClassName('choices'))
             </script>
             
-            <button class='choices' id='b3'>verb</button>
+            <button class='qna-choices' id='b3'>verb</button>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
@@ -168,7 +168,7 @@ Choose a sublist:
                         <br>
                     {% endif %}
 
-                    <button class='choices' id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
+                    <button class='qna-choices' id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
 
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),

@@ -1,5 +1,6 @@
-{% include 'nav.html' %}
+{% extends 'layout.html' %}
 
+{% block content %}
 
 <!--Flash messages-->
 {% with messages = get_flashed_messages() %}
@@ -112,3 +113,5 @@ You picked Word No. {{word.id}}
         <li>{{collocation}}</li>
     {% endfor %}
 </ul>
+
+{% endblock %}

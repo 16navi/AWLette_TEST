@@ -345,6 +345,25 @@ def student_progress(users_id):
         return redirect(url_for('homepage'))
 
 
+# @app.route('/classroom/<classroom_id>/leaderboards')
+# def leaderboards(classroom_id):
+#     if user.is_authenticated:
+#         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+
+#         def count_progress(list, total):
+#             if list:
+#                 score = round(((len(list) / total) * 100), 2)
+#                 return score
+#             else:
+#                 return None
+
+#         return render_template('leaderboards.html', classroom=classroom)
+#     else:
+#         flash('How about logging in first?')
+#         return redirect(url_for('homepage'))
+
+
+
 @app.route('/enrol', methods=['GET', 'POST'])
 def enrol():
     if user.is_authenticated:
@@ -655,7 +674,7 @@ def progress_tracker():
 # Quizzes
 @app.route('/fill_in_the_blank', methods=['GET'])
 def fill_in_the_blank():
-    sublist = request.form.get('sublist')
+    sublist = request.args.get('sublist')
     random_forms = []
     if sublist:
         words = models.Words.query.filter_by(sublist=sublist).all()

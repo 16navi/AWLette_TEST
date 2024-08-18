@@ -116,7 +116,7 @@ Choose a sublist:
 
         {% set container_loop_index = loop.index %}
 
-        <div id='c{{ container_loop_index }}'>
+        <div class='quiz-question' id='c{{ container_loop_index }}'>
         {% if question_type == 1 %}
             <p>1. given def, answer the word</p>
             <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
@@ -126,11 +126,11 @@ Choose a sublist:
                    <br>
                {% endif %}
 
-                   <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
+                   <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
             {% endfor %}
 
             <script>
-                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+                chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
 
         {% elif question_type == 2 %}
@@ -142,11 +142,11 @@ Choose a sublist:
                     <br>
                 {% endif %}
 
-                        <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+                        <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
             {% endfor %}
 
             <script>
-                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+                chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
 
         {% elif question_type == 3 %}
@@ -158,11 +158,11 @@ Choose a sublist:
                         <br>
                     {% endif %}
 
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
+                    <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
             {% endfor %}
 
             <script>
-                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+                chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
 
         <!-- This type of question will require a different
@@ -171,16 +171,16 @@ Choose a sublist:
             <p>4. which form is this? (n, a, v)</p>
             <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
 
-            <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
+            <button class='quiz-choices' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
 
-            <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
+            <button class='quiz-choices' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
 
             <br>
 
-            <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
+            <button class='quiz-choices' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
 
             <script>
-                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+                chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
 
         {% elif question_type == 5 %}
@@ -196,13 +196,13 @@ Choose a sublist:
             {% endfor %}
 
             <script>
-                chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+                chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
         {% endif %}
         </div>
     {% endfor %}
 
-    <button id='submit' type='button' onclick='rightOrWrong(
+    <button class='quiz-submit' id='submit' type='button' onclick='rightOrWrong(
         document.querySelectorAll("button[data-choice]"),
         document.querySelectorAll("p[data-question]")
     )'>Submit</button>

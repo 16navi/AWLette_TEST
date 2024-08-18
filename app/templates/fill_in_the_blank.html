@@ -89,16 +89,16 @@ Choose a sublist:
 
 <!-- List the forms in a seperate table as choices for 
  filling in the blanks in the sentence -->
-<table>
+<table class='fill-table'>
     <tr>
     {% for form in random_forms|shuffle %}
-        <td class='choices' id='b{{ random_forms.index(form) }}' data-form_id='{{ form.id }}'>{{ form|capitalize }}</td>
+        <td class='fill-choices' id='b{{ random_forms.index(form) }}' data-form_id='{{ form.id }}'>{{ form|capitalize }}</td>
     {% endfor %}
     </tr>
 </table>
 
 <!-- Lists the sentences with input fields in between -->
-<br><table>
+<br><table class='fill-table'>
     <tr>
         <th>Fill in the Blanks</th>
     </tr>
@@ -138,7 +138,7 @@ Choose a sublist:
                 {{ sentence_blanked1.pop(-1) or "" }}
 
                 {{ sentence_blanked1|join(' ')|capitalize }} 
-                <input type='text' id='a{{ loop.index }}'></input> 
+                <input class='fill-input' type='text' id='a{{ loop.index }}'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
                 <!-- Call the function -->

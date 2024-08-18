@@ -16,10 +16,6 @@
   {% endif %}
 {% endwith %}
 
-<form action='{{ url_for('word_lookfor') }}', method="GET" enctype="multipart/form-data">
-  <p>{{ form.searching(placeholder='Search for a word!') }}</p>
-</form>
-
 <!--All the other stuff-->
     {% if current_user.enrolment %}
     <ul>
@@ -35,21 +31,21 @@
     </ul>
     {% endif %}
 
-    <ul>
-        <li><a href='/sublist'>See all the words.</a></li>
+    <div class="home-main-buttons">
+        <div><a href='/sublist'>See all the words.</a></div>
       {% if current_user.is_anonymous or current_user.is_teacher != 1 %}
-        <li><a href='/fill_in_the_blank'>Fill in the blanks.</a></li>
-        <li><a href='/form'>Change the form.</a></li>
-        <li><a href='/match'>Match the words.</a></li>
-        <li><a href='/question_answer'>Question and Answer.</a></li>
-        <li><a href='/quiz'>Take the quiz.</a></li>
+        <div><a href='/fill_in_the_blank'>Fill in the blanks.</a></div>
+        <div><a href='/form'>Change the form.</a></div>
+        <div><a href='/match'>Match the words.</a></div>
+        <div><a href='/question_answer'>Question and Answer.</a></div>
+        <div><a href='/quiz'>Take the quiz.</a></div>
       {% endif %}
       {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
-        <li><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></li>
+        <div><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></div>
       {% elif current_user.is_teacher == 1 %}
-        <li><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></li>
+        <div><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></div>
       {% endif %}
-    </ul>
+    </div>
 
 {% include 'footer.html' %}
 {% endblock %}

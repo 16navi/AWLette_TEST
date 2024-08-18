@@ -98,7 +98,8 @@
     {% set question_form_class = range(1, 4)|choice %}
     {% set question_word = random_words|choice %}
     {% set container_loop_index = loop.index %}
-    <div id='c{{ container_loop_index }}'>
+
+    <div class='custom-quiz-question' id='c{{ container_loop_index }}'>
     {% if question_type == 1 %}
         <p>1. given def, answer the word</p>
         <p id='a{{ question_word.id }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.definition[0] }} - what's the word?</p>
@@ -106,10 +107,11 @@
            {% if loop.index == 3 %}
                <br>
            {% endif %}
-               <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
+               <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
         {% endfor %}
+
         <script>
-            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+            chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
         </script>
     {% elif question_type == 2 %}
         <p>2. given word, answer def</p>
@@ -118,10 +120,11 @@
             {% if loop.index == 3 %}
                 <br>
             {% endif %}
-                    <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
+                    <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
         {% endfor %}
+
         <script>
-            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+            chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
         </script>
     {% elif question_type == 3 %}
         <p>3. given word, answer synonym</p>
@@ -130,22 +133,24 @@
                 {% if loop.index == 3 %}
                     <br>
                 {% endif %}
-                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
+                <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
         {% endfor %}
+
         <script>
-            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+            chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
         </script>
     <!-- This type of question will require a different
     function for right or wrong -->
     {% elif question_type == 4 %}
         <p>4. which form is this? (n, a, v)</p>
         <p id='a{{ question_form_class }}{{ container_loop_index }}' data-question='{{ container_loop_index }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
-        <button class='choices{{ container_loop_index }}' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
-        <button class='choices{{ container_loop_index }}' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
+        <button class='custom-quiz-choices' id='b1{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>noun</button>
+        <button class='custom-quiz-choices' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
         <br>
-        <button class='choices{{ container_loop_index }}' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
+        <button class='custom-quiz-choices' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
+
         <script>
-            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+            chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
         </script>
     {% elif question_type == 5 %}
         <p>5. given word, answer collocation</p>
@@ -154,15 +159,16 @@
                 {% if loop.index == 3 %}
                     <br>
                 {% endif %}
-                <button class='choices{{ container_loop_index }}' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
+                <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
         {% endfor %}
+
         <script>
-            chooseAnswer(document.querySelectorAll('.choices{{ container_loop_index }}'))
+            chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
         </script>
     {% endif %}
     </div>
 {% endfor %}
-<button id='submit' type='button' onclick='rightOrWrong(
+<button class='custom-quiz-submit' id='submit' type='button' onclick='rightOrWrong(
     document.querySelectorAll("button[data-choice]"),
     document.querySelectorAll("p[data-question]")
 )'>Submit</button>
