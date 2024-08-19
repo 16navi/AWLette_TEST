@@ -18,23 +18,20 @@
 
 <!--All the other stuff-->
     {% if current_user.enrolment %}
-    <div class='home-classroom-wrapper'>
-      <div class='home-classroom-background'>
-        <div class='home-classroom-buttons'>
-          {% for classroom in current_user.enrolment %}
-            <div><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
-          {% endfor %}
-        </div>
+    <div class='home-classroom-background'>
+      <div class='home-classroom-buttons'>
+        {% for classroom in current_user.enrolment %}
+          <div><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+        {% endfor %}
       </div>
     </div>
-      {% elif current_user.is_teacher == 1 %}
-    <div class='home-classroom-wrapper'>
-      <div class='home-classroom-background'>
-        <div class='home-classroom-buttons'>
-          {% for classroom in classrooms %}
-            <div><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
-          {% endfor %}
-        </div>
+    {% elif current_user.is_teacher == 1 %}
+    iv class='home-classroom-wrapper'>
+    <div class='home-classroom-background'>
+      <div class='home-classroom-buttons'>
+        {% for classroom in classrooms %}
+          <div><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+        {% endfor %}
       </div>
     </div>
     {% endif %}
