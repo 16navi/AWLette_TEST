@@ -21,16 +21,15 @@
     <div class='home-classroom-background'>
       <div class='home-classroom-buttons'>
         {% for classroom in current_user.enrolment %}
-          <div><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+          <div><a href='/classroom/{{ classroom.id }}'>{{ classroom }}</a><p>{{ classroom.description }}</p></div>
         {% endfor %}
       </div>
     </div>
-    {% elif current_user.is_teacher == 1 %}
-    iv class='home-classroom-wrapper'>
+    {% elif current_user.is_teacher == 1 %}\
     <div class='home-classroom-background'>
       <div class='home-classroom-buttons'>
         {% for classroom in classrooms %}
-          <div><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a></div>
+          <div><a href='classroom/{{ classroom.id }}'>{{ classroom }}</a><p>{{ classroom.description }}</p></div>
         {% endfor %}
       </div>
     </div>
