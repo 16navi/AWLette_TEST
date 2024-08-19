@@ -41,18 +41,18 @@
     
     <div class='home-main-background'>
       <div class="home-main-buttons">
-          <div><a href='/sublist'>See all the words.</a></div>
+          <div><a href='/sublist'>See all the words.</a><p>browse all the words in their respective sublists.</p></div>
         {% if current_user.is_anonymous or current_user.is_teacher != 1 %}
-          <div><a href='/fill_in_the_blank'>Fill in the blanks.</a></div>
-          <div><a href='/form'>Change the form.</a></div>
-          <div><a href='/match'>Match the words.</a></div>
-          <div><a href='/question_answer'>Question and Answer.</a></div>
-          <div><a href='/quiz'>Take the quiz.</a></div>
+          <div><a href='/fill_in_the_blank'>Fill in the blanks.</a><p>fill in sentences with the correct words.</p></div>
+          <div><a href='/form'>Change the form.</a><p>match the words with its definition.</p></div>
+          <div><a href='/match'>Match the words.</a><p>change the word to its different forms.</p></div>
+          <div><a href='/question_answer'>Question and Answer.</a><p>random one-on-one questions.</p></div>
+          <div><a href='/quiz'>Take the quiz.</a><p>long-form quizzes containing a mix of different questions.</p></div>
         {% endif %}
         {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
-          <div><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a></div>
+          <div><a href='{{ url_for('enrol') }}'>Enrol in a classroom</a><p>enter the code from your teacher to enrol.</p></div>
         {% elif current_user.is_teacher == 1 %}
-          <div><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a></div>
+          <div><a href='{{ url_for('create_classroom') }}'>Create a Classroom</a><p>share the code to your students for them to join.</p></div>
         {% endif %}
       </div>
     </div>

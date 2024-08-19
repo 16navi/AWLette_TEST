@@ -168,9 +168,18 @@ header .icon #logo {
 }
 
 .home-main-buttons a {
+    display: block;
     text-decoration: none;
     color: #95625e;
     font-size: 2rem;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.home-main-buttons p {
+    margin-left: 20px;
+    margin-top: 0;
+    color: white;
 }
 
 /* Fill in the blanks */
