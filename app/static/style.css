@@ -2,6 +2,7 @@
 html {
     font-family: 'Coolvetica', sans-serif;
     font-size: 16px;
+    color: #704d4a;
 }
 
 body {
@@ -135,8 +136,8 @@ header .icon #logo {
 .home-classroom-buttons a {
     display: block;
     text-decoration: none;
-    color: #95625e;
     font-size: 2rem;
+    color: inherit;
 }
 
 .home-classroom-buttons p {
@@ -187,8 +188,8 @@ header .icon #logo {
 .home-main-buttons a {
     display: block;
     text-decoration: none;
-    color: #95625e;
     font-size: 2rem;
+    color: inherit;
 }
 
 .home-main-buttons p {
@@ -249,7 +250,6 @@ header .icon #logo {
     margin-inline: 25%;
     margin-bottom: 50px;
     margin-top: 50px;
-    color: #704d4a;
 }
 
 .word-content-grid div {
@@ -331,6 +331,44 @@ header .icon #logo {
     font-size: 6.5rem;
     margin: 0;
     margin-left: 15%;
+}
+
+/* Login and Signup */
+.login-signup-background {
+    display: grid;
+    background-color: #fdf4ca;
+    height: 400px;
+    margin-top: 5%;
+}
+
+.login-signup-wrapper {
+    align-self: center;
+    background-color: white;
+    box-shadow: 1px 1px 8px #8a8a8a;
+    padding: 25px;
+    width: 320px;
+    margin: auto;
+}
+.login-signup-wrapper p {
+    margin: 0;
+}
+
+.login-signup-wrapper > #title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.login-signup-wrapper > form > p {
+    margin-bottom: 20px;
+}
+
+.login-signup-wrapper > form > p > input[type=submit] {
+    display: block;
+    border: 0px;
+    margin: auto;
+    width: 75px;
+    height: 30px;
+    box-shadow: 1px 1px 2px #8a8a8a;
 }
 
 /* Fill in the blanks */
