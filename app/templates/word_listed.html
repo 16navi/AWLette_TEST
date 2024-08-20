@@ -121,13 +121,15 @@
 </div>
 
 <!--Next word and Previous Word feature.-->
+<div class='word-nextprev'>
 {% if previous_word != None %}
-<a href = {{ url_for('word_listed', word = previous_word) }}><button type = 'button'>Previous Word</button></a>
+<a href = {{ url_for('word_listed', word = previous_word) }}><button>Previous Word</button></a>
 {% endif %}
 
 {% if next_word != None %}
-<a href = {{ url_for('word_listed', word = next_word) }}><button type = 'button'>Next Word</button></a>
+<a href = {{ url_for('word_listed', word = next_word) }}><button>Next Word</button></a>
 {% endif %}
+</div>
 
 {% include 'footer.html' %}
 

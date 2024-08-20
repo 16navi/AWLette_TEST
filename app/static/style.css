@@ -117,7 +117,7 @@ header .icon #logo {
 
 .home-classroom-buttons {
     /* border: 1px #000 solid; */
-    margin-inline: 100px;
+    margin-inline: 10%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 5px;
@@ -154,7 +154,7 @@ header .icon #logo {
 
 .home-main-buttons {
     /* border: 1px #000 solid; */
-    margin-inline: 100px;
+    margin-inline: 10%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 10px;
@@ -169,17 +169,17 @@ header .icon #logo {
     padding: 20px;
 }
 
-.home-main-buttons div:nth-child(4n-2) {
+.home-main-buttons div:nth-child(3n-2) {
     /* border: 1px #000 solid; */
     background-color: #55c6ff;
 }
 
-.home-main-buttons div:nth-child(4n-1) {
+.home-main-buttons div:nth-child(3n-1) {
     /* border: 1px #000 solid; */
-    background-color: #80d8e2;
+    background-color: #77cffc;
 }
 
-.home-main-buttons div:nth-child(4n) {
+.home-main-buttons div:nth-child(3n) {
     /* border: 1px #000 solid; */
     background-color: #6abfe9;
 }
@@ -221,11 +221,11 @@ header .icon #logo {
     color: #ff595e;
     font-size: 6.5rem;
     margin: 0;
-    margin-left: 100px;
+    margin-left: 15%;
 }
 
 .word-definition {
-    margin-inline: 220px;
+    margin-inline: 23%;
     color: #95625e;
     font-size: 1.5rem;
 }
@@ -246,7 +246,7 @@ header .icon #logo {
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 8px;
     transform: scale(1.05);
-    margin-inline: 200px;
+    margin-inline: 25%;
     margin-bottom: 50px;
     margin-top: 50px;
     color: #704d4a;
@@ -291,11 +291,47 @@ header .icon #logo {
 }
 
 .word-picture img {
+    display: block;
     background-size: cover;
-    max-width: 450px;
+    width: 350px;
+    margin: auto;
 }
 
+.word-nextprev {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+}
 
+.word-nextprev button {
+    font-family: inherit;
+    font-size: inherit;
+    border: 0px;
+    height: 50px;
+    width: 150px;
+    margin: 15px;
+    background-color: #ff595e;
+    color: white;
+    box-shadow: 1px 1px 8px #8a8a8a;
+}
+
+.word-nextprev button:active {
+    transform: scale(0.95);
+}
+
+/* User details */
+.deets-username {
+    display: grid;
+    background-color: #fdf4ca;
+    padding: 10px;
+}
+
+.deets-username p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 15%;
+}
 
 /* Fill in the blanks */
 .fill-table table, th, td {
