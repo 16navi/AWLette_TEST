@@ -121,8 +121,13 @@ header .icon #logo {
     margin-inline: 10%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 5px;
+    grid-gap: 10px;
     transform: scale(1.05);
+}
+
+.home-classroom-buttons a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .home-classroom-buttons div {
@@ -133,14 +138,16 @@ header .icon #logo {
     padding: 20px;
 }
 
-.home-classroom-buttons a {
-    display: block;
-    text-decoration: none;
-    font-size: 2rem;
-    color: inherit;
+.home-classroom-buttons div:hover {
+    filter: brightness(1.1);
 }
 
-.home-classroom-buttons p {
+.home-classroom-buttons .home-classroom-title {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.home-classroom-buttons .home-classroom-subtitle {
     margin-top: 0;
     color: white;
 }
@@ -162,12 +169,31 @@ header .icon #logo {
     transform: scale(1.05);
 }
 
+.home-main-buttons a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .home-main-buttons div {
     /* border: 1px #000 solid; */
     background-color: #6cceff;
     height: 210px;
     box-shadow: inset -4px -4px 20px #8a8a8a;
     padding: 20px;
+}
+
+.home-main-buttons div:hover {
+    filter: brightness(1.1);
+}
+
+.home-main-buttons .home-main-title {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.home-main-buttons .home-main-subtitle {
+    margin-top: 0;
+    color: white;
 }
 
 .home-main-buttons div:nth-child(3n-2) {
@@ -183,18 +209,6 @@ header .icon #logo {
 .home-main-buttons div:nth-child(3n) {
     /* border: 1px #000 solid; */
     background-color: #6abfe9;
-}
-
-.home-main-buttons a {
-    display: block;
-    text-decoration: none;
-    font-size: 2rem;
-    color: inherit;
-}
-
-.home-main-buttons p {
-    margin-top: 0;
-    color: white;
 }
 
 /* Word listed and lookfor */
@@ -245,7 +259,7 @@ header .icon #logo {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-gap: 8px;
+    grid-gap: 10px;
     transform: scale(1.05);
     margin-inline: 25%;
     margin-bottom: 50px;
@@ -333,15 +347,79 @@ header .icon #logo {
     margin-left: 15%;
 }
 
+.deets-sublist-container {
+    display: grid;
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.deets-sublist {
+    margin: auto;
+}
+
+.deets-prog-background {
+    background-color: #fdf4ca;
+    margin-top: 30px;
+}
+
+.deets-prog-grid {
+    margin-inline: 10%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 350px));
+    grid-gap: 10px;
+    transform: scale(1.05);
+}
+
+.deets-prog-grid div:not(.deets-prog-pie) {
+    display: block;
+    background-color: white;
+    box-shadow: 1px 1px 8px #8a8a8a;
+    padding: 15px;
+}
+.deets-prog-grid .deets-prog-title {
+    margin: 0;
+    font-weight: bold;
+}
+
+.deets-prog-grid div p {
+    margin-bottom: 0;
+}
+
+.deets-prog-pie {
+    /* border: 1px solid black; */
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1;
+}
+
+.deets-prog-pie::before {
+    /* border: 1px solid black; */
+    align-self: center;
+    justify-self: center;
+    content: '';
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background-image: conic-gradient(var(--color), calc(var(--percentage)*1%), #0000 0);
+    mask:radial-gradient(farthest-side,#0000 calc(99% - var(--border-thickness)),#000 calc(100% - var(--border-thickness)));
+}
+
+.deets-prog-pie span {
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+    font-size: 2rem;
+}
+
 /* Login and Signup */
-.login-signup-background {
+.login-signup-enrol-background {
     display: grid;
     background-color: #fdf4ca;
     height: 400px;
     margin-top: 5%;
 }
 
-.login-signup-wrapper {
+.login-signup-enrol-wrapper {
     align-self: center;
     background-color: white;
     box-shadow: 1px 1px 8px #8a8a8a;
@@ -349,20 +427,20 @@ header .icon #logo {
     width: 320px;
     margin: auto;
 }
-.login-signup-wrapper p {
+.login-signup-enrol-wrapper p {
     margin: 0;
 }
 
-.login-signup-wrapper > #title {
+.login-signup-enrol-wrapper > #title {
     font-size: 2rem;
     margin-bottom: 20px;
 }
 
-.login-signup-wrapper > form > p {
+.login-signup-enrol-wrapper > form > p {
     margin-bottom: 20px;
 }
 
-.login-signup-wrapper > form > p > input[type=submit] {
+.login-signup-enrol-wrapper > form > p > input[type=submit] {
     display: block;
     border: 0px;
     margin: auto;
@@ -371,6 +449,56 @@ header .icon #logo {
     box-shadow: 1px 1px 2px #8a8a8a;
 }
 
+/* Choose a sublist */
+.sublist-title-background {
+    background-color: #fdf4ca;
+}
+
+.sublist-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.sublist-buttons-background {
+    margin-top: 30px;
+    background-color: #fdf4ca;
+}
+
+.sublist-grid {
+    margin-inline: 10%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    grid-gap: 10px;
+    transform: scale(1.05);
+}
+
+.sublist-grid a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.sublist-grid div {
+    background-color: #6cceff;
+    height: 210px;
+    box-shadow: inset -4px -4px 20px #8a8a8a;
+    padding: 20px;
+}
+
+.sublist-grid div:hover {
+    filter: brightness(1.1);
+}
+
+.sublist-grid .sublist-button-title {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.sublist-grid .sublist-button-subtitle {
+    margin-top: 0;
+    color: white;   
+}
 /* Fill in the blanks */
 .fill-table table, th, td {
   border:1px solid black;

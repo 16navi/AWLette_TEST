@@ -2,9 +2,31 @@
 
 {% block content %}
 
-Choose a sublist:
-<ul>
-    <li><a href = "/sublist/words">Sublist 1</a></li>
-</ul>
+<div class='sublist-title-background'>
+    <p>Choose a sublist:</p>
+</div>
+
+<div class='sublist-buttons-background'>
+    <div class='sublist-grid'>
+        <a href = "/sublist/1"><div>
+            <p class='sublist-button-title'>Sublist 1</p>
+            {% with sublist = sample(comp(words, 1), 3) %}
+            <p class='sublist-button-subtitle'>contains words such as {{ sublist[0] }}, {{ sublist[1] }}, and {{ sublist[2] }}.</p>
+            {% endwith %}
+        </div></a>
+        <a href = "/sublist/2"><div>
+            <p class='sublist-button-title'>Sublist 2</p>
+            {% with sublist = sample(comp(words, 2), 3) %}
+            <p class='sublist-button-subtitle'>contains words such as {{ sublist[0] }}, {{ sublist[1] }}, and {{ sublist[2] }}.</p>
+            {% endwith %}
+        </div></a>
+        <a href = "/sublist/3"><div>
+            <p class='sublist-button-title'>Sublist 3</p>
+            {% with sublist = sample(comp(words, 3), 3) %}
+            <p class='sublist-button-subtitle'>contains words such as {{ sublist[0] }}, {{ sublist[1] }}, and {{ sublist[2] }}.</p>
+            {% endwith %}
+        </div></a>
+    </div>
+</div>
 
 {% endblock %}

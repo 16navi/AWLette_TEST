@@ -480,12 +480,13 @@ def about():
 
 @app.route('/sublist')
 def all_words():
-    return render_template('sublist.html')
+    words = models.Words.query.all()
+    return render_template('sublist.html', words=words)
 
 
-@app.route('/sublist/words')
-def sublist():
-    words = models.Words.query.filter_by(sublist=1).all()
+@app.route('/sublist/<sublist>')
+def sublist(sublist):
+    words = models.Words.query.filter_by(sublist=sublist).all()
     return render_template('words.html', words=words)
 
 
@@ -876,6 +877,13 @@ def sample():
     # ultimately returns 'sample' as the returned value of
     # '_sample' using 'dict'
     return dict(sample=_sample)
+
+@app.context_processor
+def comp():
+    def _comp(seq, sublist):
+        result = [x for x in seq if x.sublist == sublist]
+        return result
+    return dict(comp=_comp)
 
 
 if __name__ == '__main__':

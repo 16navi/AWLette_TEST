@@ -3,69 +3,95 @@
 {% block content %}
 {% with user = current_user %}
 
+
 <div class='deets-username'>
     <p>My Progress</p>
 </div>
 
-<div class='deets-prog-grid'>
-    <div class='deets-fill'>
-        <h4>Your progress in fill in the blanks is:</h4>
-
-        <ul>
-            {% for progtrack in user.progtrack %}
-                {% if progtrack.fill_progress %}    
-                    <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+<div class='deets-sublist-container'>
+    <div class='deets-sublist'>
+        <button id='sublist1'>Sublist 1</button>
+        <button id='sublist2'>Sublist 2</button>
+        <button id='sublist3'>Sublist 3</button>
     </div>
+</div>
 
-    <div class='deets-form'>
-        <h4>Your progress in change the form is:</h4>
+{% with progtrack1 = comp(user.progtrack, 1)[0],
+   progtrack2 = comp(user.progtrack, 2)[0],
+   progtrack3 = comp(user.progtrack, 3)[0] %}
 
-        <ul>
-            {% for progtrack in user.progtrack %}
-                {% if progtrack.form_progress %}    
-                    <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+<div class='deets-prog-background'>
+    <div class='deets-prog-grid'>
+
+        {% if progtrack1.fill_progress %}
+        <div class='deets-fill'>
+            <p class='deets-prog-title'>Your progress in fill in the blanks is:</p>
+            {% with progress = ((progtrack1.fill_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack1.sublist }}</strong> -  {{ progress }}% ({{ progtrack1.fill_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        {% if progtrack2.fill_progress %}
+        <div class='deets-fill' style='display: none;'>
+            <p class='deets-prog-title'>Your progress in fill in the blanks is:</p>
+            {% with progress = ((progtrack2.fill_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack2.sublist }}</strong> -  {{ progress }}% ({{ progtrack2.fill_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        {% if progtrack1.form_progress %}
+        <div class='deets-form'>
+            <p class='deets-prog-title'>Your progress in change the form is:</p>
+            {% with progress = ((progtrack1.form_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack1.sublist }}</strong> -  {{ progress }}% ({{ progtrack1.form_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        {% if progtrack1.match_progress %}
+        <div class='deets-match'>
+            <p class='deets-prog-title'>Your progress in match the words is:</p>
+            {% with progress = ((progtrack1.match_progress|json_loads|length / 160) * 100)|round(2) %}
+                <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack1.sublist }}</strong> -  {{ progress }}% ({{ progtrack1.match_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endif %}
+
+        {% if progtrack1.qna_progress %}
+        <div class='deets-qna'>
+            <p class='deets-prog-title'>Your progress in question and answer is:</p>
+ 
+                {% with progress = ((progtrack1.qna_progress|json_loads|length / 60) * 100)|round(2) %}
+                    <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                    <p><strong>Sublist No. {{ progtrack1.sublist }}</strong> -  {{ progress }}% ({{ progtrack1.qna_progress|json_loads|length }} words out of 60)</p>
+                {% endwith %}
+        </div>
+        {% endif %}
+
+        
+        {% if progtrack1.quiz_progress %}
+        <div class='deets-quiz'>
+            <p class='deets-prog-title'>Your progress in quiz is:</p>    
+                {% with progress = ((progtrack1.quiz_progress|json_loads|length / 60) * 100)|round(2) %}
+                    <div class='deets-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                    <p><strong>Sublist No. {{ progtrack1.sublist }}</strong> -  {{ progress }}% ({{ progtrack1.fill_progress|json_loads|length }} words out of 60)</p>
+                {% endwith %}
+        </div>
+        {% endif %}
+
     </div>
-
-    <div class='deets-match'>
-        <h4>Your progress in match the words is:</h4>
-
-        <ul>
-            {% for progtrack in user.progtrack %}
-                {% if progtrack.match_progress %}    
-                    <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class='deets-qna'>
-        <h4>Your progress in question and answer is:</h4>
-
-        <ul>
-            {% for progtrack in user.progtrack %}
-                {% if progtrack.qna_progress %}    
-                    <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-
-    <h4>Your progress in quiz is:</h4>
-
-    <ul>
-        {% for progtrack in user.progtrack %}
-            {% if progtrack.quiz_progress %}    
-                <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.quiz_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.quiz_progress|json_loads|length }} words out of 60)</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
 </div>
 
 {% endwith %}
+
+{% endwith %}
+
+{% include 'footer.html' %}
+
 {% endblock %}

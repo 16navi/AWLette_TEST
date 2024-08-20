@@ -1,20 +1,26 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-  <ul class=flashes>
-  {% for message in messages %}
-    <li>{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
-{% endwith %} 
+<div class='login-signup-enrol-background'>
+  <div class='login-signup-enrol-wrapper'>
+    <p id='title'>Enrol</p>
 
-<form method="POST" enctype="multipart/form-data"> 
-    {{ form.csrf_token }} 
-    <p>Enter the code: {{ form.code }}</p>
-    <p><input type="submit" value="Submit"></p>
-</form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+    {% endwith %} 
+
+    <form method="POST" enctype="multipart/form-data"> 
+        {{ form.csrf_token }} 
+        <p>Enter the code: {{ form.code }}</p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+  </div>
+</div>
 
 {% endblock %}
