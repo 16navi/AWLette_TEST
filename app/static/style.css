@@ -370,6 +370,10 @@ header .icon #logo {
     transform: scale(1.05);
 }
 
+.deets-noprog {
+    height: 200px;
+}
+
 .deets-prog-grid div:not(.deets-prog-pie) {
     display: block;
     background-color: white;
