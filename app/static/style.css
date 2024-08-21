@@ -513,11 +513,49 @@ header .icon #logo {
     margin-top: 0;
     color: white;   
 }
+
+/* Sublist chooser for quizzes */
+.quiz-sublist-title-background {
+    background-color: #fdf4ca;
+}
+
+.quiz-sublist-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.quiz-sublist-background {
+    margin-top: 5%;
+    background-color: #fdf4ca;
+}
+
+.quiz-sublist-wrapper {
+    margin-inline: 10%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    grid-gap: 10px;
+    transform: scale(1.05);
+}
+
+.quiz-sublist-button {
+    border: 0;
+    background-color: #6cceff;
+    height: 210px;
+    box-shadow: inset -4px -4px 20px #8a8a8a;
+    padding: 20px;
+    
+    font-family: inherit;
+    font-size: 2rem;
+    color: inherit;
+}
+
 /* Fill in the blanks */
 .fill-table table, th, td {
   border:1px solid black;
   height: 30px;
-}
+}   
 
 .fill-input {
     text-align: center;
