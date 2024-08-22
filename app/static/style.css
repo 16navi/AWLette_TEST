@@ -5,6 +5,14 @@ html {
     color: #704d4a;
 }
 
+input[type=text] {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    box-shadow: inset 0 0 3px #7a7a7a;
+    border: 0;
+}
+
 body {
     margin: 0px;
 }
@@ -51,6 +59,18 @@ main {
 header {
     background-color: #fdf4ca;
     padding: 10px;
+}
+
+/* Footer */
+footer {
+    margin-top: 5%;
+    background-color: #9c9c9c;
+    height: 100px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
 }
 
 header .grid {
@@ -552,10 +572,43 @@ header .icon #logo {
 }
 
 /* Fill in the blanks */
-.fill-table table, th, td {
-  border:1px solid black;
-  height: 30px;
-}   
+.fill-background {
+    background-color: #9bf2fb;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: 4%;
+}
+
+.fill-background p {
+    margin: 0;
+    font-size: 3rem;
+    color: #ff595e;
+    background-color: white;
+}
+
+.fill-table {
+    border-collapse: seperate;
+    border-spacing: 0.5rem;
+    margin-top: 2%; 
+    margin-inline: 15%;
+}
+
+.fill-table th,.fill-table td {
+    height: 30px;
+    font-size: 1.3rem;
+    background-color: #fdf4ca;
+    box-shadow: 1px 1px 2px #8a8a8a;
+}
+
+.fill-table th {
+    border: 0;
+}
+
+.fill-table td {
+    border: 0;  
+    padding: 20px;
+}
 
 .fill-input {
     text-align: center;
@@ -568,15 +621,43 @@ header .icon #logo {
 }
 
 /* Change the form */
-.form-table table, th, td {
-    border:1px solid black;
-    padding: 5px;
-    height: 30px;
-    text-align: center;
+.form-background {
+    background-color: #9bf2fb;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: 4%;
 }
 
-.form-table table {
-      display: inline-table;
+.form-background p {
+    margin: 0;
+    font-size: 3rem;
+    color: #ff595e;
+    background-color: white;
+}
+
+.form-table {
+    border-collapse: seperate;
+    border-spacing: 0.5rem;
+    margin-top: 2%; 
+    margin-inline: 15%;
+}
+
+.form-table th,.form-table td {
+    height: 30px;
+    font-size: 1.3rem;
+    background-color: #fdf4ca;
+    box-shadow: 1px 1px 2px #8a8a8a;
+}
+
+.form-table th {
+    border: 0;
+}
+
+.form-table td {
+    border: 0;  
+    padding: 20px;
+    text-align: center;
 }
 
 .form-input {

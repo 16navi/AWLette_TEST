@@ -75,7 +75,6 @@
     <p>Choose a sublist:</p>
 </div>
 
-
 <form action='{{url_for('fill_in_the_blank')}}' method='GET'>
     <div class='quiz-sublist-background'>
         <div class='quiz-sublist-wrapper'>
@@ -89,8 +88,9 @@
 
 <!-- When 'sublist' has value -->
 {% if sublist %}
+<div class='fill-background'>
 
-<p>You picked Sublist No.{{ sublist }}</p>
+<p>Fill in the blank with the correct word.</p>
 
 <!-- List the forms in a seperate table as choices for 
  filling in the blanks in the sentence -->
@@ -103,7 +103,7 @@
 </table>
 
 <!-- Lists the sentences with input fields in between -->
-<br><table class='fill-table'>
+<table class='fill-table'>
     <tr>
         <th>Fill in the Blanks</th>
     </tr>
@@ -169,5 +169,7 @@
 </table>
 
 {% endif %}
+
+</div>
 
 {% endblock %}

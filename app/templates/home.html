@@ -46,13 +46,12 @@
           <a href='/quiz'><div><p class='home-main-title'>Take the quiz.</p><p class='home-main-subtitle'>long-form quizzes containing a mix of different questions.</p></div></a>
         {% endif %}
         {% if current_user.is_teacher != 1 and not current_user.is_admin and not current_user.is_anonymous %}
-        <a href='{{ url_for('enrol') }}'><div><p class='home-main-title'>Enrol in a classroom</p><p class='home-main-subtitle'>enter the code from your teacher to enrol.</p></div></a>
+        <a href='{{ url_for('enrol') }}'><div><p class='home-main-title'>Enrol in a classroom.</p><p class='home-main-subtitle'>enter the code from your teacher to enrol.</p></div></a>
         {% elif current_user.is_teacher == 1 %}
-        <a href='{{ url_for('create_classroom') }}'><div><p class='home-main-title'>Create a Classroom</p><p class='home-main-subtitle'>share the code to your students for them to join.</p></div></a>
+        <a href='{{ url_for('create_classroom') }}'><div><p class='home-main-title'>Create a classroom.</p><p class='home-main-subtitle'>share the code to your students for them to join.</p></div></a>
         {% endif %}
       </div>
     </div>
 
-{% include 'footer.html' %}
 {% endblock %}
 

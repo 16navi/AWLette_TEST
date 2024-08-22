@@ -78,7 +78,10 @@
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
-Choose a sublist:
+<div class='quiz-sublist-title-background'>
+    <p>Choose a sublist:</p>
+</div>
+
 <form action='{{url_for('form')}}' method='GET'>
     <div class='quiz-sublist-background'>
         <div class='quiz-sublist-wrapper'>
@@ -94,8 +97,9 @@ Choose a sublist:
 
 <!-- When 'sublist' has value -->
 {% if sublist %}
+<div class='form-background'>
 
-<p>You picked Sublist No.{{ sublist }}</p>
+<p>Change the form of the word.</p>
 
 <table class='form-table'>
     <tr>
@@ -149,6 +153,7 @@ Choose a sublist:
 {% endfor %}
 </table>
 
+</div>
 {% endif %}
 
 {% endblock %}
