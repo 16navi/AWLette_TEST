@@ -666,11 +666,36 @@ header .icon #logo {
 }
 
 /* Match the words */
+.match-background {
+    background-color: #9bf2fb;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: 4%;
+}
+
+.match-background p {
+    margin: 0;
+    font-size: 3rem;
+    color: #ff595e;
+    background-color: white;
+}
+
+.match-choices-container {
+    padding: 3%;
+}
+
 .match-choices {
-    width: 17.5%;
-    height: 200px;
+    border: 0;
     margin: 5px;
+    width: 20%;
+    aspect-ratio: 1;
     padding-inline: 1px;
+    font-family: inherit;
+    color: inherit;
+    font-size: 1.3rem;
+    background-color: #fdf4ca;
+    box-shadow: 1px 1px 2px #8a8a8a;
     vertical-align: bottom;
 }
 
@@ -739,3 +764,5 @@ header .icon #logo {
     height: 100px;
     background-color: #a9a9a9;
 }
+
+/* Classrooms */

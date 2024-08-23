@@ -11,32 +11,6 @@ give up button:
     * but before clicking the button, a guilt message will pop up.
     * this can go like "ARE YOU SURE? It's okay if you take some time to think for the right answer! After all, strain is important for muscle growth---and your brain is the smartest muscle!"
 
-user roles:
-    * guests (haven't signed up) have access to all words and quizzes, but no progress tracking
-    * users (signed up and are logged in) have all the words and quizzes PLUS progress tracking
-
-    * students are users that joined a 'classroom'
-        - have user access plus the custom quizzes that their teachers can make
-        - access to leaderboard (only if teacher turns on leaderboard)
-
-    * teachers have the following abilities:
-        - create 'classrooms' containing their students
-        - see the progress of each student
-        - create custom quizzes for their students to accomplish (as a way of assessment maybe) and get their results back
-            * custom quizzes can contain words from different sublists
-            * can be customized to exclude certain types of questions
-            * can have as many questions as the teacher wants
-        - turn leaderboard on or off
-
-    * admins have the following: 
-        - add words and sublists of words
-        - change the 'content' (definitions, synonyms, etc) of a word
-        - remove users
-        - remove classrooms
-
-Next and Previous button for word:
-    * should be at the bottom of the page
-
 Choices in fill in the blanks:
     * can be the root word instead of the exact answer (or can be randomly chosen to be either)
     * nominalisation of the root word 

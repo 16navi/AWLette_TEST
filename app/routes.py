@@ -219,7 +219,7 @@ def classroom_listed(classroom_id):
         else:
             flash(f"You're not in this classroom, are you, {user}?")
             return redirect(url_for('homepage'))
-        
+
 
 @app.route('/classroom/<classroom_id>/leave/<user_id>')
 def leave_classroom(classroom_id, user_id):

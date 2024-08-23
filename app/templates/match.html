@@ -164,6 +164,7 @@
 
 <!-- When 'sublist' has value -->
 {% if sublist %}
+<div class='match-background'>
 
 <!-- counters for 'random_words' and 'random_definitions' - 
  this is for ensuring that the for loop of each button goes
@@ -178,12 +179,11 @@
 {% set word_random_words = random_words|shuffle %}
 {% set definition_random_words = random_words|shuffle %}
 
+
+<div class='match-choices-container'>
 {% for i in range(10) %}
     <!-- temp solution only, just to make sure that
      there are five buttons per row-->
-    {% if loop.index == 6 %}
-        <br>
-    {% endif %}
 
     <button class='match-choices' id='a{{ loop.index }}'>
 
@@ -222,6 +222,8 @@
                 );
     </script>
 {% endfor %}
+</div>
 
+</div>
 {% endif %}
 {% endblock %}
