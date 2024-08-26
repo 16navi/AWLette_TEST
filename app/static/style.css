@@ -690,7 +690,6 @@ header .icon #logo {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 10px;
-
 }
 
 .match-choices {
@@ -751,7 +750,7 @@ header .icon #logo {
     color: inherit;
     font-size: inherit;
     padding: 10px;
-    height: 100px;
+    min-height: 100px;
     margin: 5px;
     vertical-align: bottom;
     box-shadow: 1px 1px 5px #8a8a8a;
