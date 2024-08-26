@@ -571,6 +571,10 @@ header .icon #logo {
     color: inherit;
 }
 
+.quiz-sublist-button:hover {
+    filter: brightness(1.1);
+}
+
 /* Fill in the blanks */
 .fill-background {
     background-color: #9bf2fb;
@@ -700,20 +704,65 @@ header .icon #logo {
     box-shadow: 1px 1px 2px #8a8a8a;
 }
 
+.match-choices:hover {
+    transform: scale(0.98);
+}
+
 /* Question and Answer */
+.qna-background {
+    background-color: #9bf2fb;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: 4%;
+}
+
+.qna-background > .qna-title {
+    margin: 0;
+    font-size: 3rem;
+    color: #ff595e;
+    background-color: white;
+}
+
+.qna-question-container {
+    background-color: #fdf4ca;
+    width: 80%;
+    margin-top: 3%;
+    padding: 10px;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    box-shadow: 1px 1px 10px #8a8a8a;
+}
+
 .qna-question {
-    background-color: pink;
-    border-style: solid;
-    border-width: 1px;
-    padding: 5px;
+    font-size: 2rem;
+}
+
+.qna-choices-container {
+    width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .qna-choices {
+    border: 0;
+    font-family: inherit;
+    color: inherit;
+    font-size: inherit;
     padding: 10px;
-    width: 400px;
     height: 100px;
     margin: 5px;
     vertical-align: bottom;
+    box-shadow: 1px 1px 5px #8a8a8a;
+}
+
+.qna-choices:hover {
+    transform: scale(0.98);
+}
+
+.qna-choices:disabled {
+    background-color: white;
 }
 
 /* Quiz */

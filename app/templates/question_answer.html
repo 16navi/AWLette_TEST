@@ -34,15 +34,15 @@
             }
             else {
                 console.log('Oops! Sorry...');
-                for (let i of classmates) {
-                    if (i.id.replace('b', '') == question.id.replace('a', '')) {
-                        i.style.backgroundColor = '#90ee90';
-                        i.setAttribute('disabled', 'true');
+                classmates.forEach(function(classmate) {
+                    if (classmate.id.replace('b', '') == question.id.replace('a', '')) {
+                        classmate.style.backgroundColor = '#90ee90';
+                        classmate.setAttribute('disabled', 'true');
                     } else {
                         input.style.backgroundColor = '#ef7a71';
-                        i.setAttribute('disabled', 'true');
+                        classmate.setAttribute('disabled', 'true');
                     };
-                };
+                });
                 setTimeout(function() {
                     location.reload();
                 }, 500);
@@ -54,7 +54,10 @@
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
-Choose a sublist:
+<div class='quiz-sublist-title-background'>
+    <p>Choose a sublist:</p>
+</div>
+
 <form action='{{url_for('question_answer')}}' method='GET'>
     <div class='quiz-sublist-background'>
         <div class='quiz-sublist-wrapper'>
@@ -71,18 +74,19 @@ Choose a sublist:
 <!-- When 'sublist' has value -->
 {% if sublist %}
 
+    <div class='qna-background'>
+
     {% set question_word = random_words|choice %}
 
-    <p>You picked Sublist No.{{ sublist }}</p>
+    <p class='qna-title'>Question and Answer</p>
 
-    <div class='qna-question'>
+    <div class='qna-question-container'>
         {% if question_type == 1 %}
-            <p>1. given def, answer the word</p>
-            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word.definition[0] }} - what's the word?</p>
+            <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>Which word is defined as "{{ question_word.definition[0] }}"?</p>
 
+            <div class='qna-choices-container'>
             {% for choice_word in random_words %}
                {% if loop.index == 3 %}
-                   <br>
                {% endif %}
 
                    <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word }}</button>
@@ -90,17 +94,17 @@ Choose a sublist:
                    <script>
                        rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
                                        document.getElementById('b{{ choice_word.id }}'),
-                                       document.getElementsByClassName('choices'))
+                                       document.querySelectorAll('.qna-choices'))
                    </script>
             {% endfor %}
+            </div>
 
         {% elif question_type == 2 %}
-            <p>2. given word, answer def</p>
-            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the definition?</p>
+            <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is the definition of {{ question_word }}?</p>
 
+            <div class='qna-choices-container'>
             {% for choice_word in random_words %}
                 {% if loop.index == 3 %}
-                    <br>
                 {% endif %}
 
                         <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word.definition[0] }}</button>
@@ -108,17 +112,17 @@ Choose a sublist:
                         <script>
                             rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
                                             document.getElementById('b{{ choice_word.id }}'),
-                                            document.getElementsByClassName('choices'))
+                                            document.querySelectorAll('.qna-choices'))
                         </script>
             {% endfor %}
+            </div>
 
         {% elif question_type == 3 %}
-            <p>3. given word, answer synonym</p>
-            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the synonym?</p>
+            <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is a synonym for {{ question_word }}?</p>
 
+            <div class='qna-choices-container'>
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
-                        <br>
                     {% endif %}
 
                     <button class='qna-choices' id='b{{ choice_word.id }}'>{{ choice_word.synonym[0] }}</button>
@@ -126,32 +130,32 @@ Choose a sublist:
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
                                         document.getElementById('b{{ choice_word.id }}'),
-                                        document.getElementsByClassName('choices'))
+                                        document.querySelectorAll('.qna-choices'))
                     </script>
             {% endfor %}
+            </div>
 
         <!-- This type of question will require a different
         function for right or wrong -->
         {% elif question_type == 4 %}
-            <p>4. which form is this? (n, a, v)</p>
-            <p id='a{{ question_form_class }}' data-correct_id='{{ question_word.id }}'>{{ question_word.form[question_form_class - 1] }} - noun, verb, or adjective?</p>
+            <p class='qna-question' id='a{{ question_form_class }}' data-correct_id='{{ question_word.id }}'>Is {{ question_word.form[question_form_class - 1] }} a noun, verb, or adjective?</p>
 
+            <div class='qna-choices-container'>
             <button class='qna-choices' id='b1'>noun</button>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
                                 document.getElementById('b1'),
-                                document.getElementsByClassName('choices'))
+                                document.querySelectorAll('.qna-choices'))
             </script>
             
             <button class='qna-choices' id='b2'>adjective</button>
 
-            <br>
 
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
                                 document.getElementById('b2'),
-                                document.getElementsByClassName('choices'))
+                                document.querySelectorAll('.qna-choices'))
             </script>
             
             <button class='qna-choices' id='b3'>verb</button>
@@ -159,16 +163,16 @@ Choose a sublist:
             <script>
                 rightOrWrong(   document.getElementById('a{{ question_form_class }}'),
                                 document.getElementById('b3'),
-                                document.getElementsByClassName('choices'))
+                                document.querySelectorAll('.qna-choices'))
             </script>
+            </div>
 
         {% elif question_type == 5 %}
-            <p>5. given word, answer collocation</p>
-            <p id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>{{ question_word }} - what's the collocation?</p>
+            <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is a collocation for {{ question_word }}?</p>
 
+            <div class='qna-choices-container'>
             {% for choice_word in random_words %}
                     {% if loop.index == 3 %}
-                        <br>
                     {% endif %}
 
                     <button class='qna-choices' id='b{{ choice_word.id }}'> {{ choice_word.collocation[0] }}</button>
@@ -176,11 +180,16 @@ Choose a sublist:
                     <script>
                         rightOrWrong(   document.getElementById('a{{ question_word.id }}'),
                                         document.getElementById('b{{ choice_word.id }}'),
-                                        document.getElementsByClassName('choices'))
+                                        document.querySelectorAll('.qna-choices'))
                     </script>
             {% endfor %}
-    </div>
+        </div>
+    
     {% endif %}
+                    
+    </div>
+
+</div>
 
 {% endif %}
 
