@@ -1,3 +1,6 @@
+match - getting the wrong answer:
+    * instead of nothing, wrong answers should flash red and then quickly fade away.
+
 favorite word:
     * users can favorite a word
     * have a seperate page displaying the user's favorite words

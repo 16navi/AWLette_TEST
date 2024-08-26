@@ -683,20 +683,21 @@ header .icon #logo {
 
 .match-choices-container {
     padding: 3%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+
 }
 
 .match-choices {
     border: 0;
-    margin: 5px;
-    width: 20%;
-    aspect-ratio: 1;
-    padding-inline: 1px;
+    padding-inline: 10px;
+    height: 250px;
     font-family: inherit;
     color: inherit;
     font-size: 1.3rem;
     background-color: #fdf4ca;
     box-shadow: 1px 1px 2px #8a8a8a;
-    vertical-align: bottom;
 }
 
 /* Question and Answer */
