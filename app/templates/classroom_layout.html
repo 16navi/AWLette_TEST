@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class='classroom-title-background'>
+    <p class='classroom-title'>{{ classroom }}</p>
+    <p class='classroom-desc'>{{ classroom.description }}</p>
+</div>
+
+
+<div class='classroom-nav-container'>
+    <div class='classroom-nav'>
+        <a id='stream' href='{{ url_for('classroom_stream', classroom_id=classroom.id) }}'>Stream</a>
+        <a id='people' href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a>
+        {% if current_user.is_teacher == 1 %}
+        <a id='create-quiz' href='{{ url_for('create_quiz', classroom_id=classroom.id) }}'>Create Quiz</a>
+        {% endif %}
+    </div>
+</div>
+
+{% block classroom %}{% endblock %}
+
+{% endblock %}

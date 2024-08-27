@@ -1,11 +1,11 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'classroom_layout.html' %}
+{% block classroom %}
 
 <script>
     function searchFor(searchbar, students) {
         searchbar.addEventListener('keyup', function() {
             students.forEach(function(students) {
-                if (students.id.toLowerCase().includes(searchbar.value) == true) {
+                if (students.id.toLowerCase().includes(searchbar.value.toLowerCase()) == true) {
                     students.style.display = '';
                 } else if (students.id.toLowerCase().includes(searchbar.value) == false) {
                     students.style.display = 'none';
@@ -23,6 +23,12 @@
     <div class='students' id='{{ tracker.student }}' style='background-color: #b3b3b3; padding: 10px; margin: 10px'>{{ tracker.student }} - {{ ((tracker.score|score_count / tracker.quiz.item) * 100) |round(2) }}%</div>
 {% endfor %}
 
+{% if not_answered %}
+<p>These students have not done the quiz yet:</p>
+{% for student in not_answered %}
+    <div class='students' id='{{student}}' style='background-color: #f2dfde; padding: 10px; margin: 10px'>{{ student }}</div>
+{% endfor %}
+{% endif %}
 <script>
     searchFor(document.getElementById('search'),
               document.querySelectorAll('.students'))

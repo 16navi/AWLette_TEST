@@ -1,7 +1,12 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'classroom_layout.html' %}
+{% block classroom %}
 
 <script>
+    const nav = document.getElementById('people');
+    nav.removeAttribute('href');
+
+    nav.style.borderBottom = '2px solid #704d4a';
+
     function searchFor(searchbar, students) {
         searchbar.addEventListener('keyup', function() {
             students.forEach(function(students) {

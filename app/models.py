@@ -23,9 +23,6 @@ class UserQuiz(db.Model):
 
     quiz = db.relationship('Quiz', backref='UserQuiz', viewonly=True)
     student = db.relationship('Users', backref='UserQuiz', viewonly=True)
-
-    def __repr__(self):
-        return self.quiz_id
     
 
 # Mutable association table

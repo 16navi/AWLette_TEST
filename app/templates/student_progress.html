@@ -1,56 +1,284 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'classroom_layout.html' %}
 
-<h1>{{ student }}'s progress</h1>
+{% block classroom %}
+{% with user = student %}
 
-<h4>Their progress in fill in the blanks is:</h4>
+<script>
+    function showPerSublist(buttons, sublist) {
 
-<ul>
-    {% for progtrack in student.progtrack %}
-        {% if progtrack.fill_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</li>
+        buttons.forEach(function(button) {
+            if (button.id == 'sublist1') {
+                button.isClicked = 1;
+                button.style.backgroundColor = '#b3b3b3';
+                for (let div of sublist) {
+                    if (button.id == div.className.split(' ')[2]) {
+                        div.style.display = '';
+                    } else {
+                        div.style.display = 'none';
+                    };
+                };
+
+            } else {
+                button.isClicked = 0;
+            };
+
+            button.addEventListener('click', function() {
+                console.log(button.id);
+                console.log(`clicked button ${button.id}!`) //  DEBUG
+                if (button.isClicked == 0) {
+                    buttons.forEach(function(b) {
+                        b.isClicked = 0;
+                        b.style.backgroundColor = '';
+                    });
+                    button.isClicked = 1;
+                    button.style.backgroundColor = '#b3b3b3';
+                    for (let div of sublist) {
+                        console.log(div.className.split(' ')[2])
+                        if (button.id == div.className.split(' ')[2]) {
+                            div.style.display = '';
+                        } else {
+                            div.style.display = 'none';
+                        };
+                    };
+                };
+            });
+        });
+    };
+</script>
+
+<div class='student-sublist-container'>
+    <div class='student-sublist'>
+        <button class='student-button' id='sublist1'>Sublist 1</button>
+        <button class='student-button' id='sublist2'>Sublist 2</button>
+        <button class='student-button' id='sublist3'>Sublist 3</button>
+    </div>
+</div>
+
+{% with progtrack1 = comp(user.progtrack, 1)[0],
+        progtrack2 = comp(user.progtrack, 2)[0],
+        progtrack3 = comp(user.progtrack, 3)[0] %}
+
+<div class='student-prog-background'>
+    <div class='student-prog-grid'>
+
+        {% if progtrack1 %}
+        
+        {% if progtrack1.fill_progress %}
+        {% with progtrack = progtrack1 %}
+        <div class='student-prog student-fill sublist1'>
+            <p class='student-prog-title'>Their progress in fill in the blanks is:</p>
+            {% with progress = ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
         {% endif %}
-    {% endfor %}
-</ul>
 
-<h4>Their progress in change the form is:</h4>
-
-<ul>
-    {% for progtrack in student.progtrack %}
-        {% if progtrack.form_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</li>
+        {% if progtrack1.form_progress %}
+        {% with progtrack = progtrack1 %}
+        <div class='student-prog student-form sublist1'>
+            <p class='student-prog-title'>Their progress in change the form is:</p>
+            {% with progress = ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
         {% endif %}
-    {% endfor %}
-</ul>
 
-<h4>Their progress in match the words is:</h4>
-
-<ul>
-    {% for progtrack in student.progtrack %}
-        {% if progtrack.match_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</li>
+        {% if progtrack1.match_progress %}
+        {% with progtrack = progtrack1 %}
+        <div class='student-prog student-match sublist1'>
+            <p class='student-prog-title'>Their progress in match the words is:</p>
+            {% with progress = ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
         {% endif %}
-    {% endfor %}
-</ul>
 
-<h4>Their progress in question and answer is:</h4>
-
-<ul>
-    {% for progtrack in student.progtrack %}
-        {% if progtrack.qna_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</li>
+        {% if progtrack1.qna_progress %}
+        {% with progtrack = progtrack1 %}
+        <div class='student-prog student-qna sublist1'>
+            <p class='student-prog-title'>Their progress in question and answer is:</p>
+            {% with progress = ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
         {% endif %}
-    {% endfor %}
-</ul>
 
-<h4>Their progress in quiz is:</h4>
-
-<ul>
-    {% for progtrack in student.progtrack %}
-        {% if progtrack.quiz_progress %}    
-            <li><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ ((progtrack.quiz_progress|json_loads|length / 60) * 100)|round(2) }}% ({{ progtrack.quiz_progress|json_loads|length }} words out of 60)</li>
+        {% if progtrack1.quiz_progress %}
+        {% with progtrack = progtrack1 %}
+        <div class='student-prog student-quiz sublist1'>
+            <p class='student-prog-title'>Their progress in quiz is:</p>
+            {% with progress = ((progtrack.quiz_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.quiz_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
         {% endif %}
-    {% endfor %}
-</ul>
 
+        {% else %}
+
+        <div class='student-prog student-noprog sublist1'>
+            No progress for this sublist.
+        </div>
+
+        {% endif %}
+
+        {% if progtrack2 %}
+
+        {% if progtrack2.fill_progress %}
+        {% with progtrack = progtrack2 %}
+        <div class='student-prog student-fill sublist2'>
+            <p class='student-prog-title'>Their progress in fill in the blanks is:</p>
+            {% with progress = ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack2.form_progress %}
+        {% with progtrack = progtrack2 %}
+        <div class='student-prog student-form sublist2'>
+            <p class='student-prog-title'>Their progress in change the form is:</p>
+            {% with progress = ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack2.match_progress %}
+        {% with progtrack = progtrack2 %}
+        <div class='student-prog student-match sublist2'>
+            <p class='student-prog-title'>Their progress in match the words is:</p>
+            {% with progress = ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack2.qna_progress %}
+        {% with progtrack = progtrack2 %}
+        <div class='student-prog student-qna sublist2'>
+            <p class='student-prog-title'>Their progress in question and answer is:</p>
+            {% with progress = ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack2.quiz_progress %}
+        {% with progtrack = progtrack2 %}
+        <div class='student-prog student-quiz sublist2'>
+            <p class='student-prog-title'>Their progress in quiz is:</p>
+            {% with progress = ((progtrack.quiz_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.quiz_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% else %}
+
+        <div class='student-prog student-noprog sublist2'>
+            No progress for this sublist.
+        </div>
+
+        {% endif %}
+
+        {% if progtrack3 %}
+
+        {% if progtrack3.fill_progress %}
+        {% with progtrack = progtrack3 %}
+        <div class='student-prog student-fill sublist3'>
+            <p class='student-prog-title'>Their progress in fill in the blanks is:</p>
+            {% with progress = ((progtrack.fill_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.fill_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack3.form_progress %}
+        {% with progtrack = progtrack3 %}
+        <div class='student-prog student-form sublist3'>
+            <p class='student-prog-title'>Their progress in change the form is:</p>
+            {% with progress = ((progtrack.form_progress|json_loads|length / 180) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.form_progress|json_loads|length }} words out of 180)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack3.match_progress %}
+        {% with progtrack = progtrack3 %}
+        <div class='student-prog student-match sublist3'>
+            <p class='student-prog-title'>Their progress in match the words is:</p>
+            {% with progress = ((progtrack.match_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.match_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack3.qna_progress %}
+        {% with progtrack = progtrack3 %}
+        <div class='student-prog student-qna sublist3'>
+            <p class='student-prog-title'>Their progress in question and answer is:</p>
+            {% with progress = ((progtrack.qna_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.qna_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if progtrack3.quiz_progress %}
+        {% with progtrack = progtrack3 %}
+        <div class='student-prog student-quiz sublist3'>
+            <p class='student-prog-title'>Their progress in quiz is:</p>
+            {% with progress = ((progtrack.quiz_progress|json_loads|length / 60) * 100)|round(2) %}
+                <div class='student-prog-pie' style='--percentage:{{ progress }}; --border-thickness:30px; --color:#704d4a;'><span>{{ progress }}%</span></div> 
+                <p><strong>Sublist No. {{ progtrack.sublist }}</strong> -  {{ progress }}% ({{ progtrack.quiz_progress|json_loads|length }} words out of 60)</p>
+            {% endwith %}
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% else %}
+
+        <div class='student-prog student-noprog sublist3'>
+            No progress for this sublist.
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+{% endwith %}
+
+{% endwith %}
+
+<script>
+    showPerSublist(document.querySelectorAll('.student-button'),
+                   document.getElementsByClassName('student-prog'))
+</script>
 {% endblock %}

@@ -1,7 +1,11 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'classroom_layout.html' %}
+{% block classroom %}
 
 <script>
+  const nav = document.getElementById('stream');
+  nav.removeAttribute('href');
+
+  nav.style.borderBottom = '2px solid #704d4a';
 
   function archiveQuiz(button, quiz) {
     if (quiz.getAttribute('data-archived') == 'true') {
@@ -53,9 +57,6 @@
   };
 </script>
 
-<h1>{{ classroom }}</h1>
-{{ classroom.description }}
-
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -66,38 +67,31 @@
   {% endif %}
 {% endwith %}
 
-{% if current_user.is_teacher == 1 %}
-
 <h4>Quizzes</h4>
 
+{% if current_user.is_teacher == 1 %}
 <ul>
-{% for quiz in quizzes %}
-  <li>
-    <a id='a{{ quiz.id }}' href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'
-    {% if quiz.is_archived %}
-      data-archived='true'
-    {% else %}
-      data-archived='false'
-    {% endif %}>{{ quiz.name }}</a>
-    <button id='b{{ quiz.id }}'>Archive</button>
-  </li>
-
-  <script>
-    archiveQuiz(document.getElementById('b{{ quiz.id }}'),
-                document.getElementById('a{{ quiz.id }}'));
-  </script>
-
-{% endfor %}
+  {% for quiz in quizzes %}
+    <li>
+      <a id='a{{ quiz.id }}' href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'
+      {% if quiz.is_archived %}
+        data-archived='true'
+      {% else %}
+        data-archived='false'
+      {% endif %}>{{ quiz.name }}</a>
+      <button id='b{{ quiz.id }}'>Archive</button>
+    </li>
+  
+    <script>
+      archiveQuiz(document.getElementById('b{{ quiz.id }}'),
+                  document.getElementById('a{{ quiz.id }}'));
+    </script>
+  
+  {% endfor %}
 </ul>
 
-<p><a href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a></p>
-
-<p><a href='{{ url_for('create_quiz', classroom_id=classroom.id) }}'>Create a quiz</a></p>
 {% else %}
 
-<p>Hi, {{ current_user }}!</p>
-
-<h4>Quizzes</h4>
 <ul>
   {% if not quizzes %}
     <li>No quizzes for you right now.</li>
@@ -107,9 +101,6 @@
   {% endfor %}
 </ul>
 
-<p><a href='{{ url_for('people', classroom_id=classroom.id) }}'>People</a></p>
-
-<p><a href='{{ url_for('leave_classroom', classroom_id=classroom.id, user_id=current_user.id) }}'>Leave this classroom</a></p>
 {% endif %}
 
 {% endblock %}

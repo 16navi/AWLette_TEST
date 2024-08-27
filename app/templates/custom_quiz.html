@@ -41,7 +41,7 @@
         });
     };
 
-    function rightOrWrong(buttons, questions) {
+    function rightOrWrong(buttons, questions, submit) {
         for (let question of questions) {
             question.isAnswered = false;
 
@@ -77,7 +77,7 @@
             };
         };
         console.log(correctList);
-        if (correctList.length == 5) {
+        if (correctList.length == {{ quiz.item|tojson }}) {
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function () {
                 console.log(xhttp.responseText);
@@ -85,6 +85,12 @@
             xhttp.open('POST', '{{ url_for('custom_quiz_tracker') }}', true);
             xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(JSON.stringify({correctItem}));
+
+            // change the submit button to redirect
+            submit.innerHTML = 'Go back to classroom';
+            submit.addEventListener('click', function() {
+                window.location.href = "{{ url_for('classroom_listed', classroom_id=classroom_id) }}";
+            });
         };
     };
 </script>
@@ -113,7 +119,7 @@
     
                 {% endfor %}
                 </div>
-    
+
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
                 </script>
@@ -185,7 +191,8 @@
     
         <button class='custom-quiz-submit' id='submit' type='button' onclick='rightOrWrong(
             document.querySelectorAll("button[data-choice]"),
-            document.querySelectorAll("p[data-question]")
+            document.querySelectorAll("p[data-question]"),
+            document.getElementById("submit")
         )'>Submit</button>
 
     </div>
