@@ -912,8 +912,7 @@ header .icon #logo {
     margin: auto;
     width: fit-content;
     padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(50px, 100px));
+    display: flex;
     gap: 50px;
 }
 
