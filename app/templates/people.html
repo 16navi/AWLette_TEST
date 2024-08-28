@@ -19,21 +19,19 @@
         });
     };
 </script>
-
-<h3>People inside this class:</h3>
-<p>Teacher: {{ teacher }}</p>
-
-<h4>Student Progress</h4>
-
+<div class='people-teacher'>
+    <p>Teacher: {{ teacher }}</p>
+</div>
 
 {% if current_user.is_teacher == 1 %}
+<h4>Student Progress</h4>
 <input id='search' form='none' type='text' placeholder='Search for a student.'><br><br>
 {% endif %}
 
+<div class='people-students'>
 <p>Students:</p>
-<ul>
     {% for student in classroom.student %}
-        <li class='students' id='{{ student }}'>
+        <p class='students' id='{{ student }}'>
             {% if current_user.is_teacher == 1 %}
             <a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
                 {{ student }}
@@ -41,13 +39,15 @@
             {% else %}
             {{ student }}
             {% endif %}
-        </li>
+        </p>
     {% endfor %}
-</ul>
+</div>
 
+{% if current_user.is_teacher == 1 %}
 <script>
     searchFor(document.getElementById('search'),
               document.querySelectorAll('.students'))
 </script>
+{% endif %}
 
 {% endblock %}
