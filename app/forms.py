@@ -7,11 +7,11 @@ from wtforms.validators import InputRequired, Length, Optional, NumberRange, Val
 # we will use---as done on Mr. D's example.
 
 types = [
-    (1, '1 - given the definition, answer with the word.'),
-    (2, '2 - given the word, answer with the definition.'),
-    (3, '3 - given the word, answer with its synonym.'),
-    (4, '4 - given the word, answer with what figure of speech it is (noun, adjective, verb).'),
-    (5, '5 - given the word, answer with its collocation.'),
+    (1, 'given the definition, answer with the word.'),
+    (2, 'given the word, answer with the definition.'),
+    (3, 'given the word, answer with its synonym.'),
+    (4, 'given the word, answer with what figure of speech it is (noun, adjective, verb).'),
+    (5, 'given the word, answer with its collocation.'),
 ]
 
 

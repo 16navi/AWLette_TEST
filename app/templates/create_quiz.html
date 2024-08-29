@@ -2,7 +2,7 @@
 {% block classroom %}
 
 <script>
-    const nav = document.getElementById('create-quiz');
+    const nav = document.getElementById('create');
     nav.removeAttribute('href');
   
     nav.style.borderBottom = '2px solid #704d4a';
@@ -70,7 +70,6 @@
                     remove = selection.indexOf(button.id.replace('a', ''));
                     selection.splice(remove, 1);
                     wordpool.value = JSON.stringify(selection);
-                    console.log(wordpool.value);
                 };
             });
         });
@@ -107,14 +106,14 @@
 <!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
-<p class='create-quiz-title'>Quiz for which sublist?</p>
+<p class='create-title'>Quiz for which sublist?</p>
 
 <form method='GET'>
-    <div class='create-quiz-sublist-background'>
-        <div class='create-quiz-sublist-wrapper'>
-            <button class='create-quiz-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
-            <button class='create-quiz-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
-            <button class='create-quiz-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
+    <div class='create-sublist-background'>
+        <div class='create-sublist-wrapper'>
+            <button class='create-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
+            <button class='create-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
+            <button class='create-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
         </div>
     </div>
 </form>
@@ -123,54 +122,66 @@
 
 {% if sublist %}
 
-<form id='quiz' method='POST' enctype="multipart/form-data">
-    {{ form.csrf_token }} 
-    <h4>What will your quiz be called?</h4>
-    <p>{{ form.name(placeholder='e.g. My Quiz') }}</p>
+<form id='quiz' method='POST' enctype="multipart/form-data">    
+    <div class='create-form-container'>
+        {{ form.csrf_token }} 
+        <div class='create-name-container'>
+            <h4>What will your quiz be called?</h4>
+            <p>{{ form.name(placeholder='e.g. My Quiz') }}</p>
+        </div>
 
-    <h4>How many items in the quiz?</h4>
-    <p>{{ form.item(placeholder='at least 5.', style='width: 200px') }}</p>
+        <div class='create-items-container'>
+            <h4>How many items in the quiz?</h4>
+            <p>{{ form.item(placeholder='at least 5.', style='width: 200px') }}</p>
+        </div>
 
-    <h4>Which type of questions?</h4>
-    <ul>
-    {% for type in form.question_type %}
-        <li>{{ type(class='question_type') }}{{ type.label }}</li>
-    {% endfor %}
-    </ul>
+        <div class='create-type-container'>
+            <h4>Which type of questions?</h4>
+            {% for type in form.question_type %}
+                <p>{{ type(class='question_type') }}{{ type.label }}</p>
+            {% endfor %}
+        </div>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-    {% endwith %} 
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %} 
 
-    <h4>Select the words you want included in the quiz:</h4>
-    
-    {{ form.word_pool }}
-    <!-- search bar -->
-     <div id='word-selection' style='background-color: #b3b3b3; margin: 10px; padding: 10px; border-radius: 2px'>
-    <input id='search' form='none' type='text' placeholder='Search for a word.'><br><br>    
+      
+        <div class='create-words-container'>
+            <h4>Select the words you want included in the quiz:</h4>
 
-    {% for word in words %}
-        <button form='none' class='words' id='a{{ word.id }}'>{{ word }}</button>
-    {% endfor %}
+            {{ form.word_pool }}
+            <!-- search bar -->
+             <div id='word-selection' style='background-color: #b3b3b3; margin: 10px; padding: 10px; border-radius: 2px'>
+            <p><input id='search' form='none' type='text' placeholder='Search for a word.'></p>
 
-    <script>
-        searchFor(document.getElementById('search'),
-                  document.querySelectorAll('.words')
-        );
+            {% for word in words %}
+                <button form='none' class='words' id='a{{ word.id }}'>{{ word }}</button>
+            {% endfor %}
+            </div>
+        </div>
 
-        wordPoolSelection(document.querySelectorAll('.words'),
-                          document.getElementById('word_pool')
-        );
-    </script>
+        <script>
+            searchFor(document.getElementById('search'),
+                      document.querySelectorAll('.words')
+            );
+
+            wordPoolSelection(document.querySelectorAll('.words'),
+                              document.getElementById('word_pool')
+            );
+        </script>
+
+    </div>
+    <div class='create-submit-container'>
+    <input id='quiz-submit' type='submit' value='Create Quiz'>
     </div>
 
-    <input id='quiz-submit' type='submit' value='Submit'>
 </form>
 
 <script>

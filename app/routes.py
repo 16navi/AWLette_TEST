@@ -239,7 +239,7 @@ def quiz_archiver():
     else:
         quiz.is_archived = None
         db.session.commit()
-    
+
     return ('From Python: Got it!')
 
 
