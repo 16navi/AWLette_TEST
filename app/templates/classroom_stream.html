@@ -67,6 +67,8 @@
   {% endif %}
 {% endwith %}
 
+<div class='classroom-container'>
+
 <h4>Quizzes</h4>
 
 {% if current_user.is_teacher == 1 %}
@@ -102,5 +104,7 @@
 </ul>
 
 {% endif %}
+
+</div>
 
 {% endblock %}

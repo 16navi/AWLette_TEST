@@ -9,45 +9,57 @@
 
     function searchFor(searchbar, students) {
         searchbar.addEventListener('keyup', function() {
-            students.forEach(function(students) {
-                if (students.id.toLowerCase().includes(searchbar.value) == true) {
-                    students.style.display = '';
-                } else if (students.id.toLowerCase().includes(searchbar.value) == false) {
-                    students.style.display = 'none';
+            students.forEach(function(student) {
+                if (student.id.toLowerCase().includes(searchbar.value.toLowerCase()) == true) {
+                    student.style.display = '';
+                } else if (student.id.toLowerCase().includes(searchbar.value.toLowerCase()) == false) {
+                    student.style.display = 'none';
                 };
             });
         });
     };
 </script>
-<div class='people-teacher'>
-    <p>Teacher: {{ teacher }}</p>
+
+<div class='classroom-container'>
+
+    <div class='teacher-prog-container'>
+        {% if current_user.is_teacher == 1 %}
+        <input class='teacher-prog-search' id='search' type='text' placeholder='Search for a student.'>
+
+        <div class='teacher-prog-students-background'>
+            <div class='teacher-prog-students-container'>
+                {% for student in classroom.student %}
+
+                    <a class='students-link' id='{{ student }}' href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
+                        <div class='teacher-prog-students'>
+                                {{ student }}   
+                        </div>
+                    </a>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        searchFor(document.getElementById('search'),
+                  document.querySelectorAll('.students-link'));
+    </script>
+
+    {% else %}
+        <div class='people-container'>
+            <div class='people-teacher'>
+                Teacher: {{ teacher }}
+            </div>
+
+            {% for student in classroom.student %}
+                <div class='people-students'>
+                    {{ student }}
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
 </div>
-
-{% if current_user.is_teacher == 1 %}
-<h4>Student Progress</h4>
-<input id='search' form='none' type='text' placeholder='Search for a student.'><br><br>
-{% endif %}
-
-<div class='people-students'>
-<p>Students:</p>
-    {% for student in classroom.student %}
-        <p class='students' id='{{ student }}'>
-            {% if current_user.is_teacher == 1 %}
-            <a href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
-                {{ student }}
-            </a>
-            {% else %}
-            {{ student }}
-            {% endif %}
-        </p>
-    {% endfor %}
-</div>
-
-{% if current_user.is_teacher == 1 %}
-<script>
-    searchFor(document.getElementById('search'),
-              document.querySelectorAll('.students'))
-</script>
-{% endif %}
 
 {% endblock %}
