@@ -1,3 +1,7 @@
+error handling: 
+    * 404
+    * id is non-existent (classroom, quiz, )
+
 nielsen's heuristics
 
 match - getting the wrong answer:

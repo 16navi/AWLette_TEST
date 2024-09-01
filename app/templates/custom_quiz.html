@@ -89,7 +89,7 @@
             // change the submit button to redirect
             submit.innerHTML = 'Go back to classroom';
             submit.addEventListener('click', function() {
-                window.location.href = "{{ url_for('classroom_listed', classroom_id=classroom_id) }}";
+                window.location.href = "{{ url_for('classroom_stream', classroom_id=classroom_id) }}";
             });
         };
     };

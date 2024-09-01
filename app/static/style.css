@@ -14,6 +14,14 @@ input[type=text], input[type=number] {
     padding-inline: 5px;
 }
 
+input[type=password] {
+    box-shadow: inset 0 0 3px #7a7a7a;
+    border: 0;
+    padding-inline: 5px;
+    height: 17px;
+    width: 185px;
+}
+
 body {
     margin: 0px;
 }
@@ -910,6 +918,8 @@ header .icon #logo {
 
 .classroom-container {
     margin-inline: 10%;
+    background-color: #fdf4ca;
+    padding: 5%;
 }
 
 /* Classroom navigation */
@@ -933,10 +943,17 @@ header .icon #logo {
     background-color: #cdcdcd;
 }
 
+/* Classroom stream for everyone */
+.stream-quiz-container {
+    display: grid;
+    grid-template-columns: 12;
+}
+
 /* People for teachers */
 .teacher-prog-container {
     display: grid;
 }
+
 .teacher-prog-search {
     width: 595px;
     height: 15px;
@@ -945,7 +962,6 @@ header .icon #logo {
     padding: 15px;
     box-shadow: inset 0 0 10px #7a7a7a;
     margin: auto;
-    margin-top: 3%;
 }
 
 .teacher-prog-students-background {
@@ -974,7 +990,7 @@ header .icon #logo {
 }
 
 .teacher-prog-students:hover {
-    filter: brightness(0.95);
+    filter: brightness(0.83);
 }
 
 /* People for students */
@@ -1025,6 +1041,7 @@ header .icon #logo {
     box-shadow: 1px 1px 8px #8a8a8a;
     padding: 15px;
 }
+
 .student-prog-grid .student-prog-title {
     margin: 0;
     font-weight: bold;
@@ -1072,10 +1089,12 @@ header .icon #logo {
 
 /* Sublist chooser for create quiz */
 .create-title {
+    justify-self: center;
     text-align: center;
     color: #6cceff;
     font-size: 3rem;
     margin: auto;
+    background-color: white;
 }
 
 .create-sublist-background {
@@ -1104,15 +1123,10 @@ header .icon #logo {
 }
 
 .create-sublist-button:hover {
-    filter: brightness(1.1);
+    filter: brightness(0.83);
 }
 
 /* Create quiz */
-#quiz {
-    background-color: #fdf4ca;
-    padding: 5%;
-}
-
 .create-form-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -1162,7 +1176,7 @@ header .icon #logo {
 }
 
 .create-words-container > #word-selection > button:hover {
-    filter: brightness(0.80);
+    filter: brightness(0.83);
 }
 
 .create-submit-container {
@@ -1181,5 +1195,5 @@ header .icon #logo {
 }
 
 #quiz-submit:hover {
-    filter: brightness(0.90);
+    filter: brightness(0.83);
 }

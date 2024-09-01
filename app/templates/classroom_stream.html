@@ -72,17 +72,21 @@
 <h4>Quizzes</h4>
 
 {% if current_user.is_teacher == 1 %}
-<ul>
+
+<div class='stream-quiz-container'>
   {% for quiz in quizzes %}
-    <li>
-      <a id='a{{ quiz.id }}' href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'
-      {% if quiz.is_archived %}
-        data-archived='true'
-      {% else %}
-        data-archived='false'
-      {% endif %}>{{ quiz.name }}</a>
-      <button id='b{{ quiz.id }}'>Archive</button>
-    </li>
+  
+      <div class='teacher-quiz'>
+        <a id='a{{ quiz.id }}' href='{{ url_for('custom_quiz_progress', classroom_id=classroom.id, quiz_id=quiz.id) }}'
+          {% if quiz.is_archived %}
+            data-archived='true'
+          {% else %}
+            data-archived='false'
+          {% endif %}>
+          {{ quiz.name }}
+        </a>
+        <button id='b{{ quiz.id }}'>Archive</button>
+      </div>
   
     <script>
       archiveQuiz(document.getElementById('b{{ quiz.id }}'),
@@ -90,18 +94,18 @@
     </script>
   
   {% endfor %}
-</ul>
+</div>
 
 {% else %}
 
-<ul>
   {% if not quizzes %}
-    <li>No quizzes for you right now.</li>
+    No quizzes for you right now.
   {% endif %}
   {% for quiz in quizzes %}
-    <li><a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>{{ quiz.name }}</a></li>
+    <a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>
+      <div class='student-quiz'>{{ quiz.name }}</div>
+    </a>
   {% endfor %}
-</ul>
 
 {% endif %}
 

@@ -262,7 +262,7 @@ def create_quiz(classroom_id):
             db.session.add(new_quiz)
             db.session.commit()
             flash('Quiz successfully created!')
-            return redirect(url_for('classroom_listed', classroom_id=classroom_id))
+            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
 
 
 @app.route('/classroom/<classroom_id>/custom_quiz/<quiz_id>')
