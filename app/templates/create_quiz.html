@@ -59,7 +59,6 @@
                     button.style.backgroundColor = '#90ee90';
                     selection.push(Number(button.id.replace('a', '')));
                     wordpool.value = JSON.stringify(selection);
-                    console.log(wordpool.value);
                     this.stopPropagation();
                 };
                 if (button.clickCount == 1) {
