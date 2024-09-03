@@ -967,18 +967,14 @@ header .icon #logo {
     color: inherit;
 }
 
-.teacher-quiz-archive {
-    height: 30px;
-    width: 70px;
-    align-self: end;
-    justify-self: center;
-    font-family: inherit;
-    color: inherit;
-    
+.teacher-quiz-archive {    
     border: 0px;
     width: 75px;
     height: 30px;
     box-shadow: 1px 1px 2px #8a8a8a;
+
+    align-self: end;
+    justify-self: center;
     font-family: inherit;
     color: inherit;
     font-weight: lighter;
@@ -1302,3 +1298,63 @@ header .icon #logo {
     margin-top: 0;
     color: white;   
 }
+
+/* Disable an account */
+.disacc-title-background {
+    background-color: #fdf4ca;
+}
+
+.disacc-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.disacc-background {
+    display: grid;
+    background-color: #fdf4ca;
+    margin-top: 3%;
+    padding: 3%;
+}
+
+.disacc-search {
+    width: 595px;
+    height: 15px;
+    border-style: none;
+    border-radius: 30px;
+    padding: 15px;
+    box-shadow: inset 0 0 10px #7a7a7a;
+    justify-self: center;
+}
+
+.disacc-accounts-grid {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.disacc-accounts {
+    background-color: white;
+    height: 50px;
+    box-shadow: 2px 1px 3px #7a7a7a;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    align-content: center;
+}
+
+.disacc-accounts > button {
+    background-color: #fdf4ca;
+    border: 0px;
+    box-shadow: 1px 1px 2px #8a8a8a;
+    height: 30px;
+
+    font-family: inherit;
+    color: inherit;
+    font-weight: lighter;
+}
+
+.disacc-accounts > button:hover {
+    filter: brightness(0.83);
+} 

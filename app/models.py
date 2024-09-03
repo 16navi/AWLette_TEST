@@ -23,7 +23,7 @@ class UserQuiz(db.Model):
 
     quiz = db.relationship('Quiz', backref='UserQuiz', viewonly=True)
     student = db.relationship('Users', backref='UserQuiz', viewonly=True)
-    
+
 
 # Mutable association table
 class UserClassroom(db.Model):
@@ -31,7 +31,6 @@ class UserClassroom(db.Model):
     dummy_column = db.Column(db.Integer, primary_key=True)
     users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     classrooms_id = db.Column(db.Integer, db.ForeignKey('Classrooms.id'))
-
 
 
 class Words(db.Model):
@@ -155,7 +154,7 @@ class Classrooms(db.Model):
 
     def __repr__(self):
         return self.classroom
-    
+
 
 class Quiz(db.Model):
     __tablename__ = 'Quiz'

@@ -17,7 +17,7 @@
     function disableAccount(button, account) {
         attribute = account.getAttribute('data-disabled'); 
         if (attribute == 'true') {
-            button.style.backgroundColor = '#6e6e6e';
+            button.style.backgroundColor = '#ff595e';
             button.innerHTML = 'Enable Account';
         } else {
             button.style.backgroundColor = '';
@@ -31,7 +31,7 @@
 
       button.addEventListener('click', function() {
         if (account.getAttribute('data-disabled') == 'false') {
-            button.style.backgroundColor = '#6e6e6e';
+            button.style.backgroundColor = '#ff595e';
             button.innerHTML = 'Enable Account';
             account.setAttribute('data-disabled', 'true');
 
@@ -62,26 +62,35 @@
     };
 </script>
 
-<input id='search' form='none' type='text' placeholder='Search for an account.'><br><br>    
+<div class='disacc-title-background'>
+    <p>Disable an account</p>
+</div>
 
-<ul>
-{% for user in users %}
-    <li class='accounts' id='a{{ user.id }}'
-    {% if user.is_disabled %}
-        data-disabled='true'
-    {% else %}
-        data-disabled='false'
-    {% endif %}>{{user.id}} | {{ user }} - <button id='disable{{ loop.index }}'>Disable Account</button></li>
-    <script>
-        disableAccount(document.getElementById('disable{{ loop.index }}'),
-                       document.getElementById('a{{ user.id }}'))
-    </script>
-{% endfor %}
-</ul>
+<div class='disacc-background'>
+    <input class='disacc-search' id='search' form='none' type='text' placeholder='Search for an account.'><br><br>    
+    
+    <div class='disacc-accounts-grid'>
+    {% for user in users %}
+        <div class='disacc-accounts' id='a{{ user.id }}'
+        {% if user.is_disabled %}
+            data-disabled='true'
+        {% else %}
+            data-disabled='false'
+        {% endif %}>
+            <span>{{user.id}} | {{ user }}</span><button id='disable{{ loop.index }}'>Disable Account</button>
+        </div>
+        <script>
+            disableAccount(document.getElementById('disable{{ loop.index }}'),
+                           document.getElementById('a{{ user.id }}'))
+        </script>
+    {% endfor %}
+    </div>
+
+</div>
 
 <script>
     searchFor(document.getElementById('search'),
-              document.querySelectorAll('.accounts'))
+              document.querySelectorAll('.disacc-accounts'))
 </script>
 
 {% endblock %}

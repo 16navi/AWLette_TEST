@@ -32,7 +32,7 @@
       button.addEventListener('click', function() {
         if (classroom.getAttribute('data-disabled') == 'false') {
             button.style.backgroundColor = '#6e6e6e';
-            button.innerHTML = 'Enable classroom';
+            button.innerHTML = 'Enable Classroom';
             classroom.setAttribute('data-disabled', 'true');
 
             disableDict = {
@@ -47,7 +47,7 @@
             button.stopPropagation();
         } else if (classroom.getAttribute('data-disabled') == 'true') {
             button.style.backgroundColor = '';
-            button.innerHTML = 'Disable classroom';
+            button.innerHTML = 'Disable Classroom';
             classroom.setAttribute('data-disabled', 'false');
 
             disableDict = {

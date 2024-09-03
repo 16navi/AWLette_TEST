@@ -65,7 +65,7 @@ def admin_powers():
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
-    
+
 
 @app.route('/admin_powers/disable_account')
 def disable_account():
@@ -194,7 +194,6 @@ def create_classroom():
         return redirect(url_for('homepage'))
 
 
-
 @app.route('/classroom/<classroom_id>')
 def classroom_stream(classroom_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
@@ -313,11 +312,10 @@ def custom_quiz_tracker():
     user_id = dict_values[2]
 
     if not correct_list:
-        return("From Python: There are no correct id's received!")
+        return ("From Python: There are no correct id's received!")
 
     tracker_exists = models.UserQuiz.query.filter_by(users_id=user_id,
-                                                   quiz_id=quiz_id).first()
-
+                                                     quiz_id=quiz_id).first()
 
     if not tracker_exists:
         quiz = models.Quiz.query.filter_by(id=quiz_id).first()
@@ -326,11 +324,11 @@ def custom_quiz_tracker():
         quiz.student.append(quizzee)
         db.session.commit()
     else:
-        return('From Python: User has already done this quiz!')
+        return ('From Python: User has already done this quiz!')
 
     quiz_tracker = models.UserQuiz.query.filter_by(users_id=user_id,
                                                    quiz_id=quiz_id).first()
-    
+
     quiz_tracker.score = json.dumps(correct_list)
     db.session.commit()
 
@@ -377,7 +375,6 @@ def student_progress(classroom_id, users_id):
 #     else:
 #         flash('How about logging in first?')
 #         return redirect(url_for('homepage'))
-
 
 
 @app.route('/enrol', methods=['GET', 'POST'])
@@ -878,6 +875,12 @@ def filter_score_count(list):
     return score
 
 
+@app.template_filter('enabled_only')
+def _enabled_only(seq):
+    result = [x for x in seq if not x.is_disabled]
+    return result
+
+
 # Context processor stuffs
 @app.context_processor
 # I can't make this into a filter because 'sample' needs
@@ -893,6 +896,7 @@ def sample():
     # ultimately returns 'sample' as the returned value of
     # '_sample' using 'dict'
     return dict(sample=_sample)
+
 
 @app.context_processor
 def comp():
