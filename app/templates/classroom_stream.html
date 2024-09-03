@@ -10,17 +10,20 @@
   function archiveQuiz(button, quiz) {
     if (quiz.getAttribute('data-archived') == 'true') {
       button.innerHTML = 'Unarchive';
-      button.style.backgroundColor = '#6e6e6e';
+      button.style.backgroundColor = '#ff595e';
+      button.style.color = 'white';
     } else {
       button.innerHTML = 'Archive';
       button.style.backgroundColor = '';
+      button.style.color = 'inherit';
     };
     
     button.addEventListener('click', function() {
       if (quiz.getAttribute('data-archived') == 'false') {
         quiz.setAttribute('data-archived', 'true');
         button.innerHTML = 'Unarchive';
-        button.style.backgroundColor = '#6e6e6e';
+        button.style.backgroundColor = '#ff595e';
+        button.style.color = 'white';
 
         archiveDict = {
           'archive' : quiz.id.replace('a', '')
@@ -40,6 +43,7 @@
         quiz.setAttribute('data-archived', 'false');
         button.innerHTML = 'Archive';
         button.style.backgroundColor = '';
+        button.style.color = 'inherit';
 
         archiveDict = {
           'unarchive' : quiz.id.replace('a', '')
@@ -69,11 +73,14 @@
 
 <div class='classroom-container'>
 
-<h4>Quizzes</h4>
+  {% if not quizzes %}
+    No quizzes for you right now.
+  {% endif %}
+  
+<div class='stream-quiz-container'>
 
 {% if current_user.is_teacher == 1 %}
 
-<div class='stream-quiz-container'>
   {% for quiz in quizzes %}
   
       <div class='teacher-quiz'>
@@ -85,27 +92,25 @@
           {% endif %}>
           {{ quiz.name }}
         </a>
-        <button id='b{{ quiz.id }}'>Archive</button>
+        <button class='teacher-quiz-archive' id='b{{ quiz.id }}'>Archive</button>
       </div>
-  
+
     <script>
       archiveQuiz(document.getElementById('b{{ quiz.id }}'),
                   document.getElementById('a{{ quiz.id }}'));
     </script>
-  
+
   {% endfor %}
-</div>
 
 {% else %}
 
-  {% if not quizzes %}
-    No quizzes for you right now.
-  {% endif %}
   {% for quiz in quizzes %}
     <a href='{{ url_for('custom_quiz', classroom_id=classroom.id, quiz_id=quiz.id) }}'>
       <div class='student-quiz'>{{ quiz.name }}</div>
     </a>
   {% endfor %}
+  
+</div>
 
 {% endif %}
 

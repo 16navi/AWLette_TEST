@@ -919,7 +919,7 @@ header .icon #logo {
 .classroom-container {
     margin-inline: 10%;
     background-color: #fdf4ca;
-    padding: 5%;
+    padding: 3%;
 }
 
 /* Classroom navigation */
@@ -946,7 +946,63 @@ header .icon #logo {
 /* Classroom stream for everyone */
 .stream-quiz-container {
     display: grid;
-    grid-template-columns: 12;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 20%));
+    grid-gap: 10px;
+}
+
+.teacher-quiz {
+    height: 120px;
+    background-color: white;
+    display: grid;
+    box-shadow: 1px 1px 5px #8a8a8a;
+    padding: 10px;
+}
+
+.teacher-quiz:hover {
+    filter: brightness(0.85);
+}
+
+.teacher-quiz > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.teacher-quiz-archive {
+    height: 30px;
+    width: 70px;
+    align-self: end;
+    justify-self: center;
+    font-family: inherit;
+    color: inherit;
+    
+    border: 0px;
+    width: 75px;
+    height: 30px;
+    box-shadow: 1px 1px 2px #8a8a8a;
+    font-family: inherit;
+    color: inherit;
+    font-weight: lighter;
+}
+
+.teacher-quiz-archive:hover {
+    filter: brightness(0.85);
+}
+
+.stream-quiz-container > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.student-quiz {
+    height: 120px;
+    background-color: white;
+    display: grid;
+    box-shadow: 1px 1px 5px #8a8a8a;
+    padding: 10px;
+}
+
+.student-quiz:hover {
+    filter: brightness(0.85);
 }
 
 /* People for teachers */
@@ -975,11 +1031,9 @@ header .icon #logo {
 }
 
 .teacher-prog-students-container {
-    margin-inline: 10%;
     display: grid;
     grid-template-columns: repeat(4, minmax(150px, 1fr));
     grid-gap: 10px;
-    transform: scale(1.05);
 }
 
 .teacher-prog-students {
@@ -995,7 +1049,6 @@ header .icon #logo {
 
 /* People for students */
 .people-container {
-    padding: 5%;
     background-color: #fdf4ca;
 }
 

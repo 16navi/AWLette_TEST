@@ -22,8 +22,8 @@
 
 <div class='classroom-container'>
 
+    {% if current_user.is_teacher == 1 %}
     <div class='teacher-prog-container'>
-        {% if current_user.is_teacher == 1 %}
         <input class='teacher-prog-search' id='search' type='text' placeholder='Search for a student.'>
 
         <div class='teacher-prog-students-background'>
