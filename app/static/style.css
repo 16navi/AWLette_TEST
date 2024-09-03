@@ -1250,3 +1250,55 @@ header .icon #logo {
 #quiz-submit:hover {
     filter: brightness(0.83);
 }
+
+/* Admin powers */
+.admin-title-background {
+    background-color: #fdf4ca;
+}
+
+.admin-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.admin-buttons-background {
+    margin-top: 30px;
+    background-color: #fdf4ca;
+}
+
+.admin-grid {
+    margin-inline: 10%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    grid-gap: 10px;
+    transform: scale(1.05);
+}
+
+.admin-grid a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.admin-grid div {
+    background-color: #6cceff;
+    height: 210px;
+    box-shadow: inset -4px -4px 20px #8a8a8a;
+    padding: 20px;
+}
+
+.admin-grid div:hover {
+    filter: brightness(1.1);
+}
+
+.admin-grid > a > div > .admin-button-title {
+    color: inherit;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.admin-grid > a > div > p {
+    margin-top: 0;
+    color: white;   
+}

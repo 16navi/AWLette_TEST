@@ -1,11 +1,31 @@
 {% extends 'layout.html' %}
 {% block content %}
-    Hi, Admin! WAAAHHHH
 
-<h3>Your powers are:</h3>
-<ul>
-    <li><a href='{{ url_for('disable_account') }}'>Disable an Account</a></li>
-    <li><a href='{{ url_for('disable_classroom') }}'>Disable a Classroom</a></li>
-    <li><a href='{{ url_for('teacher_request') }}'>Requesting Teachers</a></li>
-</ul>
+<div class='admin-title-background'>
+    <p>Use them wisely</p>
+</div>
+
+<div class='admin-buttons-background'>
+    <div class='admin-grid'>
+        <a href='{{ url_for('disable_account') }}'>
+            <div class='admin-account'>
+                <p class='admin-button-title'>Disable an account</p>
+                <p>disabled accounts are not accessible until re-enabled.</p>
+            </div>
+        </a>
+        <a href='{{ url_for('disable_classroom') }}'>
+            <div class='admin-classroom'>
+                <p class='admin-button-title'>Disable a classroom</p>
+                <p>disabled classrooms are not accessible until re-enabled.</p>
+            </div>
+        </a>
+        <a href='{{ url_for('teacher_request') }}'>
+            <div class='admin-teachers'>
+                <p class='admin-button-title'>See requesting teachers</p>
+                <p>grant or reject accounts requesting to be teachers.</p>
+            </div>
+        </a>
+    </div>
+</div>
+
 {% endblock %}
