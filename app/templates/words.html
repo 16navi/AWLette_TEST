@@ -1,10 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<ul>
+<!--Search bar-->
+<div class='allwords-searchbar'>
+    <form action='{{ url_for('word_lookfor') }}', method="GET" enctype="multipart/form-data">
+    {{ form.searching(placeholder='Search for a word!') }}
+</form>
+</div>
+
+<div class='allwords-container'>
     {% for word in words %}
-        <li><a href = "words/{{word}}">{{word.word}}</a></li>
+        <a href = "words/{{word}}"><div class='allwords-words'>{{word.word}}</div></a>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}

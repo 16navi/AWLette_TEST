@@ -243,7 +243,7 @@ header .icon #logo {
 /* Word listed and lookfor */
 .word-searchbar #searching {
     display: block;
-    width: 595px;
+    width: 50%;
     height: 15px;
     border-style: none;
     border-radius: 30px;
@@ -543,6 +543,33 @@ header .icon #logo {
     color: white;   
 }
 
+/* all words */
+.allwords-searchbar #searching {
+    display: block;
+    width: 50%;
+    height: 15px;
+    border-style: none;
+    border-radius: 30px;
+    padding: 15px;
+    box-shadow: inset 0 0 10px #7a7a7a;
+    margin: auto;
+    margin-block: 0;
+}
+
+.allwords-container {
+    background-color: #fdf4ca;
+    padding: 3%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, auto));
+    grid-gap: 10px;
+}
+
+.allwords-words {
+    background-color: white;
+    height: 50px;
+    box-shadow: 2px 1px 3px #7a7a7a;
+    padding: 10px;
+}
 /* Sublist chooser for quizzes */
 .quiz-sublist-title-background {
     background-color: #fdf4ca;
@@ -1324,6 +1351,7 @@ header .icon #logo {
     border-style: none;
     border-radius: 30px;
     padding: 15px;
+    margin-bottom: 3%;
     box-shadow: inset 0 0 10px #7a7a7a;
     justify-self: center;
 }
@@ -1348,7 +1376,7 @@ header .icon #logo {
     background-color: #fdf4ca;
     border: 0px;
     box-shadow: 1px 1px 2px #8a8a8a;
-    height: 30px;
+    min-height: 30px;
 
     font-family: inherit;
     color: inherit;
@@ -1356,5 +1384,128 @@ header .icon #logo {
 }
 
 .disacc-accounts > button:hover {
+    filter: brightness(0.83);
+} 
+
+/* Disable classrooms */
+.disclass-title-background {
+    background-color: #fdf4ca;
+}
+
+.disclass-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.disclass-background {
+    display: grid;
+    background-color: #fdf4ca;
+    margin-top: 3%;
+    padding: 3%;
+}
+
+.disclass-search {
+    width: 595px;
+    height: 15px;
+    border-style: none;
+    border-radius: 30px;
+    padding: 15px;
+    margin-bottom: 3%;
+    box-shadow: inset 0 0 10px #7a7a7a;
+    justify-self: center;
+}
+
+.disclass-classrooms-grid {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.disclass-classrooms {
+    background-color: white;
+    height: 50px;
+    box-shadow: 2px 1px 3px #7a7a7a;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    align-content: center;
+}
+
+.disclass-classrooms > button {
+    background-color: #fdf4ca;
+    border: 0px;
+    box-shadow: 1px 1px 2px #8a8a8a;
+    min-height: 30px;
+
+    font-family: inherit;
+    color: inherit;
+    font-weight: lighter;
+}
+
+.disclass-classrooms > button:hover {
+    filter: brightness(0.83);
+} 
+
+/* Grant or reject teachers */
+.reqteach-title-background {
+    background-color: #fdf4ca;
+}
+
+.reqteach-title-background p {
+    color: #ff595e;
+    font-size: 6.5rem;
+    margin: 0;
+    margin-left: 10%;
+}
+
+.reqteach-background {
+    display: grid;
+    background-color: #fdf4ca;
+    margin-top: 3%;
+    padding: 3%;
+}
+
+.reqteach-search {
+    width: 595px;
+    height: 15px;
+    border-style: none;
+    border-radius: 30px;
+    padding: 15px;
+    margin-bottom: 3%;
+    box-shadow: inset 0 0 10px #7a7a7a;
+    justify-self: center;
+}
+
+.reqteach-accounts-grid {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.reqteach-accounts {
+    background-color: white;
+    height: 50px;
+    box-shadow: 2px 1px 3px #7a7a7a;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 60% 20% 20%;
+    grid-gap: 3px;
+    align-content: center;
+}
+
+.reqteach-accounts > button {
+    background-color: #fdf4ca;
+    border: 0px;
+    box-shadow: 1px 1px 2px #8a8a8a;
+    min-height: 30px;
+
+    font-family: inherit;
+    color: inherit;
+    font-weight: lighter;
+}
+
+.reqteach-accounts > button:hover {
     filter: brightness(0.83);
 } 

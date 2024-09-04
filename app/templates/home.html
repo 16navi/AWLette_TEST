@@ -17,17 +17,7 @@
 {% endwith %}
 
 <!--All the other stuff-->
-    {% set student_classrooms =  current_user.enrolment|enabled_only %}
-
-    {% if student_classrooms %}
-    <div class='home-classroom-background'>
-      <div class='home-classroom-buttons'>
-        {% for classroom in classrooms %}
-        <a href='/classroom/{{ classroom.id }}'><div><p class='home-classroom-title'>{{ classroom }}</p><p class='home-classroom-subtitle'>{{ classroom.description }}</p></div></a>
-        {% endfor %}
-      </div>
-    </div>
-    {% elif current_user.is_teacher == 1 %}
+    {% if current_user.is_teacher == 1 %}
       {% if classrooms|enabled_only %}
       <div class='home-classroom-background'>
         <div class='home-classroom-buttons'>
@@ -37,8 +27,21 @@
         </div>
       </div>
       {% endif %}
+    {% else %}
+      {% set student_classrooms =  current_user.enrolment|enabled_only %}
+
+      {% if student_classrooms %}
+      <div class='home-classroom-background'>
+        <div class='home-classroom-buttons'>
+          {% for classroom in student_classrooms %}
+          <a href='/classroom/{{ classroom.id }}'><div><p class='home-classroom-title'>{{ classroom }}</p><p class='home-classroom-subtitle'>{{ classroom.description }}</p></div></a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
     {% endif %}
-    
+
     <div class='home-main-background'>
       <div class="home-main-buttons">
           <a href='/sublist'><div><p class='home-main-title'>See all the words.</p><p class='home-main-subtitle'>browse all the words in their respective sublists.</p></div></a>

@@ -499,8 +499,9 @@ def all_words():
 
 @app.route('/sublist/<sublist>')
 def sublist(sublist):
+    form = Search_Bar()
     words = models.Words.query.filter_by(sublist=sublist).all()
-    return render_template('words.html', words=words)
+    return render_template('words.html', words=words, form=form)
 
 
 @app.route('/sublist/words/<word>')
@@ -509,7 +510,7 @@ def word_listed(word):
     word = models.Words.query.filter_by(word=word).first()
     next_word = models.Words.query.filter_by(id=word.id + 1).first()
     previous_word = models.Words.query.filter_by(id=word.id - 1).first()
-    return render_template('word_listed.html',
+    return render_template('word_page.html',
                            form=form,
                            word=word,
                            next_word=next_word,
@@ -524,7 +525,7 @@ def word_lookfor():
     if word:
         next_word = models.Words.query.filter_by(id=word.id + 1).first()
         previous_word = models.Words.query.filter_by(id=word.id - 1).first()
-        return render_template('word_lookfor.html',
+        return render_template('word_page.html',
                                word=word,
                                form=form,
                                next_word=next_word,
@@ -876,7 +877,7 @@ def filter_score_count(list):
 
 
 @app.template_filter('enabled_only')
-def _enabled_only(seq):
+def filter_enabled_only(seq):
     result = [x for x in seq if not x.is_disabled]
     return result
 
