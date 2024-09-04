@@ -28,6 +28,16 @@ body {
 
 main {
     margin: 49px 0px 0px 0px;
+    min-height: calc(100vh - 149px);
+    display: grid;
+}
+
+.layout-block {
+    align-self: center;
+}
+
+.layout-colorblock-1,.layout-colorblock-2 {
+    background-color: #fdf4ca;
 }
 
 /* Nav Bar */
@@ -68,14 +78,15 @@ main {
 header {
     background-color: #fdf4ca;
     padding: 10px;
+    margin-top: 1%;
 }
 
 /* Footer */
 footer {
-    margin-top: 5%;
     background-color: #9c9c9c;
     height: 100px;
     display: grid;
+    align-self: end;
     align-items: center;
     justify-content: center;
     color: white;
@@ -140,8 +151,7 @@ header .icon #logo {
 .home-classroom-background {
     /* border: 1px #000 solid; */
     height: 20%;
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-top: 4%;
     background-color: #fdf4ca;
 }
 
@@ -184,8 +194,7 @@ header .icon #logo {
 /* Home main buttons */
 .home-main-background {
     /* border: 1px #000 solid; */
-    margin-top: 60px;
-    margin-bottom: 60px;
+    margin-block: 4% 1%;
     background-color: #fdf4ca;
 }
 
@@ -299,7 +308,7 @@ header .icon #logo {
     /* border: 1px solid black; */
     background-color: white;
     box-shadow: 1px 1px 8px #8a8a8a;
-    padding: 10px;
+    padding: 15px;
 }
 
 .word-content-grid > div > p {
@@ -336,7 +345,8 @@ header .icon #logo {
 .word-picture img {
     display: block;
     background-size: cover;
-    width: 350px;
+    width: 100%;
+    aspect-ratio: 1;
     margin: auto;
 }
 
@@ -459,7 +469,6 @@ header .icon #logo {
     display: grid;
     background-color: #fdf4ca;
     height: 400px;
-    margin-top: 5%;
 }
 
 .login-signup-enrol-wrapper {
@@ -930,6 +939,7 @@ header .icon #logo {
     background-color: #6cceff;
     color: white;
     padding: 15px;
+    box-shadow: 0px 1px 10px 0px #8a8a8a;
 }
 
 .classroom-title {
@@ -947,6 +957,7 @@ header .icon #logo {
     margin-inline: 10%;
     background-color: #fdf4ca;
     padding: 3%;
+    box-shadow: 2px 2px 5px #8a8a8a;
 }
 
 /* Classroom navigation */
@@ -1063,7 +1074,7 @@ header .icon #logo {
     height: 100px;
     padding: 10px;
     background-color: white;
-    box-shadow: 1px 1px 3px #8a8a8a;
+    box-shadow: 1px 1px 5px #8a8a8a;
 }
 
 .teacher-prog-students:hover {
@@ -1081,6 +1092,7 @@ header .icon #logo {
     background-color: white;
     margin-bottom: 10px;
     align-content: center;
+    box-shadow: 1px 1px 5px #8a8a8a;
 }
 
 /* Student details */

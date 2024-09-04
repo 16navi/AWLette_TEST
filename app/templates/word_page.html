@@ -67,18 +67,18 @@
             {% set type = None %}   
 
             {% if form.form_class == 1 %}
-                {% set type = "Noun" %} 
+                {% set type = "n." %} 
 
             {% elif form.form_class == 2 %}
-                {% set type = "Verb" %} 
+                {% set type = "v." %} 
 
             {% elif form.form_class == 3 %}
-                {% set type = "Adjective" %}    
+                {% set type = "adj." %}    
 
         {% endif %} 
 
             <!--Lists the type of form, the form itself, and the form used in a sentence.-->
-            <li>{{type}} - {{form}}</li>
+            <li>{{form}} ({{ type }})</li>
         {% endfor %}
         </ul>
         </div>
