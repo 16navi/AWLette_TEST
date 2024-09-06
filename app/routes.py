@@ -39,10 +39,12 @@ def loader_user(user_id):
 
 user = flask_login.current_user
 
-#Error handling
+
+# Error handling
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404_template.html'), 404
+
 
 #  App Routes
 @app.route('/')
@@ -227,7 +229,6 @@ def classroom_stream(classroom_id):
     else:
         flash('Classroom does not exist.')
         return redirect(url_for('homepage'))
-        
 
 
 # Quiz Archive AJAX Route
@@ -262,7 +263,10 @@ def create_quiz(classroom_id):
                 if sublist:
                     words = models.Words.query.filter_by(sublist=sublist).all()
                     if words:
-                        return render_template('create_quiz.html', form=form, sublist=sublist, words=words, classroom=classroom)
+                        return render_template('create_quiz.html', form=form,
+                                               sublist=sublist,
+                                               words=words,
+                                               classroom=classroom)
                     else:
                         flash('Sublist does not exist.')
                         return redirect(url_for('classroom_stream', classroom_id=classroom_id))
@@ -291,7 +295,6 @@ def create_quiz(classroom_id):
         return redirect(url_for('homepage'))
 
 
-
 @app.route('/classroom/<classroom_id>/custom_quiz/<quiz_id>')
 def custom_quiz(classroom_id, quiz_id):
     if user.is_authenticated:
@@ -301,7 +304,8 @@ def custom_quiz(classroom_id, quiz_id):
                 flash(f'This quiz is not for you, {user}.')
                 return redirect(url_for('classroom_listed', classroom_id=classroom_id))
             quiz = models.Quiz.query.filter_by(id=quiz_id).first()
-            if quiz:
+            quiz_progress = models.UserQuiz.query.filter_by(users_id=user.id, quiz_id=quiz_id).first()
+            if not quiz_progress and quiz:
                 words = []
                 for id in json.loads(quiz.word_pool):
                     words.append(models.Words.query.filter_by(id=id).first())
@@ -313,6 +317,9 @@ def custom_quiz(classroom_id, quiz_id):
                                        question_amount=question_amount,
                                        types=types,
                                        classroom_id=classroom_id)
+            elif quiz_progress:
+                flash(f"You've already done this quiz, {user}")
+                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
             else:
                 flash('Quiz does not exist.')
                 return redirect(url_for('classroom_stream', classroom_id=classroom_id))
