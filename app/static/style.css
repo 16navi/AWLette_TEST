@@ -29,15 +29,16 @@ body {
 main {
     margin: 49px 0px 0px 0px;
     min-height: calc(100vh - 149px);
+}
+
+.layout-block-container {
+    min-height: calc(100vh - 149px);
     display: grid;
 }
 
 .layout-block {
     align-self: center;
-}
-
-.layout-colorblock-1,.layout-colorblock-2 {
-    background-color: #fdf4ca;
+    margin-block: 2.5%;
 }
 
 /* Nav Bar */
@@ -91,6 +92,8 @@ footer {
     justify-content: center;
     color: white;
     font-size: 2rem;
+
+    margin-top: 2.5%;
 }
 
 header .grid {

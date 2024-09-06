@@ -8,11 +8,13 @@
     <body>
         {% include 'nav.html' %}
             <main>
-                <div class='layout-colorblock-1'></div>
+                {% block main_space %}
+                <div class='layout-block-container'>
                 <div class='layout-block'>
                     {% block content %}{% endblock %}
                 </div>
-                <div class='layout-colorblock-2'></div>
+                </div>
+                {% endblock %}
         </main>
         {% include 'footer.html' %}
     </body>

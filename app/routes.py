@@ -39,6 +39,10 @@ def loader_user(user_id):
 
 user = flask_login.current_user
 
+#Error handling
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404_template.html'), 404
 
 #  App Routes
 @app.route('/')
@@ -197,28 +201,33 @@ def create_classroom():
 @app.route('/classroom/<classroom_id>')
 def classroom_stream(classroom_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    quizzes = models.Quiz.query.filter_by(classroom_id=classroom_id).all()
-    if classroom.is_disabled:
-        flash(f'Classroom {classroom} is disabled.')
-        return redirect(url_for('homepage'))
-    elif user.is_anonymous:
-        flash('How about logging in first?')
-        return redirect(url_for('homepage'))
-    elif user.is_teacher == 1:
-        return render_template('classroom_stream.html', classroom=classroom, quizzes=quizzes)
-    else:
-        if user in classroom.student:
-            taken_quiz = models.UserQuiz.query.filter_by(users_id=user.id).all()
-            if taken_quiz:
-                for quiz in taken_quiz:
-                    quizzes.remove(quiz.quiz)
-            for quiz in quizzes:
-                if quiz.is_archived:
-                    quizzes.remove(quiz)
+    if classroom:
+        quizzes = models.Quiz.query.filter_by(classroom_id=classroom_id).all()
+        if classroom.is_disabled:
+            flash(f'Classroom {classroom} is disabled.')
+            return redirect(url_for('homepage'))
+        elif user.is_anonymous:
+            flash('How about logging in first?')
+            return redirect(url_for('homepage'))
+        elif user.is_teacher == 1:
             return render_template('classroom_stream.html', classroom=classroom, quizzes=quizzes)
         else:
-            flash(f"You're not in this classroom, are you, {user}?")
-            return redirect(url_for('homepage'))
+            if user in classroom.student:
+                taken_quiz = models.UserQuiz.query.filter_by(users_id=user.id).all()
+                if taken_quiz:
+                    for quiz in taken_quiz:
+                        quizzes.remove(quiz.quiz)
+                for quiz in quizzes:
+                    if quiz.is_archived:
+                        quizzes.remove(quiz)
+                return render_template('classroom_stream.html', classroom=classroom, quizzes=quizzes)
+            else:
+                flash(f"You're not in this classroom, are you, {user}?")
+                return redirect(url_for('homepage'))
+    else:
+        flash('Classroom does not exist.')
+        return redirect(url_for('homepage'))
+        
 
 
 # Quiz Archive AJAX Route
@@ -244,58 +253,97 @@ def quiz_archiver():
 
 @app.route('/classroom/<classroom_id>/create_quiz', methods=['GET', 'POST'])
 def create_quiz(classroom_id):
-    form = Create_Quiz()
-    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    if request.method == 'GET':
-        sublist = request.args.get('sublist')
-        words = models.Words.query.filter_by(sublist=sublist).all()
-        return render_template('create_quiz.html', form=form, sublist=sublist, words=words, classroom=classroom)
+    if user.is_teacher == 1:
+        form = Create_Quiz()
+        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+        if classroom:
+            if request.method == 'GET':
+                sublist = request.args.get('sublist')
+                if sublist:
+                    words = models.Words.query.filter_by(sublist=sublist).all()
+                    if words:
+                        return render_template('create_quiz.html', form=form, sublist=sublist, words=words, classroom=classroom)
+                    else:
+                        flash('Sublist does not exist.')
+                        return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+                else:
+                    return render_template('create_quiz.html', form=form, sublist=sublist, classroom=classroom)
+            else:
+                if form.validate_on_submit():
+                    new_quiz = models.Quiz()
+                    new_quiz.name = form.name.data
+                    new_quiz.classroom_id = classroom_id
+                    new_quiz.item = form.item.data
+                    new_quiz.question_types = json.dumps(form.question_type.data)
+                    new_quiz.word_pool = form.word_pool.data
+                    db.session.add(new_quiz)
+                    db.session.commit()
+                    flash('Quiz successfully created!')
+                    return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+        else:
+            flash('Classroom does not exist.')
+            return redirect(url_for('homepage'))
+    elif user.is_anonymous:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
     else:
-        if form.validate_on_submit():
-            new_quiz = models.Quiz()
-            new_quiz.name = form.name.data
-            new_quiz.classroom_id = classroom_id
-            new_quiz.item = form.item.data
-            new_quiz.question_types = json.dumps(form.question_type.data)
-            new_quiz.word_pool = form.word_pool.data
-            db.session.add(new_quiz)
-            db.session.commit()
-            flash('Quiz successfully created!')
-            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+        flash(f"You're not a teacher, are you, {user}?")
+        return redirect(url_for('homepage'))
+
 
 
 @app.route('/classroom/<classroom_id>/custom_quiz/<quiz_id>')
 def custom_quiz(classroom_id, quiz_id):
-    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    if user not in classroom.student:
-        flash(f'This quiz is not for you, {user}.')
-        return redirect(url_for('classroom_listed', classroom_id=classroom_id))
-    quiz = models.Quiz.query.filter_by(id=quiz_id).first()
-    words = []
-    for id in json.loads(quiz.word_pool):
-        words.append(models.Words.query.filter_by(id=id).first())
-    question_amount = quiz.item
-    types = json.loads(quiz.question_types)
-    return render_template('custom_quiz.html',
-                           quiz=quiz,
-                           words=words,
-                           question_amount=question_amount,
-                           types=types,
-                           classroom_id=classroom_id)
+    if user.is_authenticated:
+        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+        if classroom:
+            if user not in classroom.student:
+                flash(f'This quiz is not for you, {user}.')
+                return redirect(url_for('classroom_listed', classroom_id=classroom_id))
+            quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+            if quiz:
+                words = []
+                for id in json.loads(quiz.word_pool):
+                    words.append(models.Words.query.filter_by(id=id).first())
+                question_amount = quiz.item
+                types = json.loads(quiz.question_types)
+                return render_template('custom_quiz.html',
+                                       quiz=quiz,
+                                       words=words,
+                                       question_amount=question_amount,
+                                       types=types,
+                                       classroom_id=classroom_id)
+            else:
+                flash('Quiz does not exist.')
+                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+        else:
+            flash('Classroom does not exist.')
+            return redirect(url_for('homepage'))
+    else:
+        flash('How about logging in first?')
+        return redirect(url_for('homepage'))
 
 
 @app.route('/classroom/<classroom_id>/custom_quiz_progress/<quiz_id>')
 def custom_quiz_progress(classroom_id, quiz_id):
-    trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    not_answered = classroom.student
-    for tracker in trackers:
-        not_answered.remove(tracker.student)
+    if classroom:
+        trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
+        if trackers:
+            not_answered = classroom.student
+            for tracker in trackers:
+                not_answered.remove(tracker.student)
 
-    return render_template('custom_quiz_progress.html',
-                           trackers=trackers,
-                           not_answered=not_answered,
-                           classroom=classroom)
+            return render_template('custom_quiz_progress.html',
+                                   trackers=trackers,
+                                   not_answered=not_answered,
+                                   classroom=classroom)
+        else:
+            flash('Quiz does not exist.')
+            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+    else:
+        flash('Classroom does not exist.')
+        return redirect(url_for('homepage'))
 
 
 # Custom Quiz AJAX
@@ -339,10 +387,14 @@ def custom_quiz_tracker():
 def people(classroom_id):
     if user.is_authenticated:
         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-        teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
-        return render_template('people.html',
-                               classroom=classroom,
-                               teacher=teacher)
+        if classroom:
+            teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
+            return render_template('people.html',
+                                   classroom=classroom,
+                                   teacher=teacher)
+        else:
+            flash('Classroom does not exist.')
+            return redirect(url_for('homepage'))
     else:
         flash('How about logging in first?')
         return redirect(url_for('homepage'))
@@ -351,11 +403,22 @@ def people(classroom_id):
 @app.route('/classroom/<classroom_id>/people/<users_id>')
 def student_progress(classroom_id, users_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    if user.is_teacher == 1:
-        student = models.Users.query.filter_by(id=users_id).first()
-        return render_template('student_progress.html', student=student, classroom=classroom)
-    elif user.is_authenticated and user.is_teacher != 1:
-        flash(f"You're not a teacher, are you, {user}?")
+    if classroom:
+        if user.is_teacher == 1:
+            student = models.Users.query.filter_by(id=users_id).first()
+            if student:
+                return render_template('student_progress.html', student=student, classroom=classroom)
+            else:
+                flash('Student does not exist.')
+                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+        elif user.is_authenticated and user.is_teacher != 1:
+            flash(f"You're not a teacher, are you, {user}?")
+            return redirect(url_for('homepage'))
+        else:
+            flash('How about logging in first?')
+            return redirect(url_for('homepage'))
+    else:
+        flash('Classroom does not exist.')
         return redirect(url_for('homepage'))
 
 

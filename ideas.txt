@@ -3,7 +3,7 @@ fix stopImmediatePropagation errors:
 
 error handling: 
     * 404
-    * id is non-existent (classroom, quiz, )
+    * id is non-existent (classroom, quiz)
 
 nielsen's heuristics
 
