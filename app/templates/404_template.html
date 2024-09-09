@@ -1,7 +1,32 @@
 {% extends 'layout.html' %}
 
-{% block content %}
+{% block main_space %}
 
-No such page. Sorry.
+<header>
+    <div class='grid'>
+        <div class='title'>
+            <p id='heading'>AWLette</p>
+            <p id='subtitle'>academic word list companion</p>
+        </div>
+        <div class='icon'>
+            <img id='logo' src = "\static\images\AWLette_icon.png" width = "250" height = "250" alt = "mga mukha nyo to mwuahaha"/>
+        </div>
+    </div>
+</header>
+
+<div class='error-message'>
+    <p class='error-title'>
+        404: This page does not exist :(
+    </p>
+    <div class='error-subtitle'>
+        <p>
+            Try the following:
+            <ol>
+                <li>checking the url for typos.</li>
+                <li>refreshing the page.</li>
+            </ol>
+        </p>
+    </div>
+</div>
 
 {% endblock %}
