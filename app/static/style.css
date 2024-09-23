@@ -53,7 +53,7 @@ main {
     overflow: hidden;
 }
 
-.navbar a{
+.navbar a {
     color: white;
     text-decoration: none;
     padding: 15px;
@@ -62,7 +62,7 @@ main {
     box-shadow: 0 -1px 0 #000;
 }
 
-.navbar a:hover{
+.navbar a:hover {
     background-color: #b7b7b7;
     color: black;
 }
@@ -87,10 +87,28 @@ footer {
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 2rem;
 
     margin-top: 2.5%;
 }
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.footer-grid > span {
+    font-size: 1.2rem;
+}
+
+.footer-messsage {
+    justify-self: start;
+}
+
+.footer-email {
+    justify-self: end;
+}
+
+/* Header */
 
 header .grid {
     /* border: 1px, black, solid; */
@@ -145,6 +163,13 @@ header .icon #logo {
     transform: translateY(-50%);
     z-index: 1;
 }
+
+/* about page */
+.about-message {
+    margin-inline: 3%;
+}
+
+
 
 /* Classroom buttons */
 .home-classroom-background {
