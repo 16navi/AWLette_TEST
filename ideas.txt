@@ -1,13 +1,10 @@
 For Fixing:
-1. About
-2. Footer
+1. error handling make it NOT if statements
+
 
 fix stopImmediatePropagation errors:
     * across all pages that have it.
 
-error handling: 
-    * 404
-    * id is non-existent (classroom, quiz)
 
 nielsen's heuristics
 

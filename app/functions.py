@@ -1,5 +1,6 @@
 import random, string
 
+
 def encrypt(password):
     encpass = ""
     for ch in password:

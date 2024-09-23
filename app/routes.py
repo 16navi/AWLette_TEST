@@ -24,7 +24,6 @@ WTF_CSRF_SECRET_KEY = 'sup3r_secr3t_passw3rd'  # Think of a new secret key
 
 #  Flask Login stuff
 login_manager = flask_login.LoginManager()
-
 login_manager.init_app(app)
 
 
@@ -37,12 +36,23 @@ def loader_user(user_id):
     return models.Users.query.get(user_id)
 
 
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    flash('How about logging in first?')
+    return redirect(url_for('homepage'))
+
+
 user = flask_login.current_user
 
 
 # Error handling
 @app.errorhandler(404)
 def page_not_found(e):
+    return render_template('404_template.html'), 404
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
     return render_template('404_template.html'), 404
 
 
@@ -61,26 +71,24 @@ def homepage():
 # Admin login
 # admin credentials: (Admin ,G1SJso3zIio)
 @app.route('/admin_powers')
+@flask_login.login_required
 def admin_powers():
-    if user.is_authenticated:
-        if user.is_admin:
-            return render_template('admin.html')
-        else:
-            flash(f"You're not Admin, are you, {user}?")
-            return redirect(url_for('homepage'))
+    if user.is_admin:
+        return render_template('admin.html')
     else:
-        flash('How about logging in first?')
+        flash(f"You're not Admin, are you, {user}?")
         return redirect(url_for('homepage'))
 
 
 @app.route('/admin_powers/disable_account')
+@flask_login.login_required
 def disable_account():
-    if not user.is_admin:
-        flash(f"You're not Admin, are you, {user}?")
-        return redirect(url_for('homepage'))
-    else:
+    if user.is_admin:
         users = models.Users.query.filter_by(is_admin=None).all()
         return render_template('admin_disable_acc.html', users=users)
+    else:
+        flash(f"You're not Admin, are you, {user}?")
+        return redirect(url_for('homepage'))
 
 
 # Account disabler AJAX route
@@ -105,13 +113,14 @@ def account_disabler():
 
 
 @app.route('/admin_powers/disable_classroom')
+@flask_login.login_required
 def disable_classroom():
-    if not user.is_admin:
-        flash(f"You're not Admin, are you, {user}?")
-        return redirect(url_for('homepage'))
-    else:
+    if user.is_admin:
         classrooms = models.Classrooms.query.all()
         return render_template('admin_disable_classroom.html', classrooms=classrooms)
+    else:
+        flash(f"You're not Admin, are you, {user}?")
+        return redirect(url_for('homepage'))
 
 
 # Classroom disabler AJAX route
@@ -160,56 +169,56 @@ def grant_or_reject():
 
 
 @app.route('/admin_powers/teacher_request')
+@flask_login.login_required
 def teacher_request():
-    requesting_teachers = models.Users.query.filter_by(is_teacher=0).all()
-    return render_template('teacher_request.html',
-                           requesting_teachers=requesting_teachers)
+    if user.is_admin:
+        requesting_teachers = models.Users.query.filter_by(is_teacher=0).all()
+        return render_template('teacher_request.html',
+                               requesting_teachers=requesting_teachers)
+    else:
+        flash(f"You're not Admin, are you, {user}?")
+        return redirect(url_for('homepage'))
 
 
 @app.route('/create_classroom', methods=['GET', 'POST'])
+@flask_login.login_required
 def create_classroom():
-    if user.is_authenticated:
-        if user.is_teacher == 1:
-            form = Create_Classroom()
-            if request.method == 'GET':
-                return render_template('create_classroom.html',
-                                       form=form)
-            else:
-                if form.validate_on_submit():
-                    new_classroom = models.Classrooms()
-                    new_classroom.classroom = form.classroom_name.data
-                    new_classroom.description = form.description.data
-                    unique_code = None
-                    # Check if code is unique by querying database for classrooms
-                    # with the code
-                    while not unique_code:
-                        code = generate_code(3)
-                        query = models.Classrooms.query.filter_by(code=code).first()
-                        if not query:
-                            unique_code = code
-                    new_classroom.code = unique_code
-                    new_classroom.teacher_id = user.id
-                    db.session.add(new_classroom)
-                    db.session.commit()
-                    return redirect(url_for('homepage'))
+    if user.is_teacher == 1:
+        form = Create_Classroom()
+        if request.method == 'GET':
+            return render_template('create_classroom.html',
+                                   form=form)
         else:
-            flash(f"You're not a teacher, are you, {user}?")
-            return redirect(url_for('homepage'))
+            if form.validate_on_submit():
+                new_classroom = models.Classrooms()
+                new_classroom.classroom = form.classroom_name.data
+                new_classroom.description = form.description.data
+                unique_code = None
+                # Check if code is unique by querying database for classrooms
+                # with the code
+                while not unique_code:
+                    code = generate_code(3)
+                    query = models.Classrooms.query.filter_by(code=code).first()
+                    if not query:
+                        unique_code = code
+                new_classroom.code = unique_code
+                new_classroom.teacher_id = user.id
+                db.session.add(new_classroom)
+                db.session.commit()
+                return redirect(url_for('homepage'))
     else:
-        flash('How about logging in first?')
+        flash(f"You're not a teacher, are you, {user}?")
         return redirect(url_for('homepage'))
 
 
 @app.route('/classroom/<classroom_id>')
+@flask_login.login_required
 def classroom_stream(classroom_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     if classroom:
         quizzes = models.Quiz.query.filter_by(classroom_id=classroom_id).all()
         if classroom.is_disabled:
             flash(f'Classroom {classroom} is disabled.')
-            return redirect(url_for('homepage'))
-        elif user.is_anonymous:
-            flash('How about logging in first?')
             return redirect(url_for('homepage'))
         elif user.is_teacher == 1:
             return render_template('classroom_stream.html', classroom=classroom, quizzes=quizzes)
@@ -253,6 +262,7 @@ def quiz_archiver():
 
 
 @app.route('/classroom/<classroom_id>/create_quiz', methods=['GET', 'POST'])
+@flask_login.login_required
 def create_quiz(classroom_id):
     if user.is_teacher == 1:
         form = Create_Quiz()
@@ -271,7 +281,10 @@ def create_quiz(classroom_id):
                         flash('Sublist does not exist.')
                         return redirect(url_for('classroom_stream', classroom_id=classroom_id))
                 else:
-                    return render_template('create_quiz.html', form=form, sublist=sublist, classroom=classroom)
+                    return render_template('create_quiz.html',
+                                           form=form,
+                                           sublist=sublist,
+                                           classroom=classroom)
             else:
                 if form.validate_on_submit():
                     new_quiz = models.Quiz()
@@ -287,39 +300,67 @@ def create_quiz(classroom_id):
         else:
             flash('Classroom does not exist.')
             return redirect(url_for('homepage'))
-    elif user.is_anonymous:
-        flash('How about logging in first?')
-        return redirect(url_for('homepage'))
     else:
         flash(f"You're not a teacher, are you, {user}?")
         return redirect(url_for('homepage'))
 
 
 @app.route('/classroom/<classroom_id>/custom_quiz/<quiz_id>')
+@flask_login.login_required
 def custom_quiz(classroom_id, quiz_id):
-    if user.is_authenticated:
+    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+    if classroom:
+        if user not in classroom.student:
+            flash(f'This quiz is not for you, {user}.')
+            return redirect(url_for('classroom_listed', classroom_id=classroom_id))
+        quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+        quiz_progress = models.UserQuiz.query.filter_by(users_id=user.id, quiz_id=quiz_id).first()
+        if not quiz_progress and quiz:
+            words = []
+            for id in json.loads(quiz.word_pool):
+                words.append(models.Words.query.filter_by(id=id).first())
+            question_amount = quiz.item
+            types = json.loads(quiz.question_types)
+            return render_template('custom_quiz.html',
+                                   quiz=quiz,
+                                   words=words,
+                                   question_amount=question_amount,
+                                   types=types,
+                                   classroom_id=classroom_id)
+        elif quiz_progress:
+            flash(f"You've already done this quiz, {user}")
+            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+        else:
+            flash('Quiz does not exist.')
+            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+    else:
+        flash('Classroom does not exist.')
+        return redirect(url_for('homepage'))
+
+
+@app.route('/classroom/<classroom_id>/custom_quiz_progress/<quiz_id>')
+@flask_login.login_required
+def custom_quiz_progress(classroom_id, quiz_id):
+    if user.is_teacher == 1:
         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
         if classroom:
-            if user not in classroom.student:
-                flash(f'This quiz is not for you, {user}.')
-                return redirect(url_for('classroom_listed', classroom_id=classroom_id))
             quiz = models.Quiz.query.filter_by(id=quiz_id).first()
-            quiz_progress = models.UserQuiz.query.filter_by(users_id=user.id, quiz_id=quiz_id).first()
-            if not quiz_progress and quiz:
-                words = []
-                for id in json.loads(quiz.word_pool):
-                    words.append(models.Words.query.filter_by(id=id).first())
-                question_amount = quiz.item
-                types = json.loads(quiz.question_types)
-                return render_template('custom_quiz.html',
-                                       quiz=quiz,
-                                       words=words,
-                                       question_amount=question_amount,
-                                       types=types,
-                                       classroom_id=classroom_id)
-            elif quiz_progress:
-                flash(f"You've already done this quiz, {user}")
-                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+            if quiz:
+                trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
+                not_answered = classroom.student
+                if trackers:
+                    for tracker in trackers:
+                        not_answered.remove(tracker.student)
+
+                    return render_template('custom_quiz_progress.html',
+                                           trackers=trackers,
+                                           not_answered=not_answered,
+                                           classroom=classroom)
+                else:
+                    return render_template('custom_quiz_progress.html',
+                                           trackers=trackers,
+                                           not_answered=not_answered,
+                                           classroom=classroom)
             else:
                 flash('Quiz does not exist.')
                 return redirect(url_for('classroom_stream', classroom_id=classroom_id))
@@ -327,36 +368,7 @@ def custom_quiz(classroom_id, quiz_id):
             flash('Classroom does not exist.')
             return redirect(url_for('homepage'))
     else:
-        flash('How about logging in first?')
-        return redirect(url_for('homepage'))
-
-
-@app.route('/classroom/<classroom_id>/custom_quiz_progress/<quiz_id>')
-def custom_quiz_progress(classroom_id, quiz_id):
-    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-    if classroom:
-        quiz = models.Quiz.query.filter_by(id=quiz_id).first()
-        if quiz:
-            trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
-            not_answered = classroom.student
-            if trackers:
-                for tracker in trackers:
-                    not_answered.remove(tracker.student)
-
-                return render_template('custom_quiz_progress.html',
-                                       trackers=trackers,
-                                       not_answered=not_answered,
-                                       classroom=classroom)
-            else:
-                return render_template('custom_quiz_progress.html',
-                                       trackers=trackers,
-                                       not_answered=not_answered,
-                                       classroom=classroom)
-        else:
-            flash('Quiz does not exist.')
-            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
-    else:
-        flash('Classroom does not exist.')
+        flash(f"You're not a teacher, are you, {user}?")
         return redirect(url_for('homepage'))
 
 
@@ -398,85 +410,58 @@ def custom_quiz_tracker():
 
 
 @app.route('/classroom/<classroom_id>/people')
+@flask_login.login_required
 def people(classroom_id):
-    if user.is_authenticated:
-        classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-        if classroom:
-            teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
-            return render_template('people.html',
-                                   classroom=classroom,
-                                   teacher=teacher)
-        else:
-            flash('Classroom does not exist.')
-            return redirect(url_for('homepage'))
+    classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
+    if classroom:
+        teacher = models.Users.query.filter_by(id=classroom.teacher_id).first()
+        return render_template('people.html',
+                               classroom=classroom,
+                               teacher=teacher)
     else:
-        flash('How about logging in first?')
+        flash('Classroom does not exist.')
         return redirect(url_for('homepage'))
 
 
 @app.route('/classroom/<classroom_id>/people/<users_id>')
+@flask_login.login_required
 def student_progress(classroom_id, users_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     if classroom:
-        if not user.is_anonymous:
-            if user.is_teacher == 1:
-                student = models.Users.query.filter_by(id=users_id).first()
-                if student:
-                    return render_template('student_progress.html', student=student, classroom=classroom)
-                else:
-                    flash('Student does not exist.')
-                    return redirect(url_for('classroom_stream', classroom_id=classroom_id))
-            elif user.is_authenticated and user.is_teacher != 1:
-                flash(f"You're not a teacher, are you, {user}?")
-                return redirect(url_for('homepage'))
+        if user.is_teacher == 1:
+            student = models.Users.query.filter_by(id=users_id).first()
+            if student:
+                return render_template('student_progress.html', student=student, classroom=classroom)
+            else:
+                flash('Student does not exist.')
+                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
         else:
-            flash('How about logging in first?')
+            flash(f"You're not a teacher, are you, {user}?")
             return redirect(url_for('homepage'))
     else:
         flash('Classroom does not exist.')
         return redirect(url_for('homepage'))
 
 
-# @app.route('/classroom/<classroom_id>/leaderboards')
-# def leaderboards(classroom_id):
-#     if user.is_authenticated:
-#         classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
-
-#         def count_progress(list, total):
-#             if list:
-#                 score = round(((len(list) / total) * 100), 2)
-#                 return score
-#             else:
-#                 return None
-
-#         return render_template('leaderboards.html', classroom=classroom)
-#     else:
-#         flash('How about logging in first?')
-#         return redirect(url_for('homepage'))
-
-
 @app.route('/enrol', methods=['GET', 'POST'])
+@flask_login.login_required
 def enrol():
-    if user.is_authenticated:
-        form = Enrol()
-        if request.method == 'GET':
-            return render_template('enrol.html', form=form)
-        else:
-            if form.validate_on_submit():
-                code = form.code.data
-                classroom = models.Classrooms.query.filter_by(code=code).first()
-                if not classroom:
-                    flash('Wrong code. Try again.')
-                    return redirect(request.url)
-                else:
-                    user.enrolment.append(classroom)
-                    classroom.student.append(user)
-                    db.session.commit()
-                    flash(f'Welcome to Classroom {classroom}, {user}!')
-                    return redirect(url_for('homepage'))
+    form = Enrol()
+    if request.method == 'GET':
+        return render_template('enrol.html', form=form)
     else:
-        flash('How about logging in first?')
-        return redirect(url_for('homepage'))
+        if form.validate_on_submit():
+            code = form.code.data
+            classroom = models.Classrooms.query.filter_by(code=code).first()
+            if not classroom:
+                flash('Wrong code. Try again.')
+                return redirect(request.url)
+            else:
+                user.enrolment.append(classroom)
+                classroom.student.append(user)
+                db.session.commit()
+                flash(f'Welcome to Classroom {classroom}, {user}!')
+                return redirect(url_for('homepage'))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -550,18 +535,16 @@ def login():
 
 
 @app.route('/logout')
+@flask_login.login_required
 def logout():
     flask_login.logout_user()
     return redirect(url_for('homepage'))
 
 
 @app.route('/user_details')
+@flask_login.login_required
 def user_details():
-    if user.is_authenticated:
-        return render_template('user_details.html')
-    else:
-        flash('How about logging in first?')
-        return redirect(url_for('homepage'))
+    return render_template('user_details.html')
 
 
 @app.route('/about')
