@@ -85,6 +85,12 @@
             xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(JSON.stringify({correctItem}));
         };
+
+        // change the submit button to redirect
+        submit.innerHTML = 'Go back to homepage';
+        submit.addEventListener('click', function() {
+            window.location.href = "{{ url_for('homepage') }}";
+        });
     };
 </script>
 

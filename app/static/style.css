@@ -1038,6 +1038,39 @@ header .icon #logo {
     filter: brightness(0.85);
 }
 
+/* Custom quiz progress for Teachers */
+.custquiz-progress-background {
+    display: grid;
+    margin-inline: 10%;
+    background-color: #fdf4ca;
+    padding: 3%;
+    box-shadow: 2px 2px 5px #8a8a8a;
+}
+
+.custquiz-progress-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    grid-gap: 10px;
+}
+
+.custquiz-progress-grid div {
+    height: 100px;
+    padding: 10px;
+    box-shadow: 1px 1px 5px #8a8a8a;
+}
+
+.custquiz-progress-grid .custquiz-answered {
+    background-color: #90ee90;
+}
+
+.custquiz-progress-grid .custquiz-not-answered {
+    background-color: #a3a3a3;
+}
+
+.custquiz-progress-grid .custquiz-failed {
+    background-color: #ef7a71;
+}
+
 /* People for teachers */
 .teacher-prog-container {
     display: grid;
@@ -1112,7 +1145,7 @@ header .icon #logo {
 
 .student-prog-grid {
     margin-inline: 10%;
-    display: grid;
+    display: grid;  
     grid-template-columns: repeat(auto-fit, minmax(275px, 350px));
     grid-gap: 10px;
     transform: scale(1.05);
@@ -1268,6 +1301,11 @@ header .icon #logo {
 
 .create-submit-container {
     display: flex;
+}
+
+.create-error {
+    display: none;
+    color: red;
 }
 
 #quiz-submit {

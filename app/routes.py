@@ -335,16 +335,23 @@ def custom_quiz(classroom_id, quiz_id):
 def custom_quiz_progress(classroom_id, quiz_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     if classroom:
-        trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
-        if trackers:
+        quiz = models.Quiz.query.filter_by(id=quiz_id).first()
+        if quiz:
+            trackers = models.UserQuiz.query.filter_by(quiz_id=quiz_id).all()
             not_answered = classroom.student
-            for tracker in trackers:
-                not_answered.remove(tracker.student)
+            if trackers:
+                for tracker in trackers:
+                    not_answered.remove(tracker.student)
 
-            return render_template('custom_quiz_progress.html',
-                                   trackers=trackers,
-                                   not_answered=not_answered,
-                                   classroom=classroom)
+                return render_template('custom_quiz_progress.html',
+                                       trackers=trackers,
+                                       not_answered=not_answered,
+                                       classroom=classroom)
+            else:
+                return render_template('custom_quiz_progress.html',
+                                       trackers=trackers,
+                                       not_answered=not_answered,
+                                       classroom=classroom)
         else:
             flash('Quiz does not exist.')
             return redirect(url_for('classroom_stream', classroom_id=classroom_id))
@@ -411,16 +418,17 @@ def people(classroom_id):
 def student_progress(classroom_id, users_id):
     classroom = models.Classrooms.query.filter_by(id=classroom_id).first()
     if classroom:
-        if user.is_teacher == 1:
-            student = models.Users.query.filter_by(id=users_id).first()
-            if student:
-                return render_template('student_progress.html', student=student, classroom=classroom)
-            else:
-                flash('Student does not exist.')
-                return redirect(url_for('classroom_stream', classroom_id=classroom_id))
-        elif user.is_authenticated and user.is_teacher != 1:
-            flash(f"You're not a teacher, are you, {user}?")
-            return redirect(url_for('homepage'))
+        if not user.is_anonymous:
+            if user.is_teacher == 1:
+                student = models.Users.query.filter_by(id=users_id).first()
+                if student:
+                    return render_template('student_progress.html', student=student, classroom=classroom)
+                else:
+                    flash('Student does not exist.')
+                    return redirect(url_for('classroom_stream', classroom_id=classroom_id))
+            elif user.is_authenticated and user.is_teacher != 1:
+                flash(f"You're not a teacher, are you, {user}?")
+                return redirect(url_for('homepage'))
         else:
             flash('How about logging in first?')
             return redirect(url_for('homepage'))

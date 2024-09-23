@@ -1,3 +1,7 @@
+For Fixing:
+1. About
+2. Footer
+
 fix stopImmediatePropagation errors:
     * across all pages that have it.
 
@@ -9,27 +13,7 @@ nielsen's heuristics
 
 match - getting the wrong answer:
     * instead of nothing, wrong answers should flash red and then quickly fade away.
-
-favorite word:
-    * users can favorite a word
-    * have a seperate page displaying the user's favorite words
-
-about refreshing quiz content:
-    * instead of refreshing, use async posts to get the necessary data in the background and then just continuously show the questions after getting it right.
-    * craete a 'pending' state. users can still reload, but it will just load the same unanswered questions unless they get everything right.
-
-give up button:
-    * user can click the button, enabling a give up option. This shows the correct answer for each quiz.
-    * but before clicking the button, a guilt message will pop up.
-    * this can go like "ARE YOU SURE? It's okay if you take some time to think for the right answer! After all, strain is important for muscle growth---and your brain is the smartest muscle!"
-
-Choices in fill in the blanks:
-    * can be the root word instead of the exact answer (or can be randomly chosen to be either)
-    * nominalisation of the root word 
-
-Progress tracking for quiz quiz:
-    * can also keep track of the ratio of rights over wrong across all the user's attempt at quiz quiz
-
+    
 THINGS I DID THAT WERE APPARENTLY AGAINST THE CONVENTION
 1. HTML id's are supposed to look like "lorem-ipsum"---not underscores. ://///
 

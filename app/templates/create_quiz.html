@@ -7,9 +7,10 @@
   
     nav.style.borderBottom = '2px solid #704d4a';
   
-    wordpoolGood = null
-    questionTypeGood = null
-    itemGood = null
+    wordpoolGood = null;
+    questionTypeGood = null;
+    itemGood = null;
+    nameGood = null;
 
     function searchFor(searchbar, words) {
         searchbar.addEventListener('keyup', function() {
@@ -23,7 +24,7 @@
         });
     };
 
-    function chooseOne(form, submit, checkboxes) {
+    function chooseOne(form, submit, checkboxes, error) {
         submit.addEventListener('mousedown', function() {
             clickedOne = null
             for (let checkbox of checkboxes) {
@@ -33,13 +34,14 @@
             };
             if (clickedOne == null) {
                 questionTypeGood = null;
-                console.log('Choose at least one type, dummy!');
+                error.style.display = 'block';
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
                 });
             } else {
                 questionTypeGood = true;
-                if (wordpoolGood == true && itemGood == true) {
+                error.style.display = 'none';
+                if (questionTypeGood == true && itemGood == true && nameGood == true) {
                     form.submit();
                 };
             };
@@ -47,8 +49,8 @@
     ;}
 
     function wordPoolSelection(buttons, wordpool) {
-        selection = []
-        poolAmount = 0
+        selection = [];
+        poolAmount = 0;
         buttons.forEach(function(button) {
             button.clickCount = 0
             button.addEventListener('click', function(event){
@@ -74,27 +76,36 @@
         });
     };
 
-    function wordpoolFilled(form, submit, wordpool) {
+    function wordpoolFilled(form, submit, wordpool, error) {
         submit.addEventListener('mousedown', function() {
             if (wordpool.getAttribute('data-amount') < 5) {
                 wordpoolGood = null;
-                console.log('Choose at least five words, dummy!');
+                error.style.display = 'block';
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
                 });
             } else {
                 wordpoolGood = true;
-                if (questionTypeGood == true && itemGood == true) {
+                error.style.display = 'none';
+                if (questionTypeGood == true && itemGood == true && nameGood == true) {
                     form.submit();
                 };
             };
         });
-    }
+    };
 
     function itemAnswered(submit, item) {
         submit.addEventListener('mousedown', function() {
             if (5 <= item.value <= 60) {
-            itemGood = true;
+                itemGood = true;
+            };
+        });
+    };
+
+    function nameAnswered(submit, name) {
+        submit.addEventListener('mousedown', function() {
+            if (item.value) {
+                nameGood = true;
             };
         });
     };
@@ -116,10 +127,8 @@
         </div>
     </div>
 </form>
-{% endif %}
 
-
-{% if sublist %}
+{% else %}
 
 <form id='quiz' method='POST' enctype="multipart/form-data">    
     <div class='create-form-container'>
@@ -139,6 +148,7 @@
             {% for type in form.question_type %}
                 <p>{{ type(class='question_type') }}{{ type.label }}</p>
             {% endfor %}
+            <span class='create-type-error create-error'>Choose at least one type.</span>
         </div>
 
         {% with messages = get_flashed_messages() %}
@@ -164,6 +174,9 @@
                 <button form='none' class='words' id='a{{ word.id }}'>{{ word }}</button>
             {% endfor %}
             </div>
+
+            <span class='create-words-error create-error'>Choose at least five words.</span>
+
         </div>
 
         <script>
@@ -186,16 +199,22 @@
 <script>
     chooseOne(document.getElementById('quiz'),
               document.getElementById('quiz-submit'),
-              document.querySelectorAll('.question_type')
+              document.querySelectorAll('.question_type'),
+              document.querySelector('.create-type-error')
     );
 
     wordpoolFilled(document.getElementById('quiz'),
                    document.getElementById('quiz-submit'),
-                   document.getElementById('word_pool')
+                   document.getElementById('word_pool'),
+                   document.querySelector('.create-words-error')
     );
 
-    itemAnswered(document.getElementById('submit'),
+    itemAnswered(document.getElementById('quiz-submit'),
                  document.getElementById('item')
+    );
+
+    nameAnswered(document.getElementById('quiz-submit'),
+                 document.getElementById('name')
     );
 </script>
 
