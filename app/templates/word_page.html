@@ -19,12 +19,12 @@
     <form action='{{ url_for('word_lookfor') }}', method="GET" enctype="multipart/form-data">
         {{ form.searching(placeholder='Search for a word!') }}
     </form>
-</div>
+</div><!--'word-searchbar'-->
     
 <!--Displays the word itself as a heading.-->
 <div class='word-title-background'>
     <p>{{word.word}}</p>
-</div>
+</div><!--'word-title-background'-->
 
 <!--Shows the definition of the word.-->
 <div class='word-definition'>
@@ -48,14 +48,14 @@
     <li>{{type}}<p>{{definition.definition}}</p></li>
 {% endfor %}
 </ol>
-</div>
+</div><!--'word-definition'-->
 
 <div class='word-content-background'>
     <div class='word-content-grid'>
         <!--Links the picture of the word. (placeholders for now)-->
         <div class='word-picture'>
             <img src = "{{word.picture}}" alt = "mga mukha nyo to mwuahaha"/>
-        </div>  
+        </div>  <!--'word-picture'-->
 
 
         <!--Shows the different forms of the word and the sentences using each form.-->
@@ -81,7 +81,7 @@
             <li>{{form}} ({{ type }})</li>
         {% endfor %}
         </ul>
-        </div>
+        </div><!--'word-form'-->
 
 
         <!--Shows the synonyms of the word.-->
@@ -94,7 +94,7 @@
             <li>{{synonym}}</li>
         {% endfor %}
         </ul>   
-        </div>
+        </div><!--'word-synonym'-->
 
 
         <!--Shows the collocations of the word.-->
@@ -107,7 +107,7 @@
                 <li>{{collocation}}</li>
             {% endfor %}
         </ul>
-        </div>
+        </div><!--'word-collocation'-->
 
         <div class='word-sentence'>
             <p>In a Sentence</p>
@@ -116,9 +116,9 @@
                     <li>{{ form.sentence }}</li>
                 {% endfor %}
             </ul>
-        </div>
-    </div>
-</div>
+        </div><!--'word-sentence'-->
+    </div><!--'word-content-grid'-->
+</div><!--'word-content-background'-->
 
 <!--Next word and Previous Word feature.-->
 <div class='word-nextprev'>
@@ -129,6 +129,6 @@
 {% if next_word != None %}
 <a href = {{ url_for('word_listed', word = next_word) }}><button>Next Word</button></a>
 {% endif %}
-</div>
+</div><!--'word-nextprev'-->
 
 {% endblock %}

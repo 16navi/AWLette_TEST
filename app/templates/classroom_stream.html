@@ -5,6 +5,8 @@
   const nav = document.getElementById('stream');
   nav.removeAttribute('href');
 
+  // for the small line under the classroom nav
+  // whenever this page is open
   nav.style.borderBottom = '2px solid #704d4a';
 
   function archiveQuiz(button, quiz) {
@@ -19,26 +21,6 @@
     };
     
     button.addEventListener('click', function() {
-      if (quiz.getAttribute('data-archived') == 'false') {
-        quiz.setAttribute('data-archived', 'true');
-        button.innerHTML = 'Unarchive';
-        button.style.backgroundColor = '#ff595e';
-        button.style.color = 'white';
-
-        archiveDict = {
-          'archive' : quiz.id.replace('a', '')
-        };
-
-        const xhttp = new XMLHttpRequest()
-        xhttp.onload = function() {
-          console.log(xhttp.responseText);
-        };
-        xhttp.open('POST', '{{ url_for('quiz_archiver') }}', true);
-        xhttp.setRequestHeader('Content-Type', 'application/json');
-        xhttp.send(JSON.stringify({archiveDict}))
-
-        button.stopPropagation();
-      };
       if (quiz.getAttribute('data-archived') == 'true') {
         quiz.setAttribute('data-archived', 'false');
         button.innerHTML = 'Archive';
@@ -56,6 +38,24 @@
         xhttp.open('POST', '{{ url_for('quiz_archiver') }}', true);
         xhttp.setRequestHeader('Content-Type', 'application/json');
         xhttp.send(JSON.stringify({archiveDict}));        
+      }
+      else if (quiz.getAttribute('data-archived') == 'false') {
+        quiz.setAttribute('data-archived', 'true');
+        button.innerHTML = 'Unarchive';
+        button.style.backgroundColor = '#ff595e';
+        button.style.color = 'white';
+
+        archiveDict = {
+          'archive' : quiz.id.replace('a', '')
+        };
+
+        const xhttp = new XMLHttpRequest()
+        xhttp.onload = function() {
+          console.log(xhttp.responseText);
+        };
+        xhttp.open('POST', '{{ url_for('quiz_archiver') }}', true);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(JSON.stringify({archiveDict}))
       };
     });
   };
@@ -93,7 +93,7 @@
           {{ quiz.name }}
         </a>
         <button class='teacher-quiz-archive' id='b{{ quiz.id }}'>Archive</button>
-      </div>
+      </div><!--'teacher-quiz'-->
 
     <script>
       archiveQuiz(document.getElementById('b{{ quiz.id }}'),
@@ -112,8 +112,8 @@
 
 {% endif %}
 
-</div>
+</div><!--'stream-quiz-container'-->
 
-</div>
+</div><!--'classroom-container'-->
 
 {% endblock %}

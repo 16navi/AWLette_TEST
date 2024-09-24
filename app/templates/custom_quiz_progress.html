@@ -30,7 +30,7 @@
         {% else %}
             custquiz-answered
         {% endif %}
-        ' id='{{ tracker.student }}'>{{ tracker.student }} - {{ ((tracker.score|score_count / tracker.quiz.item) * 100) |round(2) }}%</div>
+        ' id='{{ tracker.student }}'>{{ tracker.student }} - {{ ((tracker.score|score_count / tracker.quiz.item) * 100) |round(2) }}%</div><!--'students'-->
     {% endfor %}
 
     {% if not_answered %}
@@ -38,8 +38,8 @@
             <div class='students custquiz-not-answered' id='{{student}}'>{{ student }}</div>
         {% endfor %}
     {% endif %}
-    </div>
-</div>
+    </div><!--'custquiz-progress-grid'-->
+</div><!--'custquiz-progress-background'-->
 
 <script>
     searchFor(document.getElementById('search'),

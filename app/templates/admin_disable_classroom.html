@@ -30,7 +30,20 @@
         };
 
       button.addEventListener('click', function() {
-        if (classroom.getAttribute('data-disabled') == 'false') {
+        if (classroom.getAttribute('data-disabled') == 'true') {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable Classroom';
+            classroom.setAttribute('data-disabled', 'false');
+
+            disableDict = {
+                'enable' : classroom.id.replace('a', '')
+            };
+
+            xhttp.open('POST', '{{ url_for('classroom_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+        }
+        else if (classroom.getAttribute('data-disabled') == 'false') {
             button.style.backgroundColor = '#ff595e';
             button.innerHTML = 'Enable Classroom';
             classroom.setAttribute('data-disabled', 'true');
@@ -43,20 +56,6 @@
             xhttp.open('POST', '{{ url_for('classroom_disabler') }}', true);
             xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(JSON.stringify({disableDict}));
-
-            button.stopPropagation();
-        } else if (classroom.getAttribute('data-disabled') == 'true') {
-            button.style.backgroundColor = '';
-            button.innerHTML = 'Disable Classroom';
-            classroom.setAttribute('data-disabled', 'false');
-
-            disableDict = {
-                'enable' : classroom.id.replace('a', '')
-            };
-
-            xhttp.open('POST', '{{ url_for('classroom_disabler') }}', true);
-            xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send(JSON.stringify({disableDict}));
         };
       });  
     };
@@ -64,7 +63,7 @@
 
 <div class='disclass-title-background'>
     <p>Disable a classroom</p>
-</div>
+</div><!--'disclass-title-background'-->
 
 <div class='disclass-background'>
     <input class='disclass-search' id='search' form='none' type='text' placeholder='Search for a classroom.'>
@@ -80,7 +79,7 @@
                 data-disabled='false'
             {% endif %}>
                 <span>{{classroom.id}} | {{ classroom }}</span><button id='disable{{ loop.index }}'>Disable classroom</button>
-            </div>
+            </div><!--'disclass-classrooms'-->
 
             <script>
                 disableclassroom(document.getElementById('disable{{ loop.index }}'),
@@ -89,9 +88,9 @@
 
         {% endfor %}
 
-    </div>
+    </div><!--'disclass-classrooms-grid'-->
 
-</div>
+</div><!--'disclass-background'-->
 
 <script>
     searchFor(document.getElementById('search'),

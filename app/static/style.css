@@ -28,6 +28,8 @@ body {
 
 main {
     margin: 49px 0px 0px 0px;
+    /* this is to ensure that the height of the screen is kept maximum 
+    for the footer to be kept at the bottom of the screen, always */
     min-height: calc(100vh - 149px);
     display: grid;
     padding-block: 2.5%;
@@ -89,6 +91,7 @@ header {
     margin: auto;
     position: relative;
     top: 50%;
+    /* this is to center the icon since the position is set to relative */
     transform: translateY(-50%);
     z-index: 1;
 }
@@ -183,8 +186,6 @@ header .icon #logo {
 .about-message {
     margin-inline: 3%;
 }
-
-
 
 /* Classroom buttons */
 .home-classroom-background {
@@ -475,13 +476,20 @@ header .icon #logo {
 }
 
 .deets-prog-pie::before {
+    /* a before child made to become the pie chart itself */
     /* border: 1px solid black; */
     align-self: center;
     justify-self: center;
     content: '';
     width: 80%;
     height: 80%;
+    /* to turn this child into a cirlce */
     border-radius: 50%;
+    /* used conic gradient with the variable for --color coming from
+    the style attribute in the template */
+    /* as well as the --percentage and --borderthickness */
+    /* the background-image attribute creates a whole circle, while the mask atribute
+    turns this circle into a torus */
     background-image: conic-gradient(var(--color), calc(var(--percentage)*1%), #0000 0);
     mask:radial-gradient(farthest-side,#0000 calc(99% - var(--border-thickness)),#000 calc(100% - var(--border-thickness)));
 }
@@ -618,6 +626,7 @@ header .icon #logo {
     box-shadow: 2px 1px 3px #7a7a7a;
     padding: 10px;
 }
+
 /* Sublist chooser for quizzes */
 .quiz-sublist-title-background {
     background-color: #fdf4ca;

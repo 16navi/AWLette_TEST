@@ -5,6 +5,8 @@
     const nav = document.getElementById('people');
     nav.removeAttribute('href');
 
+    // for having the line under the classroom nav 
+    // whenever this page is open
     nav.style.borderBottom = '2px solid #704d4a';
 
     function searchFor(searchbar, students) {
@@ -33,13 +35,13 @@
                     <a class='students-link' id='{{ student }}' href='{{ url_for('student_progress', classroom_id=classroom.id ,users_id=student.id ) }}'>
                         <div class='teacher-prog-students'>
                                 {{ student }}   
-                        </div>
+                        </div><!--'teacher-prog-students'-->
                     </a>
 
                 {% endfor %}
-            </div>
-        </div>
-    </div>
+            </div><!--'teacher-prog-students-container'-->
+        </div><!--'teacher-prog-students-background'-->
+    </div><!--'teacher-prog-container'-->
 
     <script>
         searchFor(document.getElementById('search'),
@@ -50,16 +52,16 @@
         <div class='people-container'>
             <div class='people-teacher'>
                 Teacher: {{ teacher }}
-            </div>
+            </div><!--'people-teacher'-->
 
             {% for student in classroom.student %}
                 <div class='people-students'>
                     {{ student }}
-                </div>
+                </div><!--'people-students'-->
             {% endfor %}
-        </div>
+        </div><!--'people-container'-->
 
     {% endif %}
-</div>
+</div><!--'classroom-container'-->
 
 {% endblock %}

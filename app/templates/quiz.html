@@ -4,7 +4,9 @@
 <!-- Scripting -->
 <script>
 
+    // this will hold the correct ids of the words
     var correctList = [];
+    // dict to be posted later
     var correctItem = {
             'quiz' : correctList,
             'sublist' : {{ sublist|tojson }}
@@ -17,7 +19,13 @@
             classmate.isCorrect = false;
 
             classmate.addEventListener('click', function(){
-                if (classmate.firstClick == false) {
+                if (classmate.firstClick == true) {
+                    classmate.isInput = false;
+                    classmate.firstClick = false;
+                    console.log('You took your input back.');
+                    classmate.style.backgroundColor = '';
+                }
+                else if (classmate.firstClick == false) {
                     console.log(`You're input is now button ${classmate.id}`);
                     for (let i of classmates) {
                         i.style.backgroundColor = '';
@@ -27,14 +35,6 @@
                     classmate.isInput = true;
                     classmate.firstClick = true;
                     classmate.style.backgroundColor = '#a3a3a3';
-                    classmate.stopImmediatePropagation();
-                };
-                if (classmate.firstClick == true) {
-                    classmate.isInput = false;
-                    classmate.firstClick = false;
-                    console.log('You took your input back.');
-                    classmate.style.backgroundColor = '';
-                    classmate.stopImmediatePropagation();
                 };
             });
         });
@@ -94,12 +94,11 @@
     };
 </script>
 
-<!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
 <div class='quiz-sublist-title-background'>
     <p>Choose a sublist:</p>
-</div>
+</div><!--'quiz-sublist-title-background'-->
 
 <form action='{{url_for('quiz')}}' method='GET'>
     <div class='quiz-sublist-background'>
@@ -107,14 +106,12 @@
             <button class='quiz-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
-        </div>
-    </div>
+        </div><!--'quiz-sublist-wrapper'-->
+    </div><!--'quiz-sublist-background'-->
 </form>
 
 
 {% endif %}
-
-<!-- When 'sublist' has value -->
 {% if sublist %}
 
 <div class='quiz-background'>
@@ -140,7 +137,7 @@
                 <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
 
             {% endfor %}
-            </div>
+            </div><!--'quiz-choices-container'-->
 
             <script>
                 chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -155,7 +152,7 @@
                 <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
 
             {% endfor %}
-            </div>
+            </div><!--'quiz-choices-container'-->
 
             <script>
                 chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -170,7 +167,7 @@
                 <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
 
             {% endfor %}
-            </div>
+            </div><!--'quiz-choices-container'-->
 
             <script>
                 chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -187,7 +184,7 @@
             <button class='quiz-choices' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
 
             <button class='quiz-choices' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
-            </div>
+            </div><!--'quiz-choices-container'-->
 
             <script>
                 chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -202,13 +199,13 @@
                 <button class='quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
 
             {% endfor %}
-            </div>
+            </div><!--'quiz-choices-container'-->
 
             <script>
                 chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
             </script>
         {% endif %}
-        </div>
+        </div><!--'quiz-question-container'-->
     {% endfor %}
 
     <button class='quiz-submit' id='submit' type='button' onclick='rightOrWrong(
@@ -216,7 +213,7 @@
         document.querySelectorAll("p[data-question]")
     )'>Submit</button>
 
-</div>
+</div><!--'quiz-background'-->
 
 {% endif %}
 

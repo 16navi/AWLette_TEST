@@ -2,6 +2,8 @@
 {% block content %}
 
 <script>
+    // sets only the display to 'none' or '' for better visibility
+    // when searching
     function searchFor(searchbar, accounts) {
         searchbar.addEventListener('keyup', function() {
             accounts.forEach(function(account) {
@@ -30,7 +32,20 @@
         };
 
       button.addEventListener('click', function() {
-        if (account.getAttribute('data-disabled') == 'false') {
+        if (account.getAttribute('data-disabled') == 'true') {
+            button.style.backgroundColor = '';
+            button.innerHTML = 'Disable Account';
+            account.setAttribute('data-disabled', 'false');
+
+            disableDict = {
+                'enable' : account.id.replace('a', '')
+            };
+
+            xhttp.open('POST', '{{ url_for('account_disabler') }}', true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify({disableDict}));
+        }
+        else if (account.getAttribute('data-disabled') == 'false') {
             button.style.backgroundColor = '#ff595e';
             button.innerHTML = 'Enable Account';
             account.setAttribute('data-disabled', 'true');
@@ -43,20 +58,6 @@
             xhttp.open('POST', '{{ url_for('account_disabler') }}', true);
             xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(JSON.stringify({disableDict}));
-
-            button.stopPropagation();
-        } else if (account.getAttribute('data-disabled') == 'true') {
-            button.style.backgroundColor = '';
-            button.innerHTML = 'Disable Account';
-            account.setAttribute('data-disabled', 'false');
-
-            disableDict = {
-                'enable' : account.id.replace('a', '')
-            };
-
-            xhttp.open('POST', '{{ url_for('account_disabler') }}', true);
-            xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send(JSON.stringify({disableDict}));
         };
       });  
     };
@@ -64,7 +65,7 @@
 
 <div class='disacc-title-background'>
     <p>Disable an account</p>
-</div>
+</div><!--'disacc-title-background'-->
 
 <div class='disacc-background'>
     <input class='disacc-search' id='search' form='none' type='text' placeholder='Search for an account.'>    
@@ -78,15 +79,15 @@
             data-disabled='false'
         {% endif %}>
             <span>{{user.id}} | {{ user }}</span><button id='disable{{ loop.index }}'>Disable Account</button>
-        </div>
+        </div><!--'accounts'-->
         <script>
             disableAccount(document.getElementById('disable{{ loop.index }}'),
                            document.getElementById('a{{ user.id }}'))
         </script>
     {% endfor %}
-    </div>
+    </div><!--'disacc-accounts-grid'-->
 
-</div>
+</div><!--'disacc-background'-->
 
 <script>
     searchFor(document.getElementById('search'),

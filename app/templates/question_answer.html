@@ -4,6 +4,7 @@
 
 <!-- Scripting -->
 <script>
+    // dict to be posted later for progtrack
     var correctItem = {
         'qna' : '',
         'sublist' : {{ sublist|tojson }}
@@ -53,13 +54,11 @@
         });
     };
 </script>
-
-<!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
 <div class='quiz-sublist-title-background'>
     <p>Choose a sublist:</p>
-</div>
+</div><!--'quiz-sublist-title-background'-->
 
 <form action='{{url_for('question_answer')}}' method='GET'>
     <div class='quiz-sublist-background'>
@@ -67,14 +66,12 @@
             <button class='quiz-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
-        </div>
-    </div>
+        </div><!--'quiz-sublist-wrapper'-->
+    </div><!--'quiz-sublist-background'-->
 </form>
 
 
 {% endif %}
-
-<!-- When 'sublist' has value -->
 {% if sublist %}
 
     <div class='qna-background'>
@@ -100,7 +97,7 @@
                                 document.querySelectorAll('.qna-choices'))
             </script>
 
-            </div>
+            </div><!--'qna-choices-container'-->
 
         {% elif question_type == 2 %}
             <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is the definition of {{ question_word }}?</p>
@@ -119,7 +116,7 @@
                                 document.querySelectorAll('.qna-choices'))
             </script>
 
-            </div>
+            </div><!--'qna-choices-container'-->
 
         {% elif question_type == 3 %}
             <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is a synonym for {{ question_word }}?</p>
@@ -138,7 +135,7 @@
                                 document.querySelectorAll('.qna-choices'))
             </script>
             
-            </div>
+            </div><!--'qna-choices-container'-->
 
         <!-- This type of question will require a different
         function for right or wrong -->
@@ -157,7 +154,7 @@
                                 document.querySelectorAll('.qna-choices'))
             </script>
             
-            </div>
+            </div><!--'qna-choices-container'-->
 
         {% elif question_type == 5 %}
             <p class='qna-question' id='a{{ question_word.id }}' data-correct_id='{{ question_word.id }}'>What is a collocation for {{ question_word }}?</p>
@@ -176,13 +173,13 @@
                                 document.querySelectorAll('.qna-choices'))
             </script>
             
-            </div>
-    
-    {% endif %}
-                    
-    </div>
+            </div><!--'qna-choices-container'-->
 
-</div>
+    {% endif %}
+
+    </div><!--'qna-question-container'-->
+
+</div><!--'qna-background'-->
 
 {% endif %}
 

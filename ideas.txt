@@ -1,16 +1,5 @@
 For Fixing:
-1. error handling make it NOT if statements
-
-
-fix stopImmediatePropagation errors:
-    * across all pages that have it.
-
+1. create classroom template NO CSS YET WTFFFFF
 
 nielsen's heuristics
-
-match - getting the wrong answer:
-    * instead of nothing, wrong answers should flash red and then quickly fade away.
-    
-THINGS I DID THAT WERE APPARENTLY AGAINST THE CONVENTION
-1. HTML id's are supposed to look like "lorem-ipsum"---not underscores. ://///
 

@@ -1,7 +1,7 @@
 from app.routes import db
 from flask_login import UserMixin
 
-# reset auto-increment: UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'ProgTrack';
+# reset auto-increment: UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'table_name';
 
 WordSynonym = db.Table('WordSynonym',
                        db.Column('word_id', db.Integer, db.ForeignKey('Words.id')),

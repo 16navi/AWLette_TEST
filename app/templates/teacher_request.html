@@ -2,6 +2,8 @@
 {% block content %}
 
 <script>
+    // these variables are for making the 'no requesting
+    // teachers' message to pop up
     removeCount = 0;
     requestAmount = {{ requesting_teachers|length|tojson }};
 
@@ -36,6 +38,7 @@
             noRequestMessage.style.display = '';
         };
     };
+
     function rejectRequest(request) {
         removeCount++;
         grantDict = {
@@ -59,7 +62,7 @@
 
 <div class='reqteach-title-background'>
     <p>Grant teacher roles</p>
-</div>
+</div><!--'reqteach--title-background'-->
 
 <div class='reqteach-background'>
 
@@ -81,11 +84,11 @@
                 <span>{{ teacher.id }} | {{ teacher }}</span>
                 <button onclick='grantRequest(document.getElementById({{ teacher.id }}))' id='grant{{ loop.index  }}'>Grant</button>
                 <button onclick='rejectRequest(document.getElementById({{ teacher.id }}))' id='reject{{ loop.index }}'>Reject</button>
-            </div>
+            </div><!--'reqteach-accounts'-->
 
         {% endfor %}
 
-        </div>
+        </div><!--'reqteach-accounts-grid'-->
 
     <script>
         searchFor(document.getElementById('search'),
@@ -94,6 +97,6 @@
 
     {% endif %}
 
-</div>
+</div><!--'reqteach-background'-->
 
 {% endblock %}

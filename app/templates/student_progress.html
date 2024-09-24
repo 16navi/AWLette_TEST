@@ -11,6 +11,8 @@
                 button.isClicked = 1;
                 button.style.backgroundColor = '#b3b3b3';
                 for (let div of sublist) {
+                    // did a split here because the divs have two classes
+                    // but i only needed to check the second one
                     if (button.id == div.className.split(' ')[1]) {
                         div.style.display = '';
                     } else {
@@ -51,12 +53,21 @@
         <button class='student-button' id='sublist1'>Sublist 1</button>
         <button class='student-button' id='sublist2'>Sublist 2</button>
         <button class='student-button' id='sublist3'>Sublist 3</button>
-    </div>
-</div>
+    </div><!--'student-sublist'-->
+</div><!--'student-sublist-container'-->
+
+<!-- comp is a context processor function located inside routes -->
 
 {% with progtrack1 = comp(user.progtrack, 1)[0],
         progtrack2 = comp(user.progtrack, 2)[0],
         progtrack3 = comp(user.progtrack, 3)[0] %}
+
+<!-- The divs here are repeated for the purpose of showing all the 
+ progress across all sublists -->
+
+<!-- The style attribute inside each div is used in css as css variables
+ to allow for customisation of each graph to be done inside this div rather
+ than as seperate css -->
 
 <div class='student-prog-background'>
     <div class='student-prog-grid'>

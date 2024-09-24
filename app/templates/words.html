@@ -6,12 +6,12 @@
     <form action='{{ url_for('word_lookfor') }}', method="GET" enctype="multipart/form-data">
     {{ form.searching(placeholder='Search for a word!') }}
 </form>
-</div>
+</div><!--'allwords-searchbar'-->
 
 <div class='allwords-container'>
     {% for word in words %}
         <a href = "words/{{word}}"><div class='allwords-words'>{{word.word}}</div></a>
     {% endfor %}
-</div>
+</div><!--'allwords-container'-->
 
 {% endblock %}

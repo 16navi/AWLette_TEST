@@ -23,30 +23,14 @@
         // adds an event listener that listens for a 'keyup' event
         // ('keyup' is when a key pressed is released)
         input.addEventListener('keyup', function(event) {
-
-            // if the key is 'Enter'...
             if (event.key === 'Enter') {
-
-                // ...do the following:
-                // if the lowercase value of 'input' is equal to the 
-                // lowercase inner HTML of 'answer'...
                 if (input.value.toLowerCase() == answer.value.toLowerCase()) {
-
-                    // logs in console
                     console.log('You got it!');
-
-                    // sets the 'readonly' attribute of 'input' to true
                     input.setAttribute('readonly', 'true');
-
-                    // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
-
-                    // increments 1 to 'correctItems'
                     count++;
                     correctItem['form'] = answer.getAttribute('data-form_id');
-                    console.log(correctItem['form']); //  DEBUG
 
-                    // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
                     xhttp.onload = function () {
                         console.log(xhttp.responseText);
@@ -54,20 +38,12 @@
                     xhttp.open('POST', '{{ url_for('progress_tracker') }}', true);
                     xhttp.setRequestHeader('Content-Type', 'application/json');
                     xhttp.send(JSON.stringify({correctItem}));
-
-                    // if correctItems is equal to 'blankAmount', reload page
                     if (count == blankAmount) {
                         location.reload();
                     };
                 }
-
-                // else, if they are not equal...
                 else if (input.value.toLowerCase() != answer.value.toLowerCase()) {
-
-                    // ...logs in console
                     console.log('Wrong answer!');
-
-                    // makes bg color of 'input' red
                     input.style.backgroundColor = '#ff7f7f';
                 }
             }
@@ -75,7 +51,6 @@
     };
 </script>
 
-<!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
 <div class='quiz-sublist-title-background'>
@@ -95,7 +70,6 @@
 
 {% endif %}
 
-<!-- When 'sublist' has value -->
 {% if sublist %}
 <div class='form-background'>
 
@@ -153,7 +127,7 @@
 {% endfor %}
 </table>
 
-</div>
+</div><!--'form-background'-->
 {% endif %}
 
 {% endblock %}

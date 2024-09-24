@@ -24,8 +24,8 @@
           {% for classroom in classrooms %}
           <a href='classroom/{{ classroom.id }}'><div><p class='home-classroom-title'>{{ classroom }}</p><p class='home-classroom-subtitle'>{{ classroom.description }}</p></div></a>
           {% endfor %}
-        </div>
-      </div>
+        </div><!--'home-classroom-buttons'-->
+      </div><!--'home-classroom-background'-->
       {% endif %}
     {% else %}
       {% set student_classrooms =  current_user.enrolment|enabled_only %}
@@ -36,8 +36,8 @@
           {% for classroom in student_classrooms %}
           <a href='/classroom/{{ classroom.id }}'><div><p class='home-classroom-title'>{{ classroom }}</p><p class='home-classroom-subtitle'>{{ classroom.description }}</p></div></a>
           {% endfor %}
-        </div>
-      </div>
+        </div><!--'home-classroom-buttons'-->
+      </div><!--'home-classroom-background'-->
       {% endif %}
 
     {% endif %}
@@ -57,8 +57,8 @@
         {% elif current_user.is_teacher == 1 %}
         <a href='{{ url_for('create_classroom') }}'><div><p class='home-main-title'>Create a classroom.</p><p class='home-main-subtitle'>share the code to your students for them to join.</p></div></a>
         {% endif %}
-      </div>
-    </div>
+      </div><!--'home-main-buttons'-->
+    </div><!--'home-main-background'-->
 
 {% endblock %}
 

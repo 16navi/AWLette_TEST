@@ -2,10 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, TextAreaField, IntegerField, SelectMultipleField, widgets, HiddenField
 from wtforms.validators import InputRequired, Length, Optional, NumberRange, ValidationError
 
-
-# Add a class for the different forms that
-# we will use---as done on Mr. D's example.
-
+# this is used by the form 'Create_Quiz'
 types = [
     (1, 'given the definition, answer with the word.'),
     (2, 'given the word, answer with the definition.'),
@@ -13,18 +10,6 @@ types = [
     (4, 'given the word, answer with what figure of speech it is (noun, adjective, verb).'),
     (5, 'given the word, answer with its collocation.'),
 ]
-
-
-# class ChooseOne():
-#     def __init__(self, message=None):
-#         if not message:
-#             message = 'Choose at least one.'
-#         self.message = message
-    
-#     def __call__(self, form, field):
-#         if not form.data:
-#             print('hi!') #  DEBUG
-#             raise ValidationError(self.message)
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -56,7 +41,8 @@ class Enrol(FlaskForm):
     code = StringField('code', validators=[InputRequired()])
 
 
-# Should probably take off validator here since checkboxes are being handled by js
+# Should probably take off validator here since checkboxes are 
+# being validated already with js, as well as word pool
 class Create_Quiz(FlaskForm):
     def choose_one(form, field):
         if len(field.data) == 0:

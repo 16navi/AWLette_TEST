@@ -18,6 +18,7 @@ def decrypt(password):
         decpass += decch
     return decpass[::-1]
 
+
 def generate_code(n):
     my_list = []
     my_list.extend(''.join(random.choice(string.ascii_uppercase) for _ in range(n)) + ''.join(random.choice(string.digits) for _ in range(n)))

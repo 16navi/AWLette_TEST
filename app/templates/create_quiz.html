@@ -54,15 +54,6 @@
         buttons.forEach(function(button) {
             button.clickCount = 0
             button.addEventListener('click', function(event){
-                if (button.clickCount == 0) {
-                    button.clickCount = 1;
-                    poolAmount++;
-                    wordpool.setAttribute('data-amount', poolAmount.toString());
-                    button.style.backgroundColor = '#90ee90';
-                    selection.push(Number(button.id.replace('a', '')));
-                    wordpool.value = JSON.stringify(selection);
-                    this.stopPropagation();
-                };
                 if (button.clickCount == 1) {
                     button.clickCount = 0;
                     poolAmount--;
@@ -70,6 +61,14 @@
                     button.style.backgroundColor = '';
                     remove = selection.indexOf(button.id.replace('a', ''));
                     selection.splice(remove, 1);
+                    wordpool.value = JSON.stringify(selection);
+                }
+                else if (button.clickCount == 0) {
+                    button.clickCount = 1;
+                    poolAmount++;
+                    wordpool.setAttribute('data-amount', poolAmount.toString());
+                    button.style.backgroundColor = '#90ee90';
+                    selection.push(Number(button.id.replace('a', '')));
                     wordpool.value = JSON.stringify(selection);
                 };
             });
@@ -94,6 +93,9 @@
         });
     };
 
+    // for checking whether items and name fields are already answered
+    // before submitting the form, since the method used to submit the
+    // form with the functions 'wordpoolFilled' and 'chooseOne' is 'form.submit()'
     function itemAnswered(submit, item) {
         submit.addEventListener('mousedown', function() {
             if (5 <= item.value <= 60) {
@@ -124,8 +126,8 @@
             <button class='create-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
             <button class='create-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
             <button class='create-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
-        </div>
-    </div>
+        </div><!--'create-sublist-background'-->
+    </div><!--'create-sublist-wrapper'-->
 </form>
 
 {% else %}
@@ -136,12 +138,12 @@
         <div class='create-name-container'>
             <h4>What will your quiz be called?</h4>
             <p>{{ form.name(placeholder='e.g. My Quiz') }}</p>
-        </div>
+        </div><!--'create-name-container'-->
 
         <div class='create-items-container'>
             <h4>How many items in the quiz?</h4>
             <p>{{ form.item(placeholder='at least 5.', style='width: 200px') }}</p>
-        </div>
+        </div><!--'create-items-container'-->
 
         <div class='create-type-container'>
             <h4>Which type of questions?</h4>
@@ -149,7 +151,7 @@
                 <p>{{ type(class='question_type') }}{{ type.label }}</p>
             {% endfor %}
             <span class='create-type-error create-error'>Choose at least one type.</span>
-        </div>
+        </div><!--'create-type-container'-->
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -167,17 +169,17 @@
 
             {{ form.word_pool }}
             <!-- search bar -->
-             <div id='word-selection' style='background-color: #b3b3b3; margin: 10px; padding: 10px; border-radius: 2px'>
+            <div id='word-selection' style='background-color: #b3b3b3; margin: 10px; padding: 10px; border-radius: 2px'>
             <p><input id='search' form='none' type='text' placeholder='Search for a word.'></p>
 
             {% for word in words %}
                 <button form='none' class='words' id='a{{ word.id }}'>{{ word }}</button>
             {% endfor %}
-            </div>
+            </div><!--'word-selection'-->
 
             <span class='create-words-error create-error'>Choose at least five words.</span>
 
-        </div>
+        </div><!--'create-words-container'-->
 
         <script>
             searchFor(document.getElementById('search'),
@@ -189,7 +191,7 @@
             );
         </script>
 
-    </div>
+    </div><!--'create-form-container'-->
     <div class='create-submit-container'>
     <input id='quiz-submit' type='submit' value='Create Quiz'>
     </div>
@@ -220,6 +222,6 @@
 
 {% endif %}
 
-</div>
+</div><!--'classroom-container'-->
 
 {% endblock %}

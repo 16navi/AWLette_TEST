@@ -18,7 +18,13 @@
             classmate.isCorrect = false;
 
             classmate.addEventListener('click', function(){
-                if (classmate.firstClick == false) {
+                if (classmate.firstClick == true) {
+                    classmate.isInput = false;
+                    classmate.firstClick = false;
+                    console.log('You took your input back.');
+                    classmate.style.backgroundColor = '';
+                }
+                else if (classmate.firstClick == false) {
                     console.log(`You're input is now button ${classmate.id}`);
                     for (let i of classmates) {
                         i.style.backgroundColor = '';
@@ -28,14 +34,6 @@
                     classmate.isInput = true;
                     classmate.firstClick = true;
                     classmate.style.backgroundColor = '#a3a3a3';
-                    classmate.stopImmediatePropagation();
-                };
-                if (classmate.firstClick == true) {
-                    classmate.isInput = false;
-                    classmate.firstClick = false;
-                    console.log('You took your input back.');
-                    classmate.style.backgroundColor = '';
-                    classmate.stopImmediatePropagation();
                 };
             });
         });
@@ -118,7 +116,7 @@
                     <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word }}</button>
     
                 {% endfor %}
-                </div>
+                </div><!--'custom-quiz-choices-container'-->
 
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -133,7 +131,7 @@
                     <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.definition[0] }}</button>
     
                 {% endfor %}
-                </div>
+                </div><!--'custom-quiz-choices-container'-->
     
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -148,7 +146,7 @@
                     <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>{{ choice_word.synonym[0] }}</button>
     
                 {% endfor %}
-                </div>
+                </div><!--'custom-quiz-choices-container'-->
     
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -165,7 +163,7 @@
                 <button class='custom-quiz-choices' id='b2{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>adjective</button>
     
                 <button class='custom-quiz-choices' id='b3{{ container_loop_index }}' data-choice='{{ container_loop_index }}'>verb</button>
-                </div>
+                </div><!--'custom-quiz-choices-container'-->
     
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
@@ -180,13 +178,13 @@
                     <button class='custom-quiz-choices' id='b{{ choice_word.id }}{{ container_loop_index }}' data-choice='{{ container_loop_index }}'> {{ choice_word.collocation[0] }}</button>
     
                 {% endfor %}
-                </div>
+                </div><!--'custom-quiz-choices-container'-->
     
                 <script>
                     chooseAnswer(document.querySelectorAll("button[data-choice='{{ container_loop_index }}']"))
                 </script>
             {% endif %}
-            </div>
+            </div><!--'custom-question-container'-->
         {% endfor %}
     
         <button class='custom-quiz-submit' id='submit' type='button' onclick='rightOrWrong(
@@ -195,6 +193,6 @@
             document.getElementById("submit")
         )'>Submit</button>
 
-    </div>
+    </div><!--'custom-quiz-background'-->
 
 {% endblock %}

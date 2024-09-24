@@ -16,30 +16,14 @@
         // adds an event listener that listens for a 'keyup' event
         // ('keyup' is when a key pressed is released)
         input.addEventListener('keyup', function(event) {
-
-            // if the key is 'Enter'...
             if (event.key === 'Enter') {
-
-                // ...do the following:
-                // if the lowercase value of 'input' is equal to the 
-                // lowercase inner HTML of 'answer'...
                 if (input.value.toLowerCase() == answer.innerHTML.toLowerCase()) {
-
-                    // logs in console
                     console.log('You got it!');
-
-                    // sets the 'readonly' attribute of 'input' to true
                     input.setAttribute('readonly', 'true');
-
-                    // makes the bg color of 'input' green
                     input.style.backgroundColor = '#90ee90';
 
-                    // appends '1' to 'count'
                     count++;
                     correctItem['fill'] = answer.getAttribute('data-form_id');
-                    console.log(correctItem['fill']); //  DEBUG
-
-                    // using AJAX, use an XMLHttpRequest() to pass the id
                     const xhttp = new XMLHttpRequest();
                     xhttp.onload = function () {
                         console.log(xhttp.responseText);
@@ -48,19 +32,13 @@
                     xhttp.setRequestHeader('Content-Type', 'application/json');
                     xhttp.send(JSON.stringify({correctItem}));
 
-                    // reloads page if 'correctItems' has 5 items
                     if (count == 5) {
                         location.reload();
                     };
                 }
 
-                // else, if they are not equal...
                 else if (input.value.toLowerCase() != answer.innerHTML.toLowerCase()) {
-
-                    // ...logs in console
                     console.log('Wrong answer!');
-
-                    // makes bg color of 'input' red
                     input.style.backgroundColor = '#ff7f7f';
                 };
             };
@@ -68,12 +46,11 @@
     };
 </script>
 
-<!-- While there is no value for 'sublist' -->
 {% if not sublist %}
 
 <div class='quiz-sublist-title-background'>
     <p>Choose a sublist:</p>
-</div>
+</div><!--'quiz-sublist-title-background'-->
 
 <form action='{{url_for('fill_in_the_blank')}}' method='GET'>
     <div class='quiz-sublist-background'>
@@ -81,19 +58,16 @@
             <button class='quiz-sublist-button' name='sublist' type='submit' value='1'>Sublist 1</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='2'>Sublist 2</button>
             <button class='quiz-sublist-button' name='sublist' type='submit' value='3'>Sublist 3</button>
-        </div>
-    </div>
+        </div><!--'quiz-sublist-wrapper'-->
+    </div><!--'quiz-sublist-background'-->
 </form>
 {% endif %}
 
-<!-- When 'sublist' has value -->
 {% if sublist %}
 <div class='fill-background'>
 
 <p>Fill in the blank with the correct word.</p>
 
-<!-- List the forms in a seperate table as choices for 
- filling in the blanks in the sentence -->
 <table class='fill-table'>
     <tr>
     {% for form in random_forms|shuffle %}
@@ -102,7 +76,6 @@
     </tr>
 </table>
 
-<!-- Lists the sentences with input fields in between -->
 <table class='fill-table'>
     <tr>
         <th>Fill in the Blanks</th>
@@ -121,48 +94,28 @@
 
                 <!-- For loop to add each 'word' of the sentence to their respective blocks -->
                 {% for word in (form.sentence|lower).split() %}
-
-                    <!-- if 'word' is not the same as 'form' and the last item in sentence_blanked1
-                     is not False, do the following -->
                     {% if word|lower != form.form|lower and sentence_blanked1[-1] != False %}
                         {{ sentence_blanked1.append(word) or "" }}
 
-                    <!-- Else, if 'word' is the same as 'form' -->
                     {% elif word|lower == form|lower %}
                         {{ sentence_blanked1.append(False) or "" }}
                     {% endif %}
 
-                    <!-- If 'word' is not the same as 'form' and the last item in sentence_blanked1
-                     is False, do the following -->
                     {% if word|lower != form.form|lower and sentence_blanked1[-1] == False %}
                         {{ sentence_blanked2.append(word) or "" }}
                     {% endif %}
                 {% endfor %}
 
-                <!-- Remove the False item in the list -->
                 {{ sentence_blanked1.pop(-1) or "" }}
 
                 {{ sentence_blanked1|join(' ')|capitalize }} 
                 <input class='fill-input' type='text' id='a{{ loop.index }}'></input> 
                 {{ sentence_blanked2|join(' ') }}
 
-                <!-- Call the function -->
                 <script>
                     rightOrWrong(   document.getElementById('a{{ loop.index }}'),
                                     document.getElementById('b{{ random_forms.index(form) }}'));
                 </script>
-                <!-- Change the sentences where there are suffixes
-                 and prefixes to the word because it doesn't work
-                well with the code -->
-
-                <!-- Look for a way to see if 'data-correct' is set 
-                to 'true' for all input fields, then reload the page.
-                (MutationObserver, async and await, etc.) -->
-
-                <!-- Look for a way to not repeat the sentences: this means
-                to not repeat the random.randint() integers passed.
-                (use random.shuffle() to shuffle a list containing integers 1-180,
-                then use list.pop to remove chosen integers, rinse and repeat) -->
             </td>
     </tr>
     {% endfor %}
@@ -170,6 +123,6 @@
 
 {% endif %}
 
-</div>
+</div><!--'fill-background'-->
 
 {% endblock %}
