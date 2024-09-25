@@ -809,9 +809,9 @@ def fill_in_the_blank():
     # shows up after opening every quiz once. This is present in all other
     # quiz types as well.
     sublist = request.args.get('sublist')
+    words = models.Words.query.filter_by(sublist=sublist).all()
     random_forms = []
-    if sublist:
-        words = models.Words.query.filter_by(sublist=sublist).all()
+    if words:
         all_forms = []
         for word in words:
             add = [word.form[0],
@@ -823,6 +823,8 @@ def fill_in_the_blank():
         # from the same word because, ultimately, these forms
         # are unique words as well.
         random_forms = random.sample(all_forms, 5)
+    else:
+        sublist = None
 
     return render_template('fill_in_the_blank.html',
                            sublist=sublist,
@@ -832,6 +834,7 @@ def fill_in_the_blank():
 @app.route('/form', methods=['GET'])
 def form():
     sublist = request.args.get('sublist')
+    words = models.Words.query.filter_by(sublist=sublist).all()
 
     # 'random_forms_main' is a nested list that will contain
     # 'random_forms_sublist'.
@@ -839,8 +842,7 @@ def form():
     random_blank_main = []
     random_blank_amount = 0
 
-    if sublist:
-        words = models.Words.query.filter_by(sublist=sublist).all()
+    if words:
         random_words = random.sample(words, 5)
 
         # for deciding which 'form' becomes blank
@@ -881,6 +883,8 @@ def form():
             # for each three-item row, there is a corresponding three-item
             # list of words all nested in a '..._main' list.
             random_forms_sublist = []
+    else:
+        sublist = None
 
     return render_template('form.html',
                            sublist=sublist,
@@ -892,6 +896,7 @@ def form():
 @app.route('/match', methods=['GET'])
 def match():
     sublist = request.args.get('sublist')
+    words = models.Words.query.filter_by(sublist=sublist).all()
     random_words = []
 
     # This array of 1's and 0's will decide whether a button
@@ -900,9 +905,10 @@ def match():
     arrange = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
     random.shuffle(arrange)
 
-    if sublist:
-        words = models.Words.query.filter_by(sublist=sublist).all()
+    if words:
         random_words = random.sample(words, 5)
+    else:
+        sublist = None
 
     return render_template('match.html',
                            sublist=sublist,
@@ -913,7 +919,7 @@ def match():
 @app.route('/question_answer', methods=['GET'])
 def question_answer():
     sublist = request.args.get('sublist')
-    words = []
+    words = models.Words.query.filter_by(sublist=sublist).all()
     # these variables are initialised so the template can still
     # be rendered while passing these variables even while there
     # is no value for sublist yet
@@ -921,8 +927,7 @@ def question_answer():
     question_type = None
     question_form_class = None
 
-    if sublist:
-        words = models.Words.query.filter_by(sublist=sublist).all()
+    if words:
         random_words = random.sample(words, 4)
 
         # the numbers 1-5 means different types of questions 
@@ -933,6 +938,8 @@ def question_answer():
             # the numbers 1-3 for this variable represents either
             # a noun, verb, or adjective
             question_form_class = random.randint(1, 3)
+    else:
+        sublist = None
 
     return render_template('question_answer.html',
                            sublist=sublist,
@@ -944,11 +951,12 @@ def question_answer():
 @app.route('/quiz', methods=['GET'])
 def quiz():
     sublist = request.args.get('sublist')
+    words = models.Words.query.filter_by(sublist=sublist).all()
     words = []
     question_amount = 5
 
-    if sublist:
-        words = models.Words.query.filter_by(sublist=sublist).all()
+    if not words:
+        sublist = None
 
     # The randomisation of the question types along with the
     # choices is handled inside the template using jinja
