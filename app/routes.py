@@ -332,7 +332,7 @@ def custom_quiz(classroom_id, quiz_id):
     if classroom:
         if user not in classroom.student:
             flash(f'This quiz is not for you, {user}.')
-            return redirect(url_for('classroom_listed', classroom_id=classroom_id))
+            return redirect(url_for('classroom_stream', classroom_id=classroom_id))
         
         # 'quiz' will contain the quiz set-up, which is created by the teacher
         # using the 'create quiz' route. Note that this does not contain the exact questions
@@ -952,7 +952,6 @@ def question_answer():
 def quiz():
     sublist = request.args.get('sublist')
     words = models.Words.query.filter_by(sublist=sublist).all()
-    words = []
     question_amount = 5
 
     if not words:
